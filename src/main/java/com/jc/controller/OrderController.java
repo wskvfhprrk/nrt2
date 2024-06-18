@@ -18,7 +18,7 @@ public class OrderController {
 
     @Autowired
     private NettyServerHandler nettyServerHandler;
-    @Value("${lan_to_485}")
+    @Value("${lanTo485}")
     private String lan485;
 
     @PostMapping
