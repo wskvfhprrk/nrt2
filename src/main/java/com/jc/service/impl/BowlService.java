@@ -25,8 +25,7 @@ public class BowlService {
 
     @Autowired
     public BowlService(StepperMotorService stepperMotorService,
-                       IODeviceService ioDeviceService,
-                       @Value("${lanTo485}") String lanTo485) {
+                       IODeviceService ioDeviceService) {
         this.stepperMotorService = stepperMotorService;
         this.ioDeviceService = ioDeviceService;
     }
