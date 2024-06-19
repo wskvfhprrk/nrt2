@@ -13,8 +13,4 @@ public class Constants {
     public static final int BOWL_CONTROLLER_NO = 2;
     /** 传感器无值状态为2 */
     public static final String NOT_INITIALIZED = "2";
-    /** io传感器在redis存的key值 */
-    public static final String IO_KEY = "io";
-    /** io传感器在redis存的key值 */
-    public static final String IO = "io";
 }

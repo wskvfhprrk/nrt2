@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.constants.StepperMotorConstants;
+import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class IODeviceService implements DeviceHandler {
     private String ioStatus;
 
     public IODeviceService() {
-        this.ioStatus = StepperMotorConstants.NOT_INITIALIZED;
+        this.ioStatus = Constants.NOT_INITIALIZED;
     }
 
     public String getIoStatus() {
@@ -68,7 +68,7 @@ public class IODeviceService implements DeviceHandler {
         // 如果碗的极限传感器高电平，要停止碗步进电机
         if (split[2].equals(SignalLevel.HIGH.getValue()) || split[3].equals(SignalLevel.HIGH.getValue())) {
             log.info("到达限位点，停止碗升降的步进电机");
-            stepperMotorService.stop(StepperMotorConstants.BOWL_CONTROLLER_NO);
+            stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
         }
     }
 

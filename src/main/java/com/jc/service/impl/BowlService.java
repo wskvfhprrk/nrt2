@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.constants.StepperMotorConstants;
+import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -36,19 +36,19 @@ public class BowlService {
     public void bowlReset() {
         // 获取传感器状态
         String ioStatus = ioDeviceService.getIoStatus();
-        while (ioStatus.equals(StepperMotorConstants.NOT_INITIALIZED)) {
+        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ioIp, StepperMotorConstants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ioIp, Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
-                Thread.sleep(StepperMotorConstants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             // 重新获取传感器状态
             ioStatus = ioDeviceService.getIoStatus();
-            if (ioStatus.equals(StepperMotorConstants.NOT_INITIALIZED)) {
+            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
                 log.error("没有发现传感器的值！");
             }
         }
@@ -66,7 +66,7 @@ public class BowlService {
             int count = 0;
             while (bowlSensor) {
                 try {
-                    Thread.sleep(StepperMotorConstants.SLEEP_TIME_MS);
+                    Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
 //                    if (count > 300) { // 30秒超时
 //                        log.error("碗升到位超时！");
@@ -76,7 +76,7 @@ public class BowlService {
                     split = ioStatus.split(",");
                     bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
                     if (!bowlSensor) {
-                        stepperMotorService.stop(StepperMotorConstants.BOWL_CONTROLLER_NO);
+                        stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -92,7 +92,7 @@ public class BowlService {
             int count = 0;
             while (!bowlSensor) {
                 try {
-                    Thread.sleep(StepperMotorConstants.SLEEP_TIME_MS);
+                    Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
 //                    if (count > 300) { // 30秒超时
 //                        log.error("碗升到位超时！");
@@ -102,7 +102,7 @@ public class BowlService {
                     split = ioStatus.split(",");
                     bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
-                        stepperMotorService.stop(StepperMotorConstants.BOWL_CONTROLLER_NO);
+                        stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -122,19 +122,19 @@ public class BowlService {
     public void continuousBowlCheck() {
         // 获取传感器状态
         String ioStatus = ioDeviceService.getIoStatus();
-        while (ioStatus.equals(StepperMotorConstants.NOT_INITIALIZED)) {
+        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ioIp, StepperMotorConstants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ioIp, Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
-                Thread.sleep(StepperMotorConstants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             // 重新获取传感器状态
             ioStatus = ioDeviceService.getIoStatus();
-            if (ioStatus.equals(StepperMotorConstants.NOT_INITIALIZED)) {
+            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
                 log.error("没有获取到传感器的值！");
             }
         }
@@ -155,7 +155,7 @@ public class BowlService {
             int count = 0;
             while (!bowlSensor) {
                 try {
-                    Thread.sleep(StepperMotorConstants.SLEEP_TIME_MS);
+                    Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
 //                    if (count > 300) { // 30秒超时
 //                        log.error("碗升到位超时！");
@@ -165,7 +165,7 @@ public class BowlService {
                     split = ioStatus.split(",");
                     bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
-                        stepperMotorService.stop(StepperMotorConstants.BOWL_CONTROLLER_NO);
+                        stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -177,11 +177,11 @@ public class BowlService {
     }
 
     public String bowlRising() {
-        return stepperMotorService.startStepperMotor(StepperMotorConstants.BOWL_CONTROLLER_NO, false, 0);
+        return stepperMotorService.startStepperMotor(Constants.BOWL_CONTROLLER_NO, false, 0);
     }
 
     public String bowlDescent() {
-        return stepperMotorService.startStepperMotor(StepperMotorConstants.BOWL_CONTROLLER_NO, true, 0);
+        return stepperMotorService.startStepperMotor(Constants.BOWL_CONTROLLER_NO, true, 0);
     }
 
 }
