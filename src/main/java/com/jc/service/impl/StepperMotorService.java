@@ -1,9 +1,11 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
 import com.jc.constants.Constants;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.utils.CRC16;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +17,12 @@ import org.springframework.stereotype.Service;
 public class StepperMotorService {
 
     private final NettyServerHandler nettyServerHandler;
-    private final String lanTo485;
 
-    @Value("${IoIp}")
-    private String ioIp;
+    @Autowired
+    private IpConfig ipConfig;
 
-    public StepperMotorService(NettyServerHandler nettyServerHandler, @Value("${lanTo485}") String lanTo485) {
+    public StepperMotorService(NettyServerHandler nettyServerHandler) {
         this.nettyServerHandler = nettyServerHandler;
-        this.lanTo485 = lanTo485;
     }
 
     /**
@@ -57,7 +57,7 @@ public class StepperMotorService {
 
         String command = buildStopCommand(motorNumber);
         log.info("步进电机停机指令：{}", command);
-        nettyServerHandler.sendMessageToClient(lanTo485, command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
     }
 
     /**
@@ -79,7 +79,7 @@ public class StepperMotorService {
 
         String command = buildSpeedCommand(motorNumber, speed);
         log.info("步进电机速度指令：{}", command);
-        nettyServerHandler.sendMessageToClient(lanTo485, command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
         return "操作成功";
     }
 
@@ -92,7 +92,7 @@ public class StepperMotorService {
     private void sendPulseCommand(int motorNumber, int numberOfPulses) {
         String command = buildPulseCommand(motorNumber, numberOfPulses);
         log.info("脉冲指令：{}", command);
-        nettyServerHandler.sendMessageToClient(lanTo485, command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -125,7 +125,7 @@ public class StepperMotorService {
     private void sendRotationCommand(int motorNumber, boolean positiveOrNegative) {
         String command = buildRotationCommand(motorNumber, positiveOrNegative);
         log.info("步进电机转动指令：{}", command);
-        nettyServerHandler.sendMessageToClient(lanTo485, command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
     }
 
     /**

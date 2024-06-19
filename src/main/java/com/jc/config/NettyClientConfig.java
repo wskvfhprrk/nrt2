@@ -6,6 +6,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +16,8 @@ import javax.annotation.PreDestroy;
 @Configuration
 public class NettyClientConfig {
 
-    @Value("${ducoIp}")
-    private String host;
-
-    @Value("${ducoPort}")
-    private int port;
+    @Autowired
+    private IpConfig ipConfig;
 
     private EventLoopGroup workerGroup;
     private Channel channel;
@@ -50,7 +48,7 @@ public class NettyClientConfig {
     }
 
     public void connectAndSendData(String message) throws InterruptedException {
-        ChannelFuture f = bootstrap().connect(host, port).sync();
+        ChannelFuture f = bootstrap().connect(ipConfig.getLocal(), ipConfig.getNettyPort()).sync();
         channel = f.channel();
         NettyClientHandler.sendData(channel, message);
     }

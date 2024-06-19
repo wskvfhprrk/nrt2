@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
@@ -16,18 +17,18 @@ import org.springframework.stereotype.Service;
 public class TurntableService {
     private final NettyServerHandler nettyServerHandler;
     private final IODeviceService ioDeviceService;
-    private final String lanTo485;
-    @Value("${IoIp}")
-    private String ioIp;
+    @Autowired
+    private IpConfig ipConfig;
+//    @Value("${IoIp}")
+//    private String ioIp;
     private final StepperMotorService stepperMotorService;
 
     @Autowired
     public TurntableService(NettyServerHandler nettyServerHandler,
                             IODeviceService ioDeviceService,
-                            @Value("${lanTo485}") String lanTo485, StepperMotorService stepperMotorService) {
+                             StepperMotorService stepperMotorService) {
         this.nettyServerHandler = nettyServerHandler;
         this.ioDeviceService = ioDeviceService;
-        this.lanTo485 = lanTo485;
         this.stepperMotorService = stepperMotorService;
     }
 
@@ -42,7 +43,7 @@ public class TurntableService {
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ioIp, Constants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
                 Thread.sleep(Constants.SLEEP_TIME_MS);
@@ -84,7 +85,7 @@ public class TurntableService {
         String ioStatus = ioDeviceService.getIoStatus();
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ioIp, Constants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
                 Thread.sleep(Constants.SLEEP_TIME_MS);

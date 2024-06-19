@@ -1,11 +1,11 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,9 +17,9 @@ public class BowlService {
 
     private final StepperMotorService stepperMotorService;
     private final IODeviceService ioDeviceService;
+    @Autowired
+    private IpConfig ipConfig;
 
-    @Value("${IoIp}")
-    private String ioIp;
     @Autowired
     private NettyServerHandler nettyServerHandler;
 
@@ -39,7 +39,7 @@ public class BowlService {
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ioIp, Constants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
                 Thread.sleep(Constants.SLEEP_TIME_MS);
@@ -68,10 +68,6 @@ public class BowlService {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
-//                    if (count > 300) { // 30秒超时
-//                        log.error("碗升到位超时！");
-//                        return;
-//                    }
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
@@ -94,10 +90,6 @@ public class BowlService {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
-//                    if (count > 300) { // 30秒超时
-//                        log.error("碗升到位超时！");
-//                        return;
-//                    }
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
@@ -125,7 +117,7 @@ public class BowlService {
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ioIp, Constants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
                 Thread.sleep(Constants.SLEEP_TIME_MS);

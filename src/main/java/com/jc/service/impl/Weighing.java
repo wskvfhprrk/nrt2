@@ -1,7 +1,9 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +12,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class Weighing implements DeviceHandler {
 
-    @Value("${lanTo485}")
-    private String lanTo485;
+//    @Autowired
+//    private IpConfig ipConfig;
 
     @Override
     public void handle(String message, boolean isHex) {

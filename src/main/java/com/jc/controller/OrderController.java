@@ -1,5 +1,6 @@
 package com.jc.controller;
 
+import com.jc.config.IpConfig;
 import com.jc.entity.Order;
 import com.jc.netty.server.NettyServerHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,8 @@ public class OrderController {
 
     @Autowired
     private NettyServerHandler nettyServerHandler;
-
-    @Value("${lanTo485}")
-    private String lanTo485;
+@Autowired
+private IpConfig ipConfig;
 
     /**
      * 提交订单
@@ -35,7 +35,7 @@ public class OrderController {
         // 在这里处理订单逻辑，例如保存到数据库或其他操作
         log.info("收到订单: " + order);
         // 发送订单信息到设备
-        nettyServerHandler.sendMessageToClient(lanTo485, order.toString(), false);
+        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), order.toString(), false);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }
 }

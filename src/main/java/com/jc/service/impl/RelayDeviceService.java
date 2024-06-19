@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class RelayDeviceService implements DeviceHandler {
+public class RelayDeviceService<ipConfig> implements DeviceHandler {
 
     @Autowired
     private NettyServerHandler nettyServerHandler;
 
-    @Value("${relayIp}")
-    private String relayIp;
+    @Autowired
+    private IpConfig ipConfig;
 
     /**
      * 处理消息
@@ -58,7 +59,7 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(hexString);
         sb.append(" 01 00 00 45 44");
         // 发送指令
-        nettyServerHandler.sendMessageToClient(relayIp, sb.toString(), true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
     }
 
     /**
@@ -82,7 +83,7 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(hexString);
         sb.append(" 00 00 00 45 44");
         // 发送指令
-        nettyServerHandler.sendMessageToClient(relayIp, sb.toString(), true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
     }
 
     /**
@@ -115,7 +116,7 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(hexTime);
         sb.append(" 45 44");
         // 发送指令
-        nettyServerHandler.sendMessageToClient(relayIp, sb.toString(), true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
     }
 
     /**
@@ -123,7 +124,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void closeAll() {
         // 发送关闭所有继电器的指令
-        nettyServerHandler.sendMessageToClient(relayIp, "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
     }
 
     /**
@@ -131,7 +132,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void openAll() {
         // 发送打开所有继电器的指令
-        nettyServerHandler.sendMessageToClient(relayIp, "48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44", true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44", true);
     }
 
     /**

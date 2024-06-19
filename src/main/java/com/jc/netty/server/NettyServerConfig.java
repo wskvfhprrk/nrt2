@@ -1,5 +1,6 @@
 package com.jc.netty.server;
 
+import com.jc.config.IpConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,6 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +23,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class NettyServerConfig {
 
-    @Value("${netty.port}")
-    private int port;
+    @Autowired
+    private IpConfig ipConfig;
 
     /**
      * 配置并启动 Netty 服务器
@@ -52,10 +54,10 @@ public class NettyServerConfig {
                     .childOption(ChannelOption.SO_KEEPALIVE, true); // 保持长连接
 
             // 绑定端口并启动服务器
-            ChannelFuture f = b.bind(port).sync();
+            ChannelFuture f = b.bind(ipConfig.getNettyPort()).sync();
 
             // 记录服务器启动日志
-            log.info("Netty 服务器已启动，端口号：{}",port);
+            log.info("Netty 服务器已启动，端口号：{}",ipConfig.getNettyPort());
 
             return f;
         } catch (InterruptedException e) {
