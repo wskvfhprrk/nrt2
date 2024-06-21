@@ -16,19 +16,17 @@ import org.springframework.stereotype.Service;
 public class TurntableService {
     private final NettyServerHandler nettyServerHandler;
     private final IODeviceService ioDeviceService;
-    @Autowired
-    private IpConfig ipConfig;
-//    @Value("${IoIp}")
-//    private String ioIp;
+    private final IpConfig ipConfig;
     private final StepperMotorService stepperMotorService;
 
     @Autowired
     public TurntableService(NettyServerHandler nettyServerHandler,
                             IODeviceService ioDeviceService,
-                             StepperMotorService stepperMotorService) {
+                            StepperMotorService stepperMotorService, IpConfig ipConfig) {
         this.nettyServerHandler = nettyServerHandler;
         this.ioDeviceService = ioDeviceService;
         this.stepperMotorService = stepperMotorService;
+        this.ipConfig = ipConfig;
     }
 
     /**
@@ -55,16 +53,16 @@ public class TurntableService {
                 log.error("没有发现传感器的值！");
             }
         }
-        if (ioStatus.split(",")[0].equals(SignalLevel.HIGH)) {
+        if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH)) {
             log.info("转盘已经在原点位置！");
             return "ok";
         }
-        if (ioStatus.split(",")[0].equals(SignalLevel.LOW.getValue())) {
+        if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             //发送转动转盘指令至到为高电平
             stepperMotorService.startStepperMotor(3, true, 0);
             Boolean flag = true;
             while (flag) {
-                String newIoStatus = ioDeviceService.getIoStatus().split(",")[0];
+                String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_RESET_SENSOR];
                 if (newIoStatus.equals(SignalLevel.HIGH.getValue())) {
                     stepperMotorService.stop(3);
                     flag = false;
@@ -97,16 +95,16 @@ public class TurntableService {
                 log.error("没有发现传感器的值！");
             }
         }
-        if (ioStatus.split(",")[0].equals(SignalLevel.HIGH.getValue())) {
+        if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             stepperMotorService.startStepperMotor(3, true, 1600);
             return "ok";
         }
-        if (ioStatus.split(",")[0].equals(SignalLevel.LOW.getValue())) {
+        if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             //发送转动转盘指令至到为高电平
             stepperMotorService.startStepperMotor(3, true, 0);
             Boolean flag = true;
             while (flag) {
-                String newIoStatus = ioDeviceService.getIoStatus().split(",")[0];
+                String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_RESET_SENSOR];
                 if (newIoStatus.equals(SignalLevel.HIGH.getValue())) {
                     //步进电机转半圈
                     stepperMotorService.startStepperMotor(3, true, 1600);
@@ -195,8 +193,8 @@ public class TurntableService {
      * 第一个工位：如果放碗了
      */
     public String first() {
-        isThereABowlInPlace[0] = true;
-        stationStatus[0] = true;
+        isThereABowlInPlace[Constants.ROTARY_TABLE_RESET_SENSOR] = true;
+        stationStatus[Constants.ROTARY_TABLE_RESET_SENSOR] = true;
         return "ok";
     }
 

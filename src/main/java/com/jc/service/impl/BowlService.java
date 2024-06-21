@@ -55,9 +55,9 @@ public class BowlService {
 
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
-        boolean bowlSensor = split[1].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
-        boolean lowerLimit = split[2].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
-        boolean upperLimit = split[3].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
+        boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
+        boolean lowerLimit = split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
+        boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
 
         // 如果2为高电平4为低电平，直接降碗
         if (bowlSensor && !lowerLimit) {
@@ -70,7 +70,7 @@ public class BowlService {
                     count++;
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
-                    bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
+                    bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (!bowlSensor) {
                         stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
                     }
@@ -92,7 +92,7 @@ public class BowlService {
                     count++;
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
-                    bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
+                    bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
                         stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
                     }
@@ -133,9 +133,9 @@ public class BowlService {
 
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
-        boolean bowlSensor = split[1].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
-        boolean lowerLimit = split[2].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
-        boolean upperLimit = split[3].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
+        boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
+        boolean lowerLimit = split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
+        boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
         //如果传感器无值到达了上限——没有碗了
         if (!bowlSensor && upperLimit){
             log.error("没有碗了！");
@@ -155,7 +155,7 @@ public class BowlService {
 //                    }
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
-                    bowlSensor = split[1].equals(SignalLevel.HIGH.getValue());
+                    bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
                         stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
                     }

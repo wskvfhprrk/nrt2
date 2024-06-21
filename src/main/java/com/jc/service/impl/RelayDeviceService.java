@@ -86,7 +86,7 @@ public class RelayDeviceService<ipConfig> implements DeviceHandler {
     }
 
     /**
-     * 继电器打开一段时间后自动关闭
+     * 继电器打开一段时间后自动关
      *
      * @param no 继电器编号，范围为1-32
      * @param second 延迟关闭的时间，单位为秒，范围为1-177777
