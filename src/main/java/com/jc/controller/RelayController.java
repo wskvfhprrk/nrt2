@@ -62,19 +62,19 @@ public class RelayController {
         relayDeviceService.openClose(no, second);
     }
     /**
-     * 出汤电推杆向下
+     * 出餐口向下
      */
-    @GetMapping("soupElectricPushRodDownward")
-    public void soupElectricPushRodDownward() {
-        relayDeviceService.soupElectricPushRodDownward();
+    @GetMapping("theFoodOutletIsFacingDownwards")
+    public void theFoodOutletIsFacingDownwards() {
+        relayDeviceService.theFoodOutletIsFacingDownwards();
     }
 
     /**
-     * 出汤电推杆向上
+     * 出餐口向上
      */
-    @GetMapping("soupElectricPushRodUpwards")
-    public void soupElectricPushRodUpwards() {
-        relayDeviceService.soupElectricPushRodUpwards();
+    @GetMapping("theFoodOutletIsFacingUpwards")
+    public void theFoodOutletIsFacingUpwards() {
+        relayDeviceService.theFoodOutletIsFacingUpwards();
     }
     /**
      * 出料开仓出料

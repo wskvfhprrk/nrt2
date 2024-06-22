@@ -136,31 +136,31 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 出汤电推杆向下
+     * 出餐口向下
      * @return
      */
-    public String soupElectricPushRodDownward(){
-        relayClosing(Constants.SOUP_ELECTRIC_PUSH_ROD_UPWARDS);
+    public String theFoodOutletIsFacingDownwards(){
+        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.SOUP_ELECTRIC_PUSH_ROD_DOWNWARD);
+        relayOpening(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS);
         return "ok";
     }
     /**
-     * 出汤电推杆向上
+     * 出餐口向上
      * @return
      */
-    public String soupElectricPushRodUpwards(){
-        relayClosing(Constants.SOUP_ELECTRIC_PUSH_ROD_DOWNWARD);
+    public String theFoodOutletIsFacingUpwards(){
+        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.SOUP_ELECTRIC_PUSH_ROD_UPWARDS);
+        relayOpening(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS);
         return "ok";
     }
     /**

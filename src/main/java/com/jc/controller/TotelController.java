@@ -1,6 +1,7 @@
 package com.jc.controller;
 
 import com.jc.config.NettyClientConfig;
+import com.jc.service.RobotService;
 import com.jc.service.impl.BowlService;
 import com.jc.service.impl.TurntableService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class TotelController {
     @Autowired
-    NettyClientConfig nettyClientConfig;
+    RobotService robotService;
     @Autowired
     BowlService bowlService;
     @Autowired
@@ -22,14 +23,7 @@ public class TotelController {
     @GetMapping("reset")
     public String reset() throws Exception {
         //机器人重置命令
-        new Thread(() -> {
-            try {
-                nettyClientConfig.connectAndSendData("run(reset.jspf)");
-                log.info("机器人重置命令");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).run();
+        robotService.reset();
         //转盘重置
         turntableService.turntableReset();
         log.info("转盘重置");
@@ -41,27 +35,14 @@ public class TotelController {
 
     @GetMapping("takeBowl")
     public String takeBowl() {
-        // TODO: 2024/6/12 判断是否回原点、碗的状态、 
-        //升碗
-        new Thread(() -> {
-            bowlService.continuousBowlCheck();
-        }).run();
         //向机器人发送取碗指令
-        try {
-            nettyClientConfig.connectAndSendData("run(takeABowl.jspf)");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+       robotService.takeBowl();
         return "ok";
     }
 
     @GetMapping("putBowl")
     public String putBowl(){
-        try {
-            nettyClientConfig.connectAndSendData("run(putBowl.jspf)");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        robotService.putBowl();
         return "ok";
     }
 }

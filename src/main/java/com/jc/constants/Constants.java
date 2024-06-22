@@ -55,13 +55,13 @@ public class Constants {
 
     /** 继电器 */
     /**
-     * 出汤电推杆向下
+     * 出餐口向下
      */
-    public static final int SOUP_ELECTRIC_PUSH_ROD_DOWNWARD = 1;
+    public static final int THE_FOOD_OUTLET_IS_FACING_DOWNWARDS = 1;
     /**
-     * 出汤电推杆向上
+     * 出餐口向上
      */
-    public static final int SOUP_ELECTRIC_PUSH_ROD_UPWARDS = 2;
+    public static final int THE_FOOD_OUTLET_IS_FACING_UPWARDS = 2;
     /**
      * 出料开仓出料
      */
