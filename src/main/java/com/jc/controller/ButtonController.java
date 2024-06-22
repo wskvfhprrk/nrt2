@@ -1,7 +1,10 @@
 package com.jc.controller;
 
+import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.RelayDeviceService;
+import com.jc.service.impl.StepperMotorService;
+import com.jc.service.impl.TurntableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +19,12 @@ public class ButtonController {
     private RobotService robotService;
     @Autowired
     private RelayDeviceService relayDeviceService;
+    @Autowired
+    private TurntableService turntableService;
+    @Autowired
+    private BowlController bowlService;
+    @Autowired
+    private StepperMotorService stepperMotorService;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id) {
@@ -94,10 +103,25 @@ public class ButtonController {
 
     @GetMapping("/emergencyStop")
     public String emergencyStop() {
-        // 实现急停逻辑，例如停止所有关键操作
-        // 替换为实际的急停逻辑
+        // 实现急停逻辑，例如停止所有关键操作——即关闭所以继电器
+        relayDeviceService.closeAll();
+        //所有步进电机停止
+        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
+        stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
+        stepperMotorService.stop(Constants.FAN_STEPPER_MOTOR);
 
-        // 模拟急停动作
         return "急停操作完成";
+    }
+    @GetMapping("/reset")
+    public String reset() throws Exception {
+        //机器人重置命令
+        robotService.reset();
+        //转盘重置
+        turntableService.turntableReset();
+        //碗重置
+        bowlService.bowlReset();
+        //出餐口关闭
+        relayDeviceService.theFoodOutletIsFacingUpwards();
+        return "机器复位成功！";
     }
 }
