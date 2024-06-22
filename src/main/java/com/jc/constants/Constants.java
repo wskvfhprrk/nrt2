@@ -55,13 +55,13 @@ public class Constants {
 
     /** 继电器 */
     /**
-     * 出汤电推杆负极
+     * 出汤电推杆向下
      */
-    public static final int NEGATIVE_POLE_OF_THE_POWER_SUPPLY_FOR_THE_SOUP_ELECTRIC_PUSH_ROD = 1;
+    public static final int SOUP_ELECTRIC_PUSH_ROD_DOWNWARD = 1;
     /**
-     * 出汤电推杆正极
+     * 出汤电推杆向上
      */
-    public static final int POSITIVE_POLE_OF_THE_POWER_SUPPLY_FOR_THE_SOUP_ELECTRIC_PUSH_ROD = 2;
+    public static final int SOUP_ELECTRIC_PUSH_ROD_UPWARDS = 2;
     /**
      * 出料推植负极
      */

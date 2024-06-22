@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
+import com.jc.constants.Constants;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class RelayDeviceService<ipConfig> implements DeviceHandler {
+public class RelayDeviceService implements DeviceHandler {
 
     @Autowired
     private NettyServerHandler nettyServerHandler;
@@ -135,17 +136,19 @@ public class RelayDeviceService<ipConfig> implements DeviceHandler {
     }
 
     /**
-     * 出汤
+     * 出汤电推杆向下
      * @return
      */
-    public String dispenseSoup(){
-        openClose(1,20);
-        try {
-            Thread.sleep(50L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        openClose(2,20);
+    public String soupElectricPushRodDownward(){
+        relayOpening(Constants.SOUP_ELECTRIC_PUSH_ROD_DOWNWARD);
+        return "ok";
+    }
+    /**
+     * 出汤电推杆向上
+     * @return
+     */
+    public String soupElectricPushRodUpwards(){
+        relayOpening(Constants.SOUP_ELECTRIC_PUSH_ROD_UPWARDS);
         return "ok";
     }
 }

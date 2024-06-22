@@ -50,9 +50,20 @@ public class RelayController {
     public void openAll() {
         relayDeviceService.openAll();
     }
-    @GetMapping("dispenseSoup")
-    public void dispenseSoup() {
-        relayDeviceService.dispenseSoup();
+
+    /**
+     * 出汤电推杆向下
+     */
+    @GetMapping("soupElectricPushRodDownward")
+    public void soupElectricPushRodDownward() {
+        relayDeviceService.soupElectricPushRodDownward();
+    }
+    /**
+     * 出汤电推杆向上
+     */
+    @GetMapping("soupElectricPushRodUpwards")
+    public void soupElectricPushRodUpwards() {
+        relayDeviceService.soupElectricPushRodUpwards();
     }
 
     /**
