@@ -140,6 +140,12 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public String soupElectricPushRodDownward(){
+        relayClosing(Constants.SOUP_ELECTRIC_PUSH_ROD_UPWARDS);
+        try {
+            Thread.sleep(50L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         relayOpening(Constants.SOUP_ELECTRIC_PUSH_ROD_DOWNWARD);
         return "ok";
     }
@@ -148,7 +154,41 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public String soupElectricPushRodUpwards(){
+        relayClosing(Constants.SOUP_ELECTRIC_PUSH_ROD_DOWNWARD);
+        try {
+            Thread.sleep(50L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         relayOpening(Constants.SOUP_ELECTRIC_PUSH_ROD_UPWARDS);
+        return "ok";
+    }
+    /**
+     * 出料开仓出料
+     * @return
+     */
+    public String dischargingFromWarehouse(){
+        relayClosing(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE);
+        try {
+            Thread.sleep(50L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relayOpening(Constants.DISCHARGING_FROM_WAREHOUSE);
+        return "ok";
+    }
+    /**
+     * 出料关仓禁止出料
+     * @return
+     */
+    public String dischargingIsProhibitedAfterClosingTheWarehouse(){
+        relayClosing(Constants.DISCHARGING_FROM_WAREHOUSE);
+        try {
+            Thread.sleep(50L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relayOpening(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE);
         return "ok";
     }
 }

@@ -63,13 +63,13 @@ public class Constants {
      */
     public static final int SOUP_ELECTRIC_PUSH_ROD_UPWARDS = 2;
     /**
-     * 出料推植负极
+     * 出料开仓出料
      */
-    public static final int DISCHARGE_PUSHING_NEGATIVE_ELECTRODE = 3;
+    public static final int DISCHARGING_FROM_WAREHOUSE = 3;
     /**
-     * 出料推植正极
+     * 出料关仓禁止出料
      */
-    public static final int DISCHARGE_PUSH_POSITIVE_ELECTRODE = 4;
+    public static final int DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE = 4;
     /**
      * 牛肉电机
      */

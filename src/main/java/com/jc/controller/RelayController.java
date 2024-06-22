@@ -52,21 +52,6 @@ public class RelayController {
     }
 
     /**
-     * 出汤电推杆向下
-     */
-    @GetMapping("soupElectricPushRodDownward")
-    public void soupElectricPushRodDownward() {
-        relayDeviceService.soupElectricPushRodDownward();
-    }
-    /**
-     * 出汤电推杆向上
-     */
-    @GetMapping("soupElectricPushRodUpwards")
-    public void soupElectricPushRodUpwards() {
-        relayDeviceService.soupElectricPushRodUpwards();
-    }
-
-    /**
      * 打开指定编号的继电器一段时间后自动关闭
      *
      * @param no     继电器编号
@@ -75,5 +60,35 @@ public class RelayController {
     @GetMapping("openClose")
     public void openClose(@RequestParam int no, @RequestParam int second) {
         relayDeviceService.openClose(no, second);
+    }
+    /**
+     * 出汤电推杆向下
+     */
+    @GetMapping("soupElectricPushRodDownward")
+    public void soupElectricPushRodDownward() {
+        relayDeviceService.soupElectricPushRodDownward();
+    }
+
+    /**
+     * 出汤电推杆向上
+     */
+    @GetMapping("soupElectricPushRodUpwards")
+    public void soupElectricPushRodUpwards() {
+        relayDeviceService.soupElectricPushRodUpwards();
+    }
+    /**
+     * 出料开仓出料
+     */
+    @GetMapping("dischargingFromWarehouse")
+    public void dischargingFromWarehouse() {
+        relayDeviceService.dischargingFromWarehouse();
+    }
+
+    /**
+     * 出料关仓禁止出料
+     */
+    @GetMapping("dischargingIsProhibitedAfterClosingTheWarehouse")
+    public void dischargingIsProhibitedAfterClosingTheWarehouse() {
+        relayDeviceService.dischargingIsProhibitedAfterClosingTheWarehouse();
     }
 }
