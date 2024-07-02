@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.RobotConfig;
 import com.jc.constants.Constants;
 import com.jc.utils.CRC16;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ public class SeasoningMachineService {
 
     @Autowired
     private Send485OrderService send485OrderService;
+    @Autowired
+    private RobotConfig robotConfig;
 
     /**
      * 调味机按配方出料
@@ -28,8 +31,33 @@ public class SeasoningMachineService {
         sendSetInstruction();
         Thread.sleep(100L);
         sendResetInstruction();
+        Thread.sleep(100L);
         //不停查询
+        ejectionIsComplete();
     }
+
+    private void ejectionIsComplete() {
+        while (!robotConfig.isEjectionIsComplete()){
+            //02 01 00 07 00 01 4C 38
+            //485地址编码
+            String addressCoding = String.format("%02d", Constants.SEASONING_MACHINE);
+            //功能码
+            String functionCode = "01";
+            //起始地址
+            String startAddress = "0007";
+            //数据
+            String datastr="0001";
+            String order = addressCoding + functionCode + startAddress + datastr;
+            String modbusrtuString = CRC16.getModbusrtuString(order);
+            send485OrderService.sendOrder(order+modbusrtuString);
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //发送置位指令
     private void sendSetInstruction() {
         //485地址编码

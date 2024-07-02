@@ -20,5 +20,7 @@ public class RobotConfig {
     private boolean steamAdded;
     private boolean seasoningAdded;
     private boolean soupAdded;
+    //出料机是否完成出料
+    private boolean ejectionIsComplete;
 
 }
