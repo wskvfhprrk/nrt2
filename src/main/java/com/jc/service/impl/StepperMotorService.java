@@ -1,8 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.IpConfig;
 import com.jc.constants.Constants;
-import com.jc.netty.server.NettyServerHandler;
 import com.jc.utils.CRC16;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class StepperMotorService {
-
-    private final NettyServerHandler nettyServerHandler;
-
     @Autowired
-    private IpConfig ipConfig;
-
-    public StepperMotorService(NettyServerHandler nettyServerHandler) {
-        this.nettyServerHandler = nettyServerHandler;
-    }
+    private Send485OrderService send485OrderService;
 
     /**
      * 启动步进电机
@@ -56,7 +47,7 @@ public class StepperMotorService {
 
         String command = buildStopCommand(motorNumber);
         log.info("步进电机停机指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
+        send485OrderService.sendOrder(command);
     }
 
     /**
@@ -78,7 +69,7 @@ public class StepperMotorService {
 
         String command = buildSpeedCommand(motorNumber, speed);
         log.info("步进电机速度指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
+        send485OrderService.sendOrder(command);
         return "操作成功";
     }
 
@@ -91,7 +82,7 @@ public class StepperMotorService {
     private void sendPulseCommand(int motorNumber, int numberOfPulses) {
         String command = buildPulseCommand(motorNumber, numberOfPulses);
         log.info("脉冲指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
+        send485OrderService.sendOrder(command);
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -124,7 +115,7 @@ public class StepperMotorService {
     private void sendRotationCommand(int motorNumber, boolean positiveOrNegative) {
         String command = buildRotationCommand(motorNumber, positiveOrNegative);
         log.info("步进电机转动指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
+        send485OrderService.sendOrder(command);
     }
 
     /**
