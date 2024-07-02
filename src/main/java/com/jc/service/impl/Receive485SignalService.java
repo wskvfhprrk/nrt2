@@ -4,21 +4,25 @@ import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * 收到485信号
+ */
 @Service
 @Slf4j
-public class DocuService implements DeviceHandler {
+public class Receive485SignalService implements DeviceHandler {
     /**
      * 处理消息
      *
      * @param message 消息内容
-     * @param isHex   是否为16进制消息
+     * @param isHex 是否为16进制消息
      */
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("HEX消息: {}", message);
+            log.info("收到485信号——HEX: {}", message);
         } else {
-            log.info("普通消息: {}", message);
+            log.info("收到485信号——普通消息: {}", message);
+            // 在这里添加处理普通字符串消息的逻辑
         }
     }
 }

@@ -56,7 +56,7 @@ public class StepperMotorService {
 
         String command = buildStopCommand(motorNumber);
         log.info("步进电机停机指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
     }
 
     /**
@@ -78,7 +78,7 @@ public class StepperMotorService {
 
         String command = buildSpeedCommand(motorNumber, speed);
         log.info("步进电机速度指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
         return "操作成功";
     }
 
@@ -91,7 +91,7 @@ public class StepperMotorService {
     private void sendPulseCommand(int motorNumber, int numberOfPulses) {
         String command = buildPulseCommand(motorNumber, numberOfPulses);
         log.info("脉冲指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -124,7 +124,7 @@ public class StepperMotorService {
     private void sendRotationCommand(int motorNumber, boolean positiveOrNegative) {
         String command = buildRotationCommand(motorNumber, positiveOrNegative);
         log.info("步进电机转动指令：{}", command);
-        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), command, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), command, true);
     }
 
     /**

@@ -1,13 +1,10 @@
 package com.jc.netty.server;
 
 import com.jc.config.IpConfig;
-import com.jc.service.impl.DocuService;
-import com.jc.service.impl.IODeviceService;
-import com.jc.service.impl.LanTo485Service;
-import com.jc.service.impl.RelayDeviceService;
+import com.jc.service.DocuService;
+import com.jc.service.impl.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +24,9 @@ public class FicationProcessing {
     @Lazy
     private RelayDeviceService relayDeviceService; // 继电器设备处理器
     @Autowired
-    private LanTo485Service lanTo485Service;
+    private Send485OrderService send485OrderService;
+    @Autowired
+    private Receive485SignalService receive485SignalService;
     @Autowired
     private DocuService docuService;
 
@@ -45,8 +44,10 @@ public class FicationProcessing {
             ioDeviceService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getRelay())) {
             relayDeviceService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getLanTo485())) {
-            lanTo485Service.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getSend485Order())) {
+            send485OrderService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getReceive485Signal())) {
+            receive485SignalService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getIo())) {
             docuService.handle(message, flag);
         } else {

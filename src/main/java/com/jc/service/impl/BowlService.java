@@ -4,6 +4,7 @@ import com.jc.config.IpConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
+import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class BowlService {
+public class BowlService implements DeviceHandler {
 
     private final StepperMotorService stepperMotorService;
     private final IODeviceService ioDeviceService;
@@ -29,7 +30,21 @@ public class BowlService {
         this.stepperMotorService = stepperMotorService;
         this.ioDeviceService = ioDeviceService;
     }
-
+    /**
+     * 处理消息
+     *
+     * @param message 消息内容
+     * @param isHex 是否为16进制消息
+     */
+    @Override
+    public void handle(String message, boolean isHex) {
+        if (isHex) {
+            log.info("碗控制服务——HEX: {}", message);
+        } else {
+            log.info("碗控制服务——普通消息: {}", message);
+            // 在这里添加处理普通字符串消息的逻辑
+        }
+    }
     /**
      * 重置碗
      */

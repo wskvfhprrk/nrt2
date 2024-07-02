@@ -13,8 +13,9 @@ public class IpConfig {
     private int nettyPort;
     private String io;
     private String relay;
-    private String lanTo485;
-    private String duco;
+    private String send485Order;
+    private String receive485Signal;
+    private String ducoIp;
     private int ducoPort;
 
 }

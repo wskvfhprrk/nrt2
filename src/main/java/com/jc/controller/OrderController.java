@@ -5,7 +5,6 @@ import com.jc.entity.Order;
 import com.jc.netty.server.NettyServerHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ private IpConfig ipConfig;
         // 在这里处理订单逻辑，例如保存到数据库或其他操作
         log.info("收到订单: " + order);
         // 发送订单信息到设备
-        nettyServerHandler.sendMessageToClient(ipConfig.getLanTo485(), order.toString(), false);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), order.toString(), false);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }
 }

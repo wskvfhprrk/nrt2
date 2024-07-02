@@ -38,7 +38,7 @@ public class IODeviceService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("HEX消息: {}", message);
+            log.info("IO设备——HEX消息: {}", message);
             // 查中间8位，从第6位开始查询
             String[] split = message.split(" ");
             // 将字符串分割为8个部分，每个部分4个字符
@@ -54,7 +54,7 @@ public class IODeviceService implements DeviceHandler {
             this.ioStatus = sb.toString();
             sensorInstructionProcessing(sb);
         } else {
-            log.info("普通消息: {}", message);
+            log.info("IO设备——普通消息: {}", message);
         }
     }
 

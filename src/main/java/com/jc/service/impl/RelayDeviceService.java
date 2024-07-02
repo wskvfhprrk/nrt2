@@ -31,9 +31,9 @@ public class RelayDeviceService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("HEX消息: {}", message);
+            log.info("继电器设备——HEX消息: {}", message);
         } else {
-            log.info("普通消息: {}", message);
+            log.info("继电器设备——普通消息: {}", message);
             // 在这里添加处理普通字符串消息的逻辑
         }
     }

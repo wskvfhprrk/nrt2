@@ -47,7 +47,7 @@ public class NettyClientConfig {
     }
 
     public void connectAndSendData(String message) throws InterruptedException {
-        ChannelFuture f = bootstrap().connect(ipConfig.getDuco(), ipConfig.getDucoPort()).sync();
+        ChannelFuture f = bootstrap().connect(ipConfig.getDucoIp(), ipConfig.getDucoPort()).sync();
         channel = f.channel();
         NettyClientHandler.sendData(channel, message);
     }
