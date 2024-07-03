@@ -25,15 +25,20 @@ public class SeasoningMachineService {
      * 2、发送配方号
      * 3、发送复位指令
      */
-    public void dischargeAccordingToFormula(int formula) throws InterruptedException {
-        recipeNumberOrder(formula);
-        Thread.sleep(100L);
-        sendSetInstruction();
-        Thread.sleep(100L);
-        sendResetInstruction();
-        Thread.sleep(100L);
-        //不停查询
-        ejectionIsComplete();
+    public void dischargeAccordingToFormula(int formula)  {
+        try {
+
+            recipeNumberOrder(formula);
+            Thread.sleep(100L);
+            sendSetInstruction();
+            Thread.sleep(100L);
+            sendResetInstruction();
+            Thread.sleep(100L);
+            //不停查询
+            ejectionIsComplete();
+        }catch (InterruptedException e){
+            log.error(e.getMessage());
+        }
     }
 
     private void ejectionIsComplete() {

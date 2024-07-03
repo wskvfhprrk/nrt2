@@ -3,6 +3,7 @@ package com.jc.controller;
 import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.RelayDeviceService;
+import com.jc.service.impl.SeasoningMachineService;
 import com.jc.service.impl.StepperMotorService;
 import com.jc.service.impl.TurntableService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class ButtonController {
     private BowlController bowlService;
     @Autowired
     private StepperMotorService stepperMotorService;
+    @Autowired
+    private SeasoningMachineService seasoningMachineService;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id) {
@@ -60,7 +63,8 @@ public class ButtonController {
                 relayDeviceService.theFoodOutletIsFacingDownwards();
                 break;
             case 7:
-                actionResult = "机器人取粉丝操作完成";
+                seasoningMachineService.dischargeAccordingToFormula(500);
+                actionResult = "调料机出料操作完成";
                 // 执行机器人取粉丝的操作逻辑
                 break;
             case 8:
