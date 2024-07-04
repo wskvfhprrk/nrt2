@@ -3,6 +3,7 @@ package com.jc.service.impl;
 import com.jc.config.RobotConfig;
 import com.jc.constants.Constants;
 import com.jc.utils.CRC16;
+import com.jc.utils.HexConvert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,15 +28,16 @@ public class SeasoningMachineService {
      */
     public void dischargeAccordingToFormula(int formula)  {
         try {
-
+            sendResetInstruction();
+            Thread.sleep(100L);
             recipeNumberOrder(formula);
             Thread.sleep(100L);
             sendSetInstruction();
             Thread.sleep(100L);
             sendResetInstruction();
-            Thread.sleep(100L);
-            //不停查询
-            ejectionIsComplete();
+//            Thread.sleep(100L);
+//            //不停查询
+//            ejectionIsComplete();
         }catch (InterruptedException e){
             log.error(e.getMessage());
         }
@@ -55,6 +57,7 @@ public class SeasoningMachineService {
             String order = addressCoding + functionCode + startAddress + datastr;
             String modbusrtuString = CRC16.getModbusrtuString(order);
             send485OrderService.sendOrder(order+modbusrtuString);
+            log.info("询问调味机是否出料完成！");
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException e) {
@@ -76,6 +79,7 @@ public class SeasoningMachineService {
         String order = addressCoding + functionCode + startAddress + datastr;
         String modbusrtuString = CRC16.getModbusrtuString(order);
         send485OrderService.sendOrder(order+modbusrtuString);
+        log.info("置位指令发送完毕！");
     }
     //发送复位指令
     private void sendResetInstruction() {
@@ -90,6 +94,7 @@ public class SeasoningMachineService {
         String order = addressCoding + functionCode + startAddress + datastr;
         String modbusrtuString = CRC16.getModbusrtuString(order);
         send485OrderService.sendOrder(order+modbusrtuString);
+        log.info("复位指令发送完毕！");
     }
     //发送配方指令
     private void recipeNumberOrder(int formula) {
@@ -100,9 +105,10 @@ public class SeasoningMachineService {
         //起始地址
         String startAddress = "0001";
         //数据
-        String datastr=String.format("%04d", formula);
+        String datastr=String.format("%04X", formula);
         String order = addressCoding + functionCode + startAddress + datastr;
         String modbusrtuString = CRC16.getModbusrtuString(order);
         send485OrderService.sendOrder(order+modbusrtuString);
+        log.info("配方：{}发送完毕",formula);
     }
 }

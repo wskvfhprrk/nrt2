@@ -15,7 +15,7 @@ public class IpConfig {
     private String relay;
     private String send485Order;
     private String receive485Signal;
-    private String ducoIp;
-    private int ducoPort;
+    private String ducuIp;
+    private int ducuPort;
 
 }

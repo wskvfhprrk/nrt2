@@ -1,5 +1,7 @@
 package com.jc.netty.server;
 
+import com.jc.config.ClientConfig;
+import com.jc.config.IpConfig;
 import com.jc.utils.HexConvert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -28,9 +30,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     // 维护客户端IP与通道的映射关系
     private static final Map<String, Channel> clientMap = new ConcurrentHashMap<>();
-
     @Autowired
     private FicationProcessing ficationProcessing;
+    @Autowired
+    private ClientConfig clientConfig;
+    @Autowired
+    private IpConfig ipConfig;
 
     /**
      * 客户端连接时调用
@@ -44,6 +49,40 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         clientMap.put(clientAddress.getAddress().toString().replace("/", ""), channel);
         channels.add(channel);
         log.info("客户端连接成功，IP地址为：{}", clientAddress.getAddress().getHostAddress());
+        updateClientConfig(clientAddress, true);
+    }
+
+    /**
+     * 更新设备在线的状态
+     *
+     * @param clientAddress
+     * @param flag
+     */
+    private void updateClientConfig(InetSocketAddress clientAddress, Boolean flag) {
+        if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
+            clientConfig.setRelayDevice(flag);
+            return;
+        }
+        if (ipConfig.getSend485Order().equals(clientAddress.getAddress().getHostAddress())) {
+            clientConfig.setSend485Order(flag);
+            return;
+        }
+        if (ipConfig.getReceive485Signal().equals(clientAddress.getAddress().getHostAddress())) {
+            clientConfig.setReceive485Singal(flag);
+            return;
+        }
+        if (ipConfig.getDucuIp().equals(clientAddress.getAddress().getHostAddress())) {
+            clientConfig.setDocuOnLine(flag);
+            return;
+        }
+        if (ipConfig.getIo().equals(clientAddress.getAddress().getHostAddress())) {
+            clientConfig.setIOdevice(flag);
+            return;
+        }
+        if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
+            clientConfig.setRelayDevice(flag);
+            return;
+        }
     }
 
     /**
@@ -58,6 +97,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         clientMap.remove(clientAddress.getAddress().toString().replace("/", ""));
         channels.remove(channel);
         log.info("客户端断开连接，IP地址为：{}", clientAddress.getAddress().getHostAddress());
+        updateClientConfig(clientAddress, false);
     }
 
     /**
@@ -103,8 +143,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             InetSocketAddress clientAddress = (InetSocketAddress) ctx.channel().remoteAddress();
             String clientIp = clientAddress.getAddress().toString().replace("/", "");
             log.warn("客户端{}连接已重置：{}", clientIp, cause.getMessage());
+            updateClientConfig(clientAddress, true);
         } else {
             log.error("未处理的异常：", cause);
+            InetSocketAddress clientAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+            updateClientConfig(clientAddress, false);
         }
         // 关闭上下文
         ctx.close();
@@ -145,7 +188,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             String address = entry.getKey();
             if (address.equals(clientIp)) {
                 Channel channel = entry.getValue();
-                log.info("服务器发送指令：{}",message);
+                log.info("服务器发送指令：{}", message);
                 if (hex) {
                     ByteBuf buff = Unpooled.buffer();
                     buff.writeBytes(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));
