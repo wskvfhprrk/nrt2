@@ -1,4 +1,4 @@
-package com.jc.netty.server;
+package com.jc.netty.client;
 
 import com.jc.config.IpConfig;
 import com.jc.netty.client.NettyClientHandler;

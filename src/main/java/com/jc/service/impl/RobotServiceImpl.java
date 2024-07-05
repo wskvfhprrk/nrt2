@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.netty.server.NettyClientConfig;
+import com.jc.netty.client.NettyClientConfig;
 import com.jc.service.RobotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
