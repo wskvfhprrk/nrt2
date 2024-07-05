@@ -9,9 +9,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +46,6 @@ public class NettyServerConfig {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) {
-                            ch.pipeline().addLast(new HttpServerCodec());
-                            ch.pipeline().addLast(new HttpObjectAggregator(64 * 1024));
-                            ch.pipeline().addLast(new ChunkedWriteHandler());
-                            ch.pipeline().addLast(new WebSocketServerProtocolHandler("/ws"));
-                            ch.pipeline().addLast(new WebSocketFrameHandler());
                             // 将自定义的处理器添加到通道的处理器链中
                             ch.pipeline().addLast(nettyServerHandler);
                         }
