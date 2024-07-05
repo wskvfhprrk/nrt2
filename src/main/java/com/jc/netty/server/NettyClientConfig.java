@@ -1,5 +1,6 @@
-package com.jc.config;
+package com.jc.netty.server;
 
+import com.jc.config.IpConfig;
 import com.jc.netty.client.NettyClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
