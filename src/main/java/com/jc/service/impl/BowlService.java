@@ -98,11 +98,9 @@ public class BowlService implements DeviceHandler {
         if (!bowlSensor && !upperLimit) {
             this.bowlRising();
             // 等待传感器2变为高电平，最多等待30秒
-            int count = 0;
             while (!bowlSensor) {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
-                    count++;
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
@@ -146,7 +144,6 @@ public class BowlService implements DeviceHandler {
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
         boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
-        boolean lowerLimit = split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
         boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
         //如果传感器无值到达了上限——没有碗了
         if (!bowlSensor && upperLimit){
