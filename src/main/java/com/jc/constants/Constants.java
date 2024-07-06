@@ -116,19 +116,19 @@ public class Constants {
     public static final int TO_DISPENSE_SOUP = 15;
     /** 485设备 */
     /**
-     * 碗步进电机
+     * 转台步进电机控制器485地址
      */
-    public static final int BOWL_STEPPER_MOTOR = 1;
+    public static final int ROTARY_TABLE_STEPPER_MOTOR = 1;
     /**
-     * 调味机
+     * 调味机485地址
      */
     public static final int SEASONING_MACHINE = 2;
     /**
-     * 转台步进电机
+     * 碗步进电机控制器485地址
      */
-    public static final int ROTARY_TABLE_STEPPER_MOTOR = 3;
+    public static final int BOWL_STEPPER_MOTOR = 3;
     /**
-     * 粉丝步进电机
+     * 粉丝步进电机控制器485地址
      */
     public static final int FAN_STEPPER_MOTOR = 4;
 }

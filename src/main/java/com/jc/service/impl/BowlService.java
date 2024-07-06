@@ -118,7 +118,6 @@ public class BowlService implements DeviceHandler {
             log.info("碗已经升到位！");
             return;
         }
-
         // 如果传感器2为低电平，说明碗还未升到位
         log.error("碗未升到位，请检查传感器2状态！");
     }
@@ -164,10 +163,6 @@ public class BowlService implements DeviceHandler {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
-//                    if (count > 300) { // 30秒超时
-//                        log.error("碗升到位超时！");
-//                        return;
-//                    }
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());

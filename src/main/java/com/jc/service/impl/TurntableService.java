@@ -59,12 +59,12 @@ public class TurntableService {
         }
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             //发送转动转盘指令至到为高电平
-            stepperMotorService.startStepperMotor(3, true, 0);
+            stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
             Boolean flag = true;
             while (flag) {
                 String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_RESET_SENSOR];
                 if (newIoStatus.equals(SignalLevel.HIGH.getValue())) {
-                    stepperMotorService.stop(3);
+                    stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                     flag = false;
                 }
                 try {
@@ -96,18 +96,18 @@ public class TurntableService {
             }
         }
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            stepperMotorService.startStepperMotor(3, true, 1600);
+            stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 1600);
             return "ok";
         }
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             //发送转动转盘指令至到为高电平
-            stepperMotorService.startStepperMotor(3, true, 0);
+            stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
             Boolean flag = true;
             while (flag) {
                 String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_RESET_SENSOR];
                 if (newIoStatus.equals(SignalLevel.HIGH.getValue())) {
                     //步进电机转半圈
-                    stepperMotorService.startStepperMotor(3, true, 1600);
+                    stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 1600);
                     flag = false;
                 }
                 try {
@@ -167,7 +167,7 @@ public class TurntableService {
         if (!checkStationStatus()) {
             return "还有没有完成的工位！";
         }
-        stepperMotorService.startStepperMotor(3, true, 0);
+        stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
         Boolean flag = true;
         while (flag) {
             String newIoStatus = ioDeviceService.getIoStatus().split(",")[4];
@@ -176,7 +176,7 @@ public class TurntableService {
                 //如果
                 if (!checkStationStatus()) {
                     //步进电机转半圈
-                    stepperMotorService.stop(3);
+                    stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                     flag = false;
                 }
             }

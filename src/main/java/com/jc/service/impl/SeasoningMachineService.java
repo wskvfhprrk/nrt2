@@ -3,7 +3,6 @@ package com.jc.service.impl;
 import com.jc.config.RobotConfig;
 import com.jc.constants.Constants;
 import com.jc.utils.CRC16;
-import com.jc.utils.HexConvert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,9 +34,9 @@ public class SeasoningMachineService {
             sendSetInstruction();
             Thread.sleep(100L);
             sendResetInstruction();
-//            Thread.sleep(100L);
-//            //不停查询
-//            ejectionIsComplete();
+            Thread.sleep(100L);
+            //不停查询
+            ejectionIsComplete();
         }catch (InterruptedException e){
             log.error(e.getMessage());
         }
