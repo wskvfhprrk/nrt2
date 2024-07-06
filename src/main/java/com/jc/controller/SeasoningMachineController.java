@@ -12,7 +12,7 @@ public class SeasoningMachineController {
     private SeasoningMachineService seasoningMachineService;
 
     @GetMapping("formula")
-        private void dischargeAccordingToFormula(int i) throws InterruptedException {
+        private void dischargeAccordingToFormula(int i){
             seasoningMachineService.dischargeAccordingToFormula(i);
     }
 }

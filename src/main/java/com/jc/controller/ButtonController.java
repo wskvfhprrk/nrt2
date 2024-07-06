@@ -106,6 +106,7 @@ public class ButtonController {
     }
 
     @GetMapping("/emergencyStop")
+
     public String emergencyStop() {
         // 实现急停逻辑，例如停止所有关键操作——即关闭所以继电器
         relayDeviceService.closeAll();
