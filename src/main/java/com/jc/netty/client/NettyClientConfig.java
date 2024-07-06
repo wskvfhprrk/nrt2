@@ -1,7 +1,6 @@
 package com.jc.netty.client;
 
 import com.jc.config.IpConfig;
-import com.jc.netty.client.NettyClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -29,10 +28,10 @@ public class NettyClientConfig {
         b.group(workerGroup);
         b.channel(NioSocketChannel.class);
         b.option(ChannelOption.SO_KEEPALIVE, true);
-        b.handler(new ChannelInitializer<SocketChannel>() {
+        final Bootstrap handler = b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new NettyClientHandler());
+                final ChannelPipeline entries = ch.pipeline().addLast(new NettyClientHandler());
             }
         });
 

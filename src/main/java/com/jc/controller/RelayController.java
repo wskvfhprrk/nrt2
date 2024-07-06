@@ -61,6 +61,7 @@ public class RelayController {
     public void openClose(@RequestParam int no, @RequestParam int second) {
         relayDeviceService.openClose(no, second);
     }
+
     /**
      * 出餐口向下
      */
@@ -76,6 +77,7 @@ public class RelayController {
     public void theFoodOutletIsFacingUpwards() {
         relayDeviceService.theFoodOutletIsFacingUpwards();
     }
+
     /**
      * 出料开仓出料
      */

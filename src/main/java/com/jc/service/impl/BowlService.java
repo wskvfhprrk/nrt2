@@ -78,11 +78,9 @@ public class BowlService implements DeviceHandler {
         if (bowlSensor && !lowerLimit) {
             this.bowlDescent();
             // 等待传感器2变为高电平，最多等待30秒
-            int count = 0;
             while (bowlSensor) {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
-                    count++;
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
