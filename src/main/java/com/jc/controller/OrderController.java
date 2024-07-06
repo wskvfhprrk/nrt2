@@ -91,7 +91,6 @@ public class OrderController {
             if (!clientConfig.getDocuOnLine()) {
                 appendWithComma(missingDevicesMessage, "机器人");
             }
-
             statusMap.put("message", missingDevicesMessage.append("未连接").toString());
         }
 
