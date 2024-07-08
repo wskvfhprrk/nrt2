@@ -18,6 +18,9 @@ public class TurntableService {
     private final IODeviceService ioDeviceService;
     private final IpConfig ipConfig;
     private final StepperMotorService stepperMotorService;
+    //工位值——当为原点时为0，共6个工位
+    private int station;
+
 
     @Autowired
     public TurntableService(NettyServerHandler nettyServerHandler,
@@ -37,6 +40,7 @@ public class TurntableService {
     public String turntableReset() {
         // 获取传感器状态
         String ioStatus = ioDeviceService.getIoStatus();
+        //当io为初始化值，没有获取到值时
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
@@ -53,10 +57,12 @@ public class TurntableService {
                 log.error("没有发现传感器的值！");
             }
         }
-        if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH)) {
+        //如果已经在原点
+        if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("转盘已经在原点位置！");
             return "ok";
         }
+        //如果不在原点，转动
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             //发送转动转盘指令至到为高电平
             stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
@@ -66,6 +72,9 @@ public class TurntableService {
                 if (newIoStatus.equals(SignalLevel.HIGH.getValue())) {
                     stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                     flag = false;
+                    //工位为0
+                    station=0;
+                    log.info("设置工位值为0");
                 }
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
