@@ -62,8 +62,15 @@ public class TurntableService {
             log.info("转盘已经在原点位置！");
             return "ok";
         }
+        //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
+        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, 40);
         //如果不在原点，转动
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //发送转动转盘指令至到为高电平
             stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
             Boolean flag = true;
@@ -75,11 +82,6 @@ public class TurntableService {
                     //工位为0
                     station=0;
                     log.info("设置工位值为0");
-                }
-                try {
-                    Thread.sleep(Constants.SLEEP_TIME_MS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }
