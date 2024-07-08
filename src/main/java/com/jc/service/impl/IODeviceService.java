@@ -68,7 +68,7 @@ public class IODeviceService implements DeviceHandler {
         // 如果碗的极限传感器高电平，要停止碗步进电机
         if (split[2].equals(SignalLevel.HIGH.getValue()) || split[3].equals(SignalLevel.HIGH.getValue())) {
             log.info("到达限位点，停止碗升降的步进电机");
-            stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
+            stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
         }
     }
 

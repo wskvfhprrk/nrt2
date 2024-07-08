@@ -36,7 +36,7 @@ public class SeasoningMachineService {
             sendResetInstruction();
             Thread.sleep(100L);
             //不停查询
-            ejectionIsComplete();
+//            ejectionIsComplete();
         }catch (InterruptedException e){
             log.error(e.getMessage());
         }

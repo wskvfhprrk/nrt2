@@ -85,7 +85,7 @@ public class BowlService implements DeviceHandler {
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (!bowlSensor) {
-                        stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
+                        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -105,7 +105,7 @@ public class BowlService implements DeviceHandler {
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
-                        stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
+                        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -162,7 +162,7 @@ public class BowlService implements DeviceHandler {
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
-                        stepperMotorService.stop(Constants.BOWL_CONTROLLER_NO);
+                        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -174,11 +174,11 @@ public class BowlService implements DeviceHandler {
     }
 
     public String bowlRising() {
-        return stepperMotorService.startStepperMotor(Constants.BOWL_CONTROLLER_NO, false, 0);
+        return stepperMotorService.startStepperMotor(Constants.BOWL_STEPPER_MOTOR, false, 0);
     }
 
     public String bowlDescent() {
-        return stepperMotorService.startStepperMotor(Constants.BOWL_CONTROLLER_NO, true, 0);
+        return stepperMotorService.startStepperMotor(Constants.BOWL_STEPPER_MOTOR, true, 0);
     }
 
 }

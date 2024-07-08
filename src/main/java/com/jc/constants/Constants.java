@@ -12,15 +12,11 @@ public class Constants {
     /**
      * 最大步进电机编号
      */
-    public static final int MAX_MOTOR_NO = 4;
+    public static final int MAX_MOTOR_NO = 5;
     /**
      * 最大速度
      */
     public static final int MAX_SPEED = 500;
-    /**
-     * 碗控制器编号
-     */
-    public static final int BOWL_CONTROLLER_NO = 2;
     /**
      * 传感器无值状态为2
      */

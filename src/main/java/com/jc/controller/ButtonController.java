@@ -68,8 +68,9 @@ public class ButtonController {
                 // 执行机器人取粉丝的操作逻辑
                 break;
             case 8:
-                actionResult = "机器人出汤操作完成";
-                // 执行机器人出汤的操作逻辑
+                actionResult = "碗复位操作完成";
+                // 执行碗复位的操作逻辑
+                bowlService.bowlReset();
                 break;
             case 9:
                 actionResult = "出汤测试操作完成";
