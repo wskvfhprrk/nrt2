@@ -191,4 +191,9 @@ public class RelayDeviceService implements DeviceHandler {
         relayOpening(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE);
         return "ok";
     }
+    //蒸汽测试,打开10秒后关闭
+    public void steam() {
+        //继电器7打开10秒关闭
+        this.openClose(7,10);
+    }
 }

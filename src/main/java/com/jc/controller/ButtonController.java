@@ -53,12 +53,12 @@ public class ButtonController {
                 // 执行粉丝重置的操作逻辑
                 break;
             case 5:
-                actionResult = "出餐口向上";
+                actionResult = "出餐口复位完成";
                 // 执行自动升碗的操作逻辑
                 relayDeviceService.theFoodOutletIsFacingUpwards();
                 break;
             case 6:
-                actionResult = "出餐口向下";
+                actionResult = "出餐口出餐完成";
                 // 执行机器人取碗的操作逻辑
                 relayDeviceService.theFoodOutletIsFacingDownwards();
                 break;
@@ -68,25 +68,28 @@ public class ButtonController {
                 // 执行机器人取粉丝的操作逻辑
                 break;
             case 8:
+                actionResult = "待用操作完成";
+
+                break;
+            case 9:
+                actionResult = "转台复位操作完成";
+                // 执行出汤测试的操作逻辑
+                turntableService.turntableReset();
+                break;
+            case 10:
                 actionResult = "碗复位操作完成";
                 // 执行碗复位的操作逻辑
                 bowlService.bowlReset();
                 break;
-            case 9:
-                actionResult = "出汤测试操作完成";
-                // 执行出汤测试的操作逻辑
-                break;
-            case 10:
-                actionResult = "碗推杆复位操作完成";
-                // 执行碗推杆复位的操作逻辑
-                break;
             case 11:
-                actionResult = "切刀测试操作完成";
-                // 执行切刀测试的操作逻辑
+                actionResult = "蒸汽测试完成";
+                    // 蒸汽测试的操作逻辑
+                relayDeviceService.steam();
                 break;
             case 12:
-                actionResult = "调料测试操作完成";
-                // 执行调料测试的操作逻辑
+                actionResult = "'转台移动下一工位操作完成";
+                // '转台移动下一工位的操作逻辑
+                turntableService.moveToNext();
                 break;
             case 13:
                 actionResult = "称重测试操作完成";

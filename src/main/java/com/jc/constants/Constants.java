@@ -26,7 +26,10 @@ public class Constants {
      * 转盘复位传感器
      */
     public static final int ROTARY_TABLE_RESET_SENSOR = 0;
-
+    /**
+     * 转台行进速度
+     */
+    public static final int TURNTABLE_SPEED = 40;
     /**
      * 转盘工位传感器英文
      */

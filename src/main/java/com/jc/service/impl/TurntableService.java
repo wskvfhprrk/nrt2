@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TurntableService {
+
     private final NettyServerHandler nettyServerHandler;
     private final IODeviceService ioDeviceService;
     private final IpConfig ipConfig;
@@ -63,7 +64,7 @@ public class TurntableService {
             return "ok";
         }
         //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
-        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, 40);
+        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, Constants.TURNTABLE_SPEED);
         //如果不在原点，转动
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             try {
@@ -80,7 +81,7 @@ public class TurntableService {
                     stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                     flag = false;
                     //工位为0
-                    station=0;
+                    station = 0;
                     log.info("设置工位值为0");
                 }
             }
@@ -217,4 +218,36 @@ public class TurntableService {
         return "ok";
     }
 
+    public void moveToNext() {
+        //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
+        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, Constants.TURNTABLE_SPEED);
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //转动电机
+        stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
+        Boolean flag = true;
+        while (flag) {
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_STATION_SENSOR];
+            String oldIOStatus = newIoStatus;
+            //值变化
+            Boolean dataChanges = false;
+            if (newIoStatus.equals(oldIOStatus)) {
+                dataChanges = true;
+            }
+            if (dataChanges && newIoStatus.equals(SignalLevel.HIGH.getValue())) {
+                flag = false;
+                stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
+                station += 1;
+                log.info("工位数值：{}", station);
+            }
+        }
+    }
 }
