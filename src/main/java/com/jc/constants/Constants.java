@@ -74,13 +74,13 @@ public class Constants {
      */
     public static final int BEEF_MOTOR = 5;
     /**
-     * 牛杂电机
+     * 柜体排气扇
      */
-    public static final int CATTLE_MISCELLANEOUS_MOTOR = 6;
+    public static final int CABINET_EXHAUST_FAN = 6;
     /**
-     * 香菜电机
+     * 蒸汽
      */
-    public static final int CORIANDER_MOTOR = 7;
+    public static final int STEAM = 7;
     /**
      * 出牛肉汤电机
      */
@@ -106,13 +106,13 @@ public class Constants {
      */
     public static final int SHAKER = 13;
     /**
-     * 蒸汽
+     * 碗交流电机N极
      */
-    public static final int STEAM = 14;
+    public static final int BOWL_N = 31;
     /**
-     * 出汤
+     * 碗交流电机L极
      */
-    public static final int TO_DISPENSE_SOUP = 15;
+    public static final int BOWL_L = 32;
     /** 485设备 */
     /**
      * 转台步进电机控制器485地址

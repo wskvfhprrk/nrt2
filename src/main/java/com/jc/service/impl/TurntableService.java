@@ -228,6 +228,7 @@ public class TurntableService {
         }
         //转动电机
         stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
+        String oldIOStatus = null;
         Boolean flag = true;
         while (flag) {
             try {
@@ -236,12 +237,12 @@ public class TurntableService {
                 e.printStackTrace();
             }
             String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_STATION_SENSOR];
-            String oldIOStatus = newIoStatus;
             //值变化
             Boolean dataChanges = false;
             if (newIoStatus.equals(oldIOStatus)) {
                 dataChanges = true;
             }
+            oldIOStatus = newIoStatus;
             if (dataChanges && newIoStatus.equals(SignalLevel.HIGH.getValue())) {
                 flag = false;
                 stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);

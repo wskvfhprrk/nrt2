@@ -146,7 +146,7 @@ public class RelayDeviceService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS);
+        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS,15);
         return "ok";
     }
     /**
@@ -160,7 +160,7 @@ public class RelayDeviceService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS);
+        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS,15);
         return "ok";
     }
     /**
@@ -174,7 +174,7 @@ public class RelayDeviceService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.DISCHARGING_FROM_WAREHOUSE);
+        openClose(Constants.DISCHARGING_FROM_WAREHOUSE,15);
         return "ok";
     }
     /**
@@ -188,12 +188,28 @@ public class RelayDeviceService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE);
+        openClose(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE,15);
         return "ok";
     }
-    //蒸汽测试,打开10秒后关闭
+    //蒸汽测试,打开15秒后关闭
     public void steam() {
-        //继电器7打开10秒关闭
-        this.openClose(7,10);
+        //继电器7打开15秒关闭
+        this.openClose(Constants.STEAM,15);
+    }
+
+
+    /**
+     * 打开柜体排气风扇
+     */
+    public String openFan(){
+        relayOpening(Constants.CABINET_EXHAUST_FAN);
+        return "ok";
+    }
+    /**
+     * 关闭柜体排气风扇
+     */
+    public String closeFan(){
+        relayClosing(Constants.CABINET_EXHAUST_FAN);
+        return "ok";
     }
 }

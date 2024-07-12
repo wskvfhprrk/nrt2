@@ -79,7 +79,7 @@ public class RelayController {
     }
 
     /**
-     * 出料开仓出料
+     * 出餐口打开仓口出餐——完成后机器人才会抓取碗放到出餐面板上
      */
     @GetMapping("dischargingFromWarehouse")
     public void dischargingFromWarehouse() {
@@ -87,10 +87,24 @@ public class RelayController {
     }
 
     /**
-     * 出料关仓禁止出料
+     * 关仓餐口——在取餐口向下时关闭出餐口完全下到位才关仓门
      */
     @GetMapping("dischargingIsProhibitedAfterClosingTheWarehouse")
     public void dischargingIsProhibitedAfterClosingTheWarehouse() {
         relayDeviceService.dischargingIsProhibitedAfterClosingTheWarehouse();
+    }
+    /**
+     * 打开排气风扇
+     */
+    @GetMapping("openFan")
+    public void openFan(){
+        relayDeviceService.openFan();
+    }
+    /**
+     * 关闭排气风扇
+     */
+    @GetMapping("closeFan")
+    public void closeFan(){
+        relayDeviceService.closeFan();
     }
 }
