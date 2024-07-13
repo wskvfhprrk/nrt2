@@ -71,19 +71,19 @@ public class RelayController {
     }
 
     /**
-     * 出餐口向上
+     * 盖板关闭
      */
-    @GetMapping("theFoodOutletIsFacingUpwards")
-    public void theFoodOutletIsFacingUpwards() {
-        relayDeviceService.theFoodOutletIsFacingUpwards();
+    @GetMapping("coverClosed")
+    public void coverClosed() {
+        relayDeviceService.coverClosed();
     }
 
     /**
-     * 出餐口打开仓口出餐——完成后机器人才会抓取碗放到出餐面板上
+     * 盖板打开
      */
-    @GetMapping("dischargingFromWarehouse")
-    public void dischargingFromWarehouse() {
-        relayDeviceService.dischargingFromWarehouse();
+    @GetMapping("coverOpen")
+    public void coverOpen() {
+        relayDeviceService.coverOpen();
     }
 
     /**

@@ -58,21 +58,6 @@ public class IODeviceService implements DeviceHandler {
             log.info("IO设备——普通消息: {}", message);
         }
     }
-
-    /**
-     * 处理传感器指令
-     *
-     * @param sb 传感器状态信息
-     */
-    private void sensorInstructionProcessing(StringBuffer sb) {
-        String[] split = sb.toString().split(",");
-        // 如果碗的极限传感器高电平，要停止碗步进电机
-        if (split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()) || split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            log.info("到达限位点，停止碗升降的步进电机");
-            relayDeviceService.stopBowl();
-        }
-    }
-
     /**
      * 解析引脚的高低电平
      *
@@ -91,7 +76,7 @@ public class IODeviceService implements DeviceHandler {
         char firstChar = hexStr.charAt(0);
         char secondChar = hexStr.charAt(1);
 
-        // 根据第二位字符判断 startIo 是否为高电平
+        // 根据第二位字符判断 startIo 是否为高电平——智嵌IO输入自定义协议
         sb.append((secondChar == '1' || secondChar == '5') ? SignalLevel.HIGH.getValue() : SignalLevel.LOW.getValue()).append(",");
         // 根据第二位字符判断 startIo + 1 是否为高电平
         sb.append((secondChar == '4' || secondChar == '5') ? SignalLevel.HIGH.getValue() : SignalLevel.LOW.getValue()).append(",");
@@ -102,4 +87,28 @@ public class IODeviceService implements DeviceHandler {
 
         return sb;
     }
+
+    /**
+     * 处理传感器指令
+     *
+     * @param sb 传感器状态信息
+     */
+    private void sensorInstructionProcessing(StringBuffer sb) {
+        String[] split = sb.toString().split(",");
+        // 如果碗的极限传感器高电平，要停止碗步进电机
+        if (split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()) || split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            log.info("到达限位点，停止碗升降的步进电机");
+            relayDeviceService.stopBowl();
+        }
+        //如果出餐到位要盖板关闭
+        if(split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue())){
+            relayDeviceService.coverClosed();
+        }
+        //如果出餐不到位要盖板打开
+        if(split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.LOW.getValue())){
+            relayDeviceService.coverOpen();
+        }
+    }
+
+
 }
