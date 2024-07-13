@@ -19,6 +19,8 @@ public class BowlService implements DeviceHandler {
     private final StepperMotorService stepperMotorService;
     private final IODeviceService ioDeviceService;
     @Autowired
+    private RelayDeviceService relayDeviceService;
+    @Autowired
     private IpConfig ipConfig;
 
     @Autowired
@@ -85,7 +87,7 @@ public class BowlService implements DeviceHandler {
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (!bowlSensor) {
-                        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
+                        relayDeviceService.stopBowl();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -105,7 +107,7 @@ public class BowlService implements DeviceHandler {
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
-                        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
+                        relayDeviceService.stopBowl();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -162,7 +164,7 @@ public class BowlService implements DeviceHandler {
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
-                        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
+                        relayDeviceService.stopBowl();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -174,11 +176,19 @@ public class BowlService implements DeviceHandler {
     }
 
     public String bowlRising() {
-        return stepperMotorService.startStepperMotor(Constants.BOWL_STEPPER_MOTOR, false, 0);
+        //先开关管方向
+        relayDeviceService.bowlRise();
+        //再打开开关
+        relayDeviceService.openBowl();
+        return "ok";
     }
 
     public String bowlDescent() {
-        return stepperMotorService.startStepperMotor(Constants.BOWL_STEPPER_MOTOR, true, 0);
+        //先开关管方向
+        relayDeviceService.bowlDrop();
+        //再打开开关
+        relayDeviceService.openBowl();
+        return "ok";
     }
 
 }

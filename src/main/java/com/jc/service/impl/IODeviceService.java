@@ -15,9 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class IODeviceService implements DeviceHandler {
-    @Lazy
+
     @Autowired
-    private StepperMotorService stepperMotorService;
+    @Lazy
+    private RelayDeviceService relayDeviceService;
 
     private String ioStatus;
 
@@ -46,7 +47,7 @@ public class IODeviceService implements DeviceHandler {
             for (int i = 1; i <= 32; i++) {
                 if (i % 4 == 0) {
                     // 解析高低电平
-                    heightOrLow(i - 3, i, split[3 + i / 4], sb);
+                    heightOrLow( split[3 + i / 4], sb);
                 }
             }
             log.info("传感器的高低电平：{}", sb);
@@ -66,22 +67,20 @@ public class IODeviceService implements DeviceHandler {
     private void sensorInstructionProcessing(StringBuffer sb) {
         String[] split = sb.toString().split(",");
         // 如果碗的极限传感器高电平，要停止碗步进电机
-        if (split[2].equals(SignalLevel.HIGH.getValue()) || split[3].equals(SignalLevel.HIGH.getValue())) {
+        if (split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()) || split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("到达限位点，停止碗升降的步进电机");
-            stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
+            relayDeviceService.stopBowl();
         }
     }
 
     /**
      * 解析引脚的高低电平
      *
-     * @param startIo 启始引脚
-     * @param endIo   结束引脚
      * @param hexStr  16进制字符串
      * @param sb      保存解析结果的StringBuffer
      * @return 解析后的StringBuffer
      */
-    private StringBuffer heightOrLow(int startIo, int endIo, String hexStr, StringBuffer sb) {
+    private StringBuffer heightOrLow(String hexStr, StringBuffer sb) {
         // 检查 hexStr 是否为空或长度是否小于2
         if (hexStr == null || hexStr.length() < 2) {
             log.error("无效的 hexStr 输入");

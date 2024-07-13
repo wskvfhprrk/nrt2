@@ -212,4 +212,29 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.CABINET_EXHAUST_FAN);
         return "ok";
     }
+
+    /**
+     * 停止碗开关
+     */
+    public void stopBowl() {
+        relayClosing(Constants.BOWL_L);
+    }
+    /**
+     * 打碗开关
+     */
+    public void openBowl() {
+        relayOpening(Constants.BOWL_L);
+    }
+    /**
+     * 碗上升
+     */
+    public void bowlRise(){
+        relayOpening(Constants.BOWL_N);
+    }
+    /**
+     * 碗上升
+     */
+    public void bowlDrop(){
+        relayClosing(Constants.BOWL_N);
+    }
 }
