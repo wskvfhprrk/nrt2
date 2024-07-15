@@ -48,7 +48,7 @@ public class FicationProcessing {
             send485OrderService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getReceive485Signal())) {
             receive485SignalService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getIo())) {
+        } else if (clientIp.equals(ipConfig.getDucuIp())) {
             docuService.handle(message, flag);
         } else {
             // 其他情况视为未知设备IP地址，记录错误日志

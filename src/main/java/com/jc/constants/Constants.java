@@ -8,7 +8,7 @@ public class Constants {
     /**
      * 睡眠时间（毫秒）
      */
-    public static final long SLEEP_TIME_MS = 100L;
+    public static final long SLEEP_TIME_MS = 50L;
     /**
      * 最大步进电机编号
      */
@@ -29,7 +29,7 @@ public class Constants {
     /**
      * 转台行进速度
      */
-    public static final int TURNTABLE_SPEED = 40;
+    public static final int TURNTABLE_SPEED = 30;
     /**
      * 转盘工位传感器英文
      */

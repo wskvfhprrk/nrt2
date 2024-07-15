@@ -76,6 +76,10 @@ public class BowlService implements DeviceHandler {
         boolean lowerLimit = split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
         boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
 
+        //如果到达最高位，碗传感器又最高
+        if(upperLimit && bowlSensor){
+
+        }
         // 如果2为高电平4为低电平，直接降碗
         if (bowlSensor && !lowerLimit) {
             this.bowlDescent();
