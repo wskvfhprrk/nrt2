@@ -32,11 +32,12 @@ public class BowlService implements DeviceHandler {
         this.stepperMotorService = stepperMotorService;
         this.ioDeviceService = ioDeviceService;
     }
+
     /**
      * 处理消息
      *
      * @param message 消息内容
-     * @param isHex 是否为16进制消息
+     * @param isHex   是否为16进制消息
      */
     @Override
     public void handle(String message, boolean isHex) {
@@ -47,6 +48,7 @@ public class BowlService implements DeviceHandler {
             // 在这里添加处理普通字符串消息的逻辑
         }
     }
+
     /**
      * 重置碗
      */
@@ -77,8 +79,9 @@ public class BowlService implements DeviceHandler {
         boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
 
         //如果到达最高位，碗传感器又最高
-        if(upperLimit && bowlSensor){
-
+        if (!bowlSensor && upperLimit) {
+            log.info("没有碗了！");
+            return;
         }
         // 如果2为高电平4为低电平，直接降碗
         if (bowlSensor && !lowerLimit) {
@@ -121,7 +124,7 @@ public class BowlService implements DeviceHandler {
             return;
         }
         // 如果传感器2为低电平，说明碗还未升到位
-        log.error("碗未升到位，请检查传感器2状态！");
+        log.error("碗未升到位，请检查传感器！");
     }
 
     /**
@@ -152,7 +155,7 @@ public class BowlService implements DeviceHandler {
         boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
         boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
         //如果传感器无值到达了上限——没有碗了
-        if (!bowlSensor && upperLimit){
+        if (!bowlSensor && upperLimit) {
             log.error("没有碗了！");
             return;
         }
