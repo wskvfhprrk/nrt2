@@ -147,13 +147,27 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS,15);
+        //出完后盖板盖上
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.coverClosed();
         return "ok";
     }
     /**
      * 出餐口向上
      * @return
      */
-    public String coverClosed(){
+    public String theFoodOutletIsFacingUpwards(){
+        //先打开盖板
+        this.coverOpen();
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS);
         try {
             Thread.sleep(50L);
@@ -164,7 +178,7 @@ public class RelayDeviceService implements DeviceHandler {
         return "ok";
     }
     /**
-     * 餐口盖板打开
+     * 出料开仓出料
      * @return
      */
     public String coverOpen(){
@@ -178,10 +192,10 @@ public class RelayDeviceService implements DeviceHandler {
         return "ok";
     }
     /**
-     * 餐口盖板关闭
+     * 出料关仓禁止出料
      * @return
      */
-    public String dischargingIsProhibitedAfterClosingTheWarehouse(){
+    public String coverClosed(){
         relayClosing(Constants.DISCHARGING_FROM_WAREHOUSE);
         try {
             Thread.sleep(50L);
@@ -237,5 +251,4 @@ public class RelayDeviceService implements DeviceHandler {
     public void bowlDrop(){
         relayClosing(Constants.BOWL_N);
     }
-
 }

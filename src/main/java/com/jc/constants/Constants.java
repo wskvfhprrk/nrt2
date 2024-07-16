@@ -50,7 +50,10 @@ public class Constants {
      * 牛汤碗传感器
      */
     public static final int COW_SOUP_BOWL_SENSOR = 5;
-
+    /**
+     * 出餐口传感器
+     */
+    public static final int FOOD_OUTLET_SENSOR = 7;
 
     /** 继电器 */
     /**

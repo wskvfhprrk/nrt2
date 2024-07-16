@@ -55,12 +55,12 @@ public class ButtonController {
             case 5:
                 actionResult = "出餐口复位完成";
                 // 执行自动升碗的操作逻辑
-                relayDeviceService.coverClosed();
+                relayDeviceService.theFoodOutletIsFacingUpwards();
                 break;
             case 6:
                 actionResult = "出餐口出餐完成";
                 // 执行机器人取碗的操作逻辑
-                relayDeviceService.coverOpen();
+                relayDeviceService.theFoodOutletIsFacingDownwards();
                 break;
             case 7:
                 seasoningMachineService.dischargeAccordingToFormula(500);
@@ -130,7 +130,7 @@ public class ButtonController {
         //碗重置
         bowlService.bowlReset();
         //盖板打开
-        relayDeviceService.coverOpen();
+//        relayDeviceService.coverOpen();
         return "机器复位成功！";
     }
 }

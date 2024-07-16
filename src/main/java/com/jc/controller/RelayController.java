@@ -63,11 +63,18 @@ public class RelayController {
     }
 
     /**
-     * 出餐口向下
+     * 出餐口向下出虎
      */
     @GetMapping("theFoodOutletIsFacingDownwards")
     public void theFoodOutletIsFacingDownwards() {
         relayDeviceService.theFoodOutletIsFacingDownwards();
+    }
+    /**
+     * 出餐口向上复位
+     */
+    @GetMapping("theFoodOutletIsFacingUpwards")
+    public void theFoodOutletIsFacingUpwards() {
+        relayDeviceService.theFoodOutletIsFacingUpwards();
     }
 
     /**
@@ -91,7 +98,7 @@ public class RelayController {
      */
     @GetMapping("dischargingIsProhibitedAfterClosingTheWarehouse")
     public void dischargingIsProhibitedAfterClosingTheWarehouse() {
-        relayDeviceService.dischargingIsProhibitedAfterClosingTheWarehouse();
+//        relayDeviceService.dischargingIsProhibitedAfterClosingTheWarehouse();
     }
     /**
      * 打开排气风扇

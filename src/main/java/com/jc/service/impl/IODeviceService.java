@@ -100,14 +100,6 @@ public class IODeviceService implements DeviceHandler {
             log.info("到达限位点，停止碗升降的步进电机");
             relayDeviceService.stopBowl();
         }
-        //如果出餐到位要盖板关闭
-        if(split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue())){
-            relayDeviceService.coverClosed();
-        }
-        //如果出餐不到位要盖板打开
-        if(split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.LOW.getValue())){
-            relayDeviceService.coverOpen();
-        }
     }
 
 
