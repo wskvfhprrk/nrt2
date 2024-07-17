@@ -109,6 +109,15 @@ public class Constants {
      */
     public static final int SHAKER = 13;
     /**
+     * 抽汤泵
+     */
+    public static final int SOUP_PUMP = 17;
+    /**
+     * 抽水泵
+     */
+    public static final int WATER_PUMP = 18;
+
+    /**
      * 碗交流电机N极
      */
     public static final int BOWL_N = 31;

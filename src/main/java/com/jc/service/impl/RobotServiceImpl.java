@@ -1,15 +1,30 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
+import com.jc.constants.Constants;
+import com.jc.enums.SignalLevel;
 import com.jc.netty.client.NettyClientConfig;
+import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.RobotService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class RobotServiceImpl implements RobotService {
 
     @Autowired
     NettyClientConfig nettyClientConfig;
+    @Autowired
+    private IODeviceService ioDeviceService;
+    @Autowired
+    private NettyServerHandler nettyServerHandler;
+    @Autowired
+    private IpConfig ipConfig;
+    @Autowired
+    private BowlService bowlService;
 
     // TODO: 2024/6/22 先判断机器人是否在原点后再执行 
     @Override
@@ -23,6 +38,30 @@ public class RobotServiceImpl implements RobotService {
 
     @Override
     public void takeBowl() {
+        //如果碗传感器为低电平，则重新发出碗重置命令
+        String ioStatus = ioDeviceService.getIoStatus();
+        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
+            log.error("无法获取传感器的值！");
+            // 先重置传感器
+            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
+            try {
+                // 等待指定时间，确保传感器完成重置
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // 重新获取传感器状态
+            ioStatus = ioDeviceService.getIoStatus();
+            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
+                log.error("没有发现传感器的值！");
+            }
+        }
+        // 解析传感器状态字符串
+        String[] split = ioStatus.split(",");
+        boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
+        if(!bowlSensor){
+            bowlService.bowlReset();
+        }
         //向机器人发送取碗指令
         try {
             nettyClientConfig.connectAndSendData("run(takeABowl.jspf)");
@@ -34,7 +73,7 @@ public class RobotServiceImpl implements RobotService {
     @Override
     public void putBowl() {
         try {
-            nettyClientConfig.connectAndSendData("run(putBowl.jspf)");
+            nettyClientConfig.connectAndSendData("run(putABowl.jspf)");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

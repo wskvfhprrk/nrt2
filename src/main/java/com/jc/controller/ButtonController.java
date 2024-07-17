@@ -68,8 +68,8 @@ public class ButtonController {
                 // 执行机器人取粉丝的操作逻辑
                 break;
             case 8:
-                actionResult = "待用操作完成";
-
+                actionResult = "抽汤泵测试（10秒）";
+                relayDeviceService.soupPump();
                 break;
             case 9:
                 actionResult = "转台复位操作完成";
@@ -83,7 +83,7 @@ public class ButtonController {
                 break;
             case 11:
                 actionResult = "蒸汽测试完成";
-                    // 蒸汽测试的操作逻辑
+                // 蒸汽测试的操作逻辑
                 relayDeviceService.steam();
                 break;
             case 12:

@@ -205,10 +205,10 @@ public class RelayDeviceService implements DeviceHandler {
         openClose(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE,15);
         return "ok";
     }
-    //蒸汽测试,打开15秒后关闭
+    //蒸汽测试,打开5秒后关闭
     public void steam() {
         //继电器7打开15秒关闭
-        this.openClose(Constants.STEAM,15);
+        this.openClose(Constants.STEAM,5);
     }
 
 
@@ -250,5 +250,11 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void bowlDrop(){
         relayClosing(Constants.BOWL_N);
+    }
+    /**
+     * 打开抽汤泵10秒钟时间
+     */
+    public void soupPump(){
+        openClose(Constants.SOUP_PUMP,10);
     }
 }
