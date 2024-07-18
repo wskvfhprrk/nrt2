@@ -77,27 +77,29 @@ public class ButtonController {
                 turntableService.turntableReset();
                 break;
             case 10:
-                actionResult = "碗复位操作完成";
-                // 执行碗复位的操作逻辑
-                bowlService.bowlReset();
-                break;
-            case 11:
-                actionResult = "蒸汽测试完成";
-                // 蒸汽测试的操作逻辑
-                relayDeviceService.steam();
-                break;
-            case 12:
                 actionResult = "'转台移动下一工位操作完成";
                 // '转台移动下一工位的操作逻辑
                 turntableService.moveToNext();
                 break;
+            case 11:
+                actionResult = "碗复位操作完成";
+                // 执行碗复位的操作逻辑
+                bowlService.bowlReset();
+                break;
+            case 12:
+                actionResult = "蒸汽测试完成";
+                // 蒸汽测试的操作逻辑
+                relayDeviceService.steam();
+                break;
             case 13:
-                actionResult = "称重测试操作完成";
-                // 执行称重测试的操作逻辑
+                actionResult = "蒸汽打开";
+                // 蒸汽关闭的操作逻辑
+                relayDeviceService.steamOpen();
                 break;
             case 14:
-                actionResult = "蒸汽测试操作完成";
-                // 执行蒸汽测试的操作逻辑
+                actionResult = "蒸汽关闭";
+                // 蒸汽关闭的操作逻辑
+                relayDeviceService.steamClose();
                 break;
             case 15:
                 actionResult = "出料测试操作完成";

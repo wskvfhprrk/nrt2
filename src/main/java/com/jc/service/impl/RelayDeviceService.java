@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class RelayDeviceService implements DeviceHandler {
-
     @Autowired
     private NettyServerHandler nettyServerHandler;
 
@@ -123,6 +122,7 @@ public class RelayDeviceService implements DeviceHandler {
      * 关闭所有继电器
      */
     public void closeAll() {
+        log.info("关闭所有继电器");
         // 发送关闭所有继电器的指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
     }
@@ -131,6 +131,7 @@ public class RelayDeviceService implements DeviceHandler {
      * 打开所有继电器
      */
     public void openAll() {
+        log.info("打开所有继电器");
         // 发送打开所有继电器的指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44", true);
     }
@@ -140,6 +141,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public String theFoodOutletIsFacingDownwards(){
+        log.info("出餐口向下");
         relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS);
         try {
             Thread.sleep(50L);
@@ -161,6 +163,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public String theFoodOutletIsFacingUpwards(){
+        log.info("出餐口向上");
         //先打开盖板
         this.coverOpen();
         try {
@@ -182,6 +185,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public String coverOpen(){
+        log.info("出料开仓出料");
         relayClosing(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE);
         try {
             Thread.sleep(50L);
@@ -196,6 +200,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public String coverClosed(){
+        log.info("出料关仓禁止出料");
         relayClosing(Constants.DISCHARGING_FROM_WAREHOUSE);
         try {
             Thread.sleep(50L);
@@ -205,8 +210,12 @@ public class RelayDeviceService implements DeviceHandler {
         openClose(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE,15);
         return "ok";
     }
-    //蒸汽测试,打开5秒后关闭
+
+    /**
+     * 蒸汽测试,打开5秒后关闭
+     */
     public void steam() {
+        log.info("蒸汽测试,打开5秒后关闭");
         //继电器7打开15秒关闭
         this.openClose(Constants.STEAM,5);
     }
@@ -216,6 +225,7 @@ public class RelayDeviceService implements DeviceHandler {
      * 打开柜体排气风扇
      */
     public String openFan(){
+        log.info("打开柜体排气风扇");
         relayOpening(Constants.CABINET_EXHAUST_FAN);
         return "ok";
     }
@@ -223,6 +233,7 @@ public class RelayDeviceService implements DeviceHandler {
      * 关闭柜体排气风扇
      */
     public String closeFan(){
+        log.info("关闭柜体排气风扇");
         relayClosing(Constants.CABINET_EXHAUST_FAN);
         return "ok";
     }
@@ -231,30 +242,51 @@ public class RelayDeviceService implements DeviceHandler {
      * 停止碗开关
      */
     public void stopBowl() {
+        log.info("停止碗开关");
         relayClosing(Constants.BOWL_L);
     }
     /**
      * 打碗开关
      */
     public void openBowl() {
+        log.info("打碗开关");
         relayOpening(Constants.BOWL_L);
     }
     /**
      * 碗上升
      */
     public void bowlRise(){
+        log.info("碗上升");
         relayOpening(Constants.BOWL_N);
     }
     /**
-     * 碗上升
+     * 碗下降
      */
     public void bowlDrop(){
+        log.info("碗下降");
         relayClosing(Constants.BOWL_N);
     }
     /**
      * 打开抽汤泵10秒钟时间
      */
     public void soupPump(){
+        log.info("打开抽汤泵10秒钟时间");
         openClose(Constants.SOUP_PUMP,10);
+    }
+
+    /**
+     * 蒸汽打开
+     */
+    public void steamOpen() {
+        log.info("蒸汽打开");
+        relayOpening(Constants.STEAM);
+    }
+
+    /**
+     * 蒸汽关闭
+     */
+    public void steamClose() {
+        log.info("蒸汽关闭");
+        relayClosing(Constants.STEAM);
     }
 }
