@@ -1,10 +1,14 @@
 package com.jc.service.impl;
 
+import com.jc.config.IpConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
+import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +25,38 @@ public class IODeviceService implements DeviceHandler {
     private RelayDeviceService relayDeviceService;
 
     private String ioStatus;
+    @Autowired
+    private NettyServerHandler nettyServerHandler;
+    @Autowired
+    private IpConfig ipConfig;
+
 
     public IODeviceService() {
         this.ioStatus = Constants.NOT_INITIALIZED;
     }
 
     public String getIoStatus() {
+        return ioStatus;
+    }
+
+    public String getStatus(){
+        String ioStatus = this.ioStatus;
+        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
+            log.error("无法获取传感器的值！");
+            // 先重置传感器
+            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
+            try {
+                // 等待指定时间，确保传感器完成重置
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // 重新获取传感器状态
+            ioStatus = this.ioStatus;
+            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
+                log.error("没有发现传感器的值！");
+            }
+        }
         return ioStatus;
     }
 

@@ -16,20 +16,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BowlService implements DeviceHandler {
 
-    private final StepperMotorService stepperMotorService;
     private final IODeviceService ioDeviceService;
     @Autowired
     private RelayDeviceService relayDeviceService;
-    @Autowired
-    private IpConfig ipConfig;
 
     @Autowired
-    private NettyServerHandler nettyServerHandler;
-
-    @Autowired
-    public BowlService(StepperMotorService stepperMotorService,
-                       IODeviceService ioDeviceService) {
-        this.stepperMotorService = stepperMotorService;
+    public BowlService(IODeviceService ioDeviceService) {
         this.ioDeviceService = ioDeviceService;
     }
 
@@ -54,23 +46,7 @@ public class BowlService implements DeviceHandler {
      */
     public void bowlReset() {
         // 获取传感器状态
-        String ioStatus = ioDeviceService.getIoStatus();
-        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
-            log.error("无法获取传感器的值！");
-            // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
-            try {
-                // 等待指定时间，确保传感器完成重置
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // 重新获取传感器状态
-            ioStatus = ioDeviceService.getIoStatus();
-            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
-                log.error("没有发现传感器的值！");
-            }
-        }
+        String ioStatus = ioDeviceService.getStatus();
 
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
@@ -132,23 +108,7 @@ public class BowlService implements DeviceHandler {
      */
     public void continuousBowlCheck() {
         // 获取传感器状态
-        String ioStatus = ioDeviceService.getIoStatus();
-        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
-            log.error("无法获取传感器的值！");
-            // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
-            try {
-                // 等待指定时间，确保传感器完成重置
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // 重新获取传感器状态
-            ioStatus = ioDeviceService.getIoStatus();
-            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
-                log.error("没有获取到传感器的值！");
-            }
-        }
+        String ioStatus = ioDeviceService.getStatus();
 
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");

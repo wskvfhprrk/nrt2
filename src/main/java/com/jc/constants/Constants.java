@@ -54,6 +54,10 @@ public class Constants {
      * 出餐口传感器
      */
     public static final int FOOD_OUTLET_SENSOR = 7;
+    /**
+     * 蒸器发生器温度定值传感器
+     */
+    public static final int SOUP_AND_STEAM = 8;
 
     /** 继电器 */
     /**
@@ -142,4 +146,5 @@ public class Constants {
      * 粉丝步进电机控制器485地址
      */
     public static final int FAN_STEPPER_MOTOR = 4;
+
 }
