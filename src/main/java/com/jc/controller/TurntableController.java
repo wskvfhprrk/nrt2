@@ -18,10 +18,6 @@ public class TurntableController {
         return turntableService.turntableReset();
     }
 
-    @GetMapping("feeding")
-    public String feeding() {
-        return turntableService.feeding();
-    }
 
     @GetMapping("moveNumber")
     public String moveNumber(int number){

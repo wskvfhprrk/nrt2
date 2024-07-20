@@ -146,5 +146,8 @@ public class Constants {
      * 粉丝步进电机控制器485地址
      */
     public static final int FAN_STEPPER_MOTOR = 4;
-
+    /**
+     * 转台工位总数
+     */
+    public static final int WORKSTATION_NUMBER = 6;
 }

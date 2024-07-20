@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
@@ -29,6 +30,11 @@ public class IODeviceService implements DeviceHandler {
     private NettyServerHandler nettyServerHandler;
     @Autowired
     private IpConfig ipConfig;
+    //工位值——当为原点时为0，共6个工位
+    @Autowired
+    private PubConfig pubConfig;
+    //当前转台的工位状态
+    private String turntableStatus;
 
 
     public IODeviceService() {
@@ -70,6 +76,7 @@ public class IODeviceService implements DeviceHandler {
 
     /**
      * 查询当前io所有状态值——如果为初始值主动查询
+     *
      * @return
      */
     public String getStatus() {
@@ -92,7 +99,6 @@ public class IODeviceService implements DeviceHandler {
         }
         return ioStatus;
     }
-
 
 
     /**
@@ -137,6 +143,40 @@ public class IODeviceService implements DeviceHandler {
             log.info("到达限位点，停止碗升降的步进电机");
             relayDeviceService.stopBowl();
         }
+        calculateWorkstationValue(split);
+
+    }
+
+    /**
+     * 计算工位的值
+     *
+     * @param split
+     */
+    private void calculateWorkstationValue(String[] split) {
+        // 如果转台复位传感器信号为高电平
+        if (split[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            // 将转台的工位数设为0
+            pubConfig.setTurntableNumber(0);
+            pubConfig.setTurntableReset(true);
+        }
+
+        // 如果转台状态为空（首次调用时可能为空）
+        if (turntableStatus == null) {
+            // 将转台状态设置为当前传感器信号值
+            turntableStatus = split[Constants.ROTARY_TABLE_STATION_SENSOR];
+            // 结束方法，不进行后续操作
+            return;
+        }
+
+        log.info("turntableStatus:{}", turntableStatus);
+        // 如果转台状态改变且当前传感器信号为高电平
+        if (turntableStatus.equals(SignalLevel.LOW.getValue()) && split[Constants.ROTARY_TABLE_STATION_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            // 将转台的工位数加1
+            pubConfig.setTurntableNumber(pubConfig.getTurntableNumber() + 1);
+        }
+        turntableStatus = split[Constants.ROTARY_TABLE_STATION_SENSOR];
+        // 通过日志记录当前的转台工位数
+        log.info("TurntableNumber:{}", pubConfig.getTurntableNumber());
     }
 
 
