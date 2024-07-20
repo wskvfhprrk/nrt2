@@ -22,4 +22,10 @@ public class TurntableController {
     public String feeding() {
         return turntableService.feeding();
     }
+
+    @GetMapping("moveNumber")
+    public String moveNumber(int number){
+        turntableService.moveNumber(number);
+        return "ok";
+    }
 }

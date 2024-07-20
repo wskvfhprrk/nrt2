@@ -81,7 +81,7 @@ public class StepperMotorService {
      */
     private void sendPulseCommand(int motorNumber, int numberOfPulses) {
         String command = buildPulseCommand(motorNumber, numberOfPulses);
-        log.info("脉冲指令：{}", command);
+//        log.info("脉冲指令：{}", command);
         send485OrderService.sendOrder(command);
         try {
             Thread.sleep(50);

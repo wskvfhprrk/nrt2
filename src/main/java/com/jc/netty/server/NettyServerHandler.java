@@ -11,6 +11,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -31,6 +32,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     // 维护客户端IP与通道的映射关系
     private static final Map<String, Channel> clientMap = new ConcurrentHashMap<>();
     @Autowired
+    @Lazy
     private FicationProcessing ficationProcessing;
     @Autowired
     private ClientConfig clientConfig;
@@ -124,11 +126,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             // 检查是否为16进制字符串
             if (hexStringWithSpaces) {
                 String hexString = HexConvert.BinaryToHexString(bytes);
-                log.info("clientIp：{}发送的HEX字符:{}", clientIp, hexString);
+//                log.info("clientIp：{}发送的HEX字符:{}", clientIp, hexString);
                 ficationProcessing.classificationProcessing(clientIp, true, hexString);
             } else {
                 String str = new String(bytes, StandardCharsets.UTF_8);
-                log.info("clientIp：{}发送的普通字符串：{}", clientIp, str);
+//                log.info("clientIp：{}发送的普通字符串：{}", clientIp, str);
                 ficationProcessing.classificationProcessing(clientIp, false, str);
             }
             releaseBuffer(byteBuf);
@@ -188,7 +190,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             String address = entry.getKey();
             if (address.equals(clientIp)) {
                 Channel channel = entry.getValue();
-                log.info("服务器发送指令：{}", message);
+//                log.info("服务器发送指令：{}", message);
                 if (hex) {
                     ByteBuf buff = Unpooled.buffer();
                     buff.writeBytes(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));

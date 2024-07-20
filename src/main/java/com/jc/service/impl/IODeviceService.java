@@ -39,7 +39,40 @@ public class IODeviceService implements DeviceHandler {
         return ioStatus;
     }
 
-    public String getStatus(){
+    /**
+     * 处理消息
+     *
+     * @param message 消息内容
+     * @param isHex   是否为16进制消息
+     */
+    @Override
+    public void handle(String message, boolean isHex) {
+        if (isHex) {
+            log.info("IO设备——HEX消息: {}", message);
+            // 查中间8位，从第6位开始查询
+            String[] split = message.split(" ");
+            // 将字符串分割为8个部分，每个部分4个字符
+            StringBuffer sb = new StringBuffer();
+            for (int i = 1; i <= 32; i++) {
+                if (i % 4 == 0) {
+                    // 解析高低电平
+                    heightOrLow(split[3 + i / 4], sb);
+                }
+            }
+            log.info("传感器的高低电平：{}", sb);
+            // ioStatus赋值，以便其它类看到
+            this.ioStatus = sb.toString();
+            sensorInstructionProcessing(sb);
+        } else {
+            log.info("IO设备——普通消息: {}", message);
+        }
+    }
+
+    /**
+     * 查询当前io所有状态值——如果为初始值主动查询
+     * @return
+     */
+    public String getStatus() {
         String ioStatus = this.ioStatus;
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
@@ -60,39 +93,13 @@ public class IODeviceService implements DeviceHandler {
         return ioStatus;
     }
 
-    /**
-     * 处理消息
-     *
-     * @param message 消息内容
-     * @param isHex   是否为16进制消息
-     */
-    @Override
-    public void handle(String message, boolean isHex) {
-        if (isHex) {
-            log.info("IO设备——HEX消息: {}", message);
-            // 查中间8位，从第6位开始查询
-            String[] split = message.split(" ");
-            // 将字符串分割为8个部分，每个部分4个字符
-            StringBuffer sb = new StringBuffer();
-            for (int i = 1; i <= 32; i++) {
-                if (i % 4 == 0) {
-                    // 解析高低电平
-                    heightOrLow( split[3 + i / 4], sb);
-                }
-            }
-            log.info("传感器的高低电平：{}", sb);
-            // ioStatus赋值，以便其它类看到
-            this.ioStatus = sb.toString();
-            sensorInstructionProcessing(sb);
-        } else {
-            log.info("IO设备——普通消息: {}", message);
-        }
-    }
+
+
     /**
      * 解析引脚的高低电平
      *
-     * @param hexStr  16进制字符串
-     * @param sb      保存解析结果的StringBuffer
+     * @param hexStr 16进制字符串
+     * @param sb     保存解析结果的StringBuffer
      * @return 解析后的StringBuffer
      */
     private StringBuffer heightOrLow(String hexStr, StringBuffer sb) {
