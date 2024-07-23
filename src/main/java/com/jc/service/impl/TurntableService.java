@@ -15,23 +15,22 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TurntableService {
-
     private final NettyServerHandler nettyServerHandler;
     private final IODeviceService ioDeviceService;
     private final IpConfig ipConfig;
     private final StepperMotorService stepperMotorService;
-    @Autowired
-    private PubConfig pubConfig;
+    private final PubConfig pubConfig;
 
 
     @Autowired
     public TurntableService(NettyServerHandler nettyServerHandler,
                             IODeviceService ioDeviceService,
-                            StepperMotorService stepperMotorService, IpConfig ipConfig) {
+                            StepperMotorService stepperMotorService, IpConfig ipConfig, PubConfig pubConfig) {
         this.nettyServerHandler = nettyServerHandler;
         this.ioDeviceService = ioDeviceService;
         this.stepperMotorService = stepperMotorService;
         this.ipConfig = ipConfig;
+        this.pubConfig = pubConfig;
     }
 
     /**

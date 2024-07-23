@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
@@ -17,12 +18,13 @@ import org.springframework.stereotype.Service;
 public class BowlService implements DeviceHandler {
 
     private final IODeviceService ioDeviceService;
-    @Autowired
-    private RelayDeviceService relayDeviceService;
+    private final RelayDeviceService relayDeviceService;
+    private final PubConfig pubConfig;
 
-    @Autowired
-    public BowlService(IODeviceService ioDeviceService) {
+    public BowlService(IODeviceService ioDeviceService, RelayDeviceService relayDeviceService, PubConfig pubConfig) {
         this.ioDeviceService = ioDeviceService;
+        this.relayDeviceService = relayDeviceService;
+        this.pubConfig = pubConfig;
     }
 
     /**
@@ -47,7 +49,6 @@ public class BowlService implements DeviceHandler {
     public void bowlReset() {
         // 获取传感器状态
         String ioStatus = ioDeviceService.getStatus();
-
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
         boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
@@ -96,6 +97,8 @@ public class BowlService implements DeviceHandler {
                     e.printStackTrace();
                 }
             }
+            //碗重置状态更改
+            pubConfig.setResetBowl(true);
             log.info("碗已经升到位！");
             return;
         }

@@ -12,48 +12,49 @@ import java.util.UUID;
 public class HttpClientExample {
     public static void main(String[] args) {
         Head head = new Head();
-        head.setUrl("/opencenter/order/query/detailByCode");
-        head.setNonce(UUID.randomUUID().toString());
+        head.setUrl("/opencenter/order/query/detailByPickUpGoodsNo");
+        head.setNonce(UUID.randomUUID().toString().replaceAll("-", ""));
         String timestamp = String.valueOf(System.currentTimeMillis());
         head.setTimestamp(timestamp);
-        head.setDataJson(null);
+        head.setDataJson("{\"partnerId\":\"7p92yl9q\",\"orderClient\":8}");
         sendHttp(head);
     }
 
     public static void sendHttp(Head head) {
         String url = "https://open-center-platform-gateway.sandload.cn" + head.getUrl();
-        String json = head.getDataJson();
+        String headDataJson = head.getDataJson();
 
-        // Create HttpClient instance
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            // Create HttpPost request
             HttpPost httpPost = new HttpPost(url);
-            //计算sign
-            //MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCMpkCiSiYFyDvBrEDHg7NvP/n0hInB/vmZ5L2rFR8JraZEudMC8fdYVXXx+DtNc0kdTx2CfARtFRIm1IXvM2bNPEl84YoD5m7hExI/kRza0Te4ti3fzECNwEHKMcz3EenaW/jURSP5dBQt9ZC7TN+rpnbNNav5YPrTDPUVDRLy2/Kn57YtI72K4Y8YiI+JO5rI3i9wIydYV63NSPY3ADJ1Mu60/MPdJ1KADnfvaNCu+pRuRO7fUKdb2zcTQQCFPpcWQhaOH8XKh3GhgcfXYvJcHA5HkPJl98/kCEVMqm6ubMWh/0mkvE5eouAqWx31+XRb0t/vBnCP7DqvjduHx/hnAgMBAAECggEAPmTOTXBZV71RDQSuJBP/uL2H0/or5nyHG8cGgOu4viFjnh9VRXwzvuMClJoLLLuU1sSvEaCUkhOD3ufuloOV+jvhWd3vzPUfgQdl0/867rNbZbyjsyE4DeoZBWp8Q6qVtEGSrBAT+miNPyotz3k1zD7nevdxWAq2moOoAXOwUT2q9V8WGvjwh84mrC07uGuMFyVgOHTf8xbKOq8Dy+TfKBNFYuAtocbrGs2iR/wc8jrkgXKzYEkm7YbEWAIHGruNF7+Q9T1nBPHaFdAU7nxrwYyW8r/1iEui2dLYX4QIt4p3mkCwcWPdUSjli3yvaatqZ5/2UZZnmArP/FHeCAtlmQKBgQC2U5xcZouSEY4JMmrStiiAdTfuRnW3jrOJ3sKcaPH85f0+LEkDrEr6gPFdR/ME2LSawrnCLyTQyn7mXqhkM5Ijn4CUfP3LnjSlKVsdG8d5epsqMokDaaBtKdHoHE0L7UNkuczck/moRc/iW30WqvQbTSNzUHNIMxnuO0lceP1EwwKBgQDFe28dNiigi1PM9KwfRazAwH030lyyOZG1Mwvju9uNGna0anfaD8PdnwpAP3JxJZ7TBSVS5R9VI8ejCcJG4dSI64lQgL8/otPyksb0Sc/POiLD8rwUxr3D1pzN9zAG6LADHTh8ofxGKWTkHEhUErz3d25qFCEwAHL0C+y0A6zzjQKBgQCz4kwLcfTT+VPsSPzRxXyyOHQlNwkfP8BtDwVssbHGNNckxyaGZC9ZdWws/zaKGpAdfG8vYbnt8UtAWDXFHohZcx214pe3k/AW33WQg37LoKaD/HXnkwf/i9oYKgvt73mlYBb5rVkMp0wR5PfGLIZIhVOrir0ih6BWxdF8VbZzZwKBgQCF7cZXi0lWR+dXUoAA3WHhfyns16+h90UIHExt8BNfyJjElogdzR9Kh/eNxvm4HoluF0lOxLDRLujPe2jUZYecLBD+FbKeV7FiC4T+W6iho428UjyX4okD7eJ+FKvvo5LrKcALVlgexSf1Q/ERg3vAYLDzJB+1zDgppoSrOOrsaQKBgCcH5ZU6qQpzOh0QdmSdf73i1uVAgW1djwdtumcylc6zNr8n/HYi67zuGB7pVaeQX3VvML+et6ZZdkMK2mckcv1n8jbRFJJqzVI9vAEqu2uGfz3C5VsFtUTB1NmmBrTJcqtwk05Ud9Dy8+80MCTcH7LBBklMapll1QQWdvOYaSu7
-            String privateKey="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCMpkCiSiYFyDvBrEDHg7NvP/n0hInB/vmZ5L2rFR8JraZEudMC8fdYVXXx+DtNc0kdTx2CfARtFRIm1IXvM2bNPEl84YoD5m7hExI/kRza0Te4ti3fzECNwEHKMcz3EenaW/jURSP5dBQt9ZC7TN+rpnbNNav5YPrTDPUVDRLy2/Kn57YtI72K4Y8YiI+JO5rI3i9wIydYV63NSPY3ADJ1Mu60/MPdJ1KADnfvaNCu+pRuRO7fUKdb2zcTQQCFPpcWQhaOH8XKh3GhgcfXYvJcHA5HkPJl98/kCEVMqm6ubMWh/0mkvE5eouAqWx31+XRb0t/vBnCP7DqvjduHx/hnAgMBAAECggEAPmTOTXBZV71RDQSuJBP/uL2H0/or5nyHG8cGgOu4viFjnh9VRXwzvuMClJoLLLuU1sSvEaCUkhOD3ufuloOV+jvhWd3vzPUfgQdl0/867rNbZbyjsyE4DeoZBWp8Q6qVtEGSrBAT+miNPyotz3k1zD7nevdxWAq2moOoAXOwUT2q9V8WGvjwh84mrC07uGuMFyVgOHTf8xbKOq8Dy+TfKBNFYuAtocbrGs2iR/wc8jrkgXKzYEkm7YbEWAIHGruNF7+Q9T1nBPHaFdAU7nxrwYyW8r/1iEui2dLYX4QIt4p3mkCwcWPdUSjli3yvaatqZ5/2UZZnmArP/FHeCAtlmQKBgQC2U5xcZouSEY4JMmrStiiAdTfuRnW3jrOJ3sKcaPH85f0+LEkDrEr6gPFdR/ME2LSawrnCLyTQyn7mXqhkM5Ijn4CUfP3LnjSlKVsdG8d5epsqMokDaaBtKdHoHE0L7UNkuczck/moRc/iW30WqvQbTSNzUHNIMxnuO0lceP1EwwKBgQDFe28dNiigi1PM9KwfRazAwH030lyyOZG1Mwvju9uNGna0anfaD8PdnwpAP3JxJZ7TBSVS5R9VI8ejCcJG4dSI64lQgL8/otPyksb0Sc/POiLD8rwUxr3D1pzN9zAG6LADHTh8ofxGKWTkHEhUErz3d25qFCEwAHL0C+y0A6zzjQKBgQCz4kwLcfTT+VPsSPzRxXyyOHQlNwkfP8BtDwVssbHGNNckxyaGZC9ZdWws/zaKGpAdfG8vYbnt8UtAWDXFHohZcx214pe3k/AW33WQg37LoKaD/HXnkwf/i9oYKgvt73mlYBb5rVkMp0wR5PfGLIZIhVOrir0ih6BWxdF8VbZzZwKBgQCF7cZXi0lWR+dXUoAA3WHhfyns16+h90UIHExt8BNfyJjElogdzR9Kh/eNxvm4HoluF0lOxLDRLujPe2jUZYecLBD+FbKeV7FiC4T+W6iho428UjyX4okD7eJ+FKvvo5LrKcALVlgexSf1Q/ERg3vAYLDzJB+1zDgppoSrOOrsaQKBgCcH5ZU6qQpzOh0QdmSdf73i1uVAgW1djwdtumcylc6zNr8n/HYi67zuGB7pVaeQX3VvML+et6ZZdkMK2mckcv1n8jbRFJJqzVI9vAEqu2uGfz3C5VsFtUTB1NmmBrTJcqtwk05Ud9Dy8+80MCTcH7LBBklMapll1QQWdvOYaSu7";
-            String publicKey="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy0Jy1rbycbPgGCb5ehx7LVc5pmFAY63g31ujf6xIyXX7yl4leShdI1P1hEPwG62K0TaY5++6AyKrsaCP9CPA80L8Phn/owzY4lOps8Ck+KI+0Gp01KmIpvQRcu37TKL9Ch/6skweSMUZolOCBGKseANaIaGMY5l5bWVkoP8wGT87+2qsvyHpT1G2MUInm6BiyNqsVYCMYnCXeqGWkchfpZ8+Z4EryFX4M7Z0cafYGTLPC6LmoRq/Ka6pRzYLkrP2JwBEt4KgZ2SllI9cIq9ad8efhzx/kCQ8ky347QZhy9gWPdD38OlNi4iAwVpP5Smkdu1EbldMSba67ERAIzecZQIDAQAB";
-            String sign = RSAUtil.Signer.sign(json, privateKey, RSAUtil.SignAlgorithm.SHA256withRSA);
-            // Set headers
+            String privateKey = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCadOMGuXlltrpZcg4/AeHRIUqcGRT1QjZS6qmeoG/8dNO1VW7zoGZnh9/6oH0lV3D+b5H/ASm857hVHIyH3GaxlTAygvmLFE+KUx7wsClNUfxMtKLRAY/N/mFO3yuc+5twkh7aDC0MtOTsYMQNgsKqPgR0l6z2bQ+zEqyiPZUFQdhRh9SzBg2yL/jXk70p89OdzDQkZ83yWr58ML+P9zjEnlQkdH1xBmBGpAD2mYr7HqdvfzP9V2OlY3eYVQ+ZOqy4UDwabCJh4U83Gmo90fbVsYJexvdcROZn9riVhzEhhhPhWDs4/B8Zl+WPV8UDm447YPjThPjwZxaUx1VQAaZvAgMBAAECggEAGb1X5hN7pRUt+eD1ec+M+8ZyAhB1+ydFGU1M5gfzkZ1AeKwbmNMGrcMpcsFTCamIRYZ/TIE7nOT6xYhD7RIwNPDZPtmvz1sbpEAU3GRnBaEfjALgTTdW6Su2uKedQ4R0k25uYMT9ruvoaHH5ygyb9zXtlSZ/pvNm1d9LUKA1mNHtaLY7Ix7crUQ0geQOiY3nZtr7AHkcBxSIKTiuBoeorOE7iSDRT1RkK5okhEkpGUFW2xmIEjb6T8y3g7iUVi/45IB5vCjWtOTG4gm7p3LACg4VpDgUflhK/S1Ksj96GXsCy7PsyUVOa93SQcNBIstp3amzuNKFILIziK+DQzUqzQKBgQC9PDwFR7rc41BARQ/VuN1LScMwVgh2KHedeiuLG1jR79IOY/ok8181+8NX+ck1Ey07gpBzo88+5Nja4z4TgW2uycYD0WuFbL/j+6E9S2/k2t0LAeSbGnUMmkNDSwE359Qd3r6HqvO25X17GTfn2WL9zShIN7m3ti1SqIWDS9YaRQKBgQDQ828LSdJHt7rL63fzi8CdPg0exmN05YuHKktC48FVjhfkU6ZAEBn2bn/Bn+q7UjizNT9nh6AcP6TqipdCQR5ErKE1fh2fjc6xT4AG+0HjLLgWaGlYrCoKRDUDmC0OtYmvQGIRGWqpvNuzAZqcISYE9fL+ZMZMZDvwmihLoSxDIwKBgGz7NpnX4I77vqj03RS5vYBxf57jvUXHMnQX+uHHIxTsp62v+Ey1eHzPfIW7Dhyp6Z/fJq/ihCV1iEovGv4CyRcjjw192w1hPvXeYdK6Ejvbq/d95JlK2GQkp14m4RHASpHVSSc61dbcPbLaKC83K+J895j3ttZNbbav5QxjbW99AoGBAIwuxZENNcZnvSqSDyeV2uOjfann71G9rp5AAb4ejtaXPfAxLphMNR7fg1ajsxd5UhDo6GDM3N4W1M2FrXUFuwjXyE/bDIS+3qyWaY5Fgy6mEdr2sbaLyqiYmfiPX6s+n+CzkRdnteeqjLrLmK6mjptFZoDFm0Qk+xGwWthiiQ+BAoGBAK2A6FKk0ohh6syxgZe0OBbE/3uue8fC7yJn8cG5V87EKZnPTx/jpYIKm82al43bFncqQSv05kBMMDsQpLejSwuzUJCeSWZVYieUn76TioDslkZI7n+kjSiluxMTkbV4pvNsQDxG1iILIDtSBusQp8GLp3bp85ErbWEnVllmb8wG";
+            String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmnTjBrl5Zba6WXIOPwHh0SFKnBkU9UI2UuqpnqBv/HTTtVVu86BmZ4ff+qB9JVdw/m+R/wEpvOe4VRyMh9xmsZUwMoL5ixRPilMe8LApTVH8TLSi0QGPzf5hTt8rnPubcJIe2gwtDLTk7GDEDYLCqj4EdJes9m0PsxKsoj2VBUHYUYfUswYNsi/415O9KfPTncw0JGfN8lq+fDC/j/c4xJ5UJHR9cQZgRqQA9pmK+x6nb38z/VdjpWN3mFUPmTqsuFA8GmwiYeFPNxpqPdH21bGCXsb3XETmZ/a4lYcxIYYT4Vg7OPwfGZflj1fFA5uOO2D404T48GcWlMdVUAGmbwIDAQAB";
+            String content = head.getTimestamp() + ";" + head.getNonce() + ";" + headDataJson + ";";
+            String sign = RSAUtil.Signer.sign(content, privateKey, RSAUtil.SignAlgorithm.SHA256withRSA);
+            boolean verify = RSAUtil.Signer.verify(content, sign, publicKey, RSAUtil.SignAlgorithm.SHA256withRSA);
+            System.out.println("签名验证结果：" + verify);
+
             httpPost.setHeader("sign", sign);
             httpPost.setHeader("appInstanceId", head.getAppInstanceId());
             httpPost.setHeader("apiVersion", head.getApiVersion());
             httpPost.setHeader("nonce", head.getNonce());
             httpPost.setHeader("timestamp", head.getTimestamp());
             httpPost.setHeader("Content-Type", "application/json");
+            httpPost.setHeader("Accept", "*/*");
+            httpPost.setHeader("Connection", "keep-alive");
+            httpPost.setHeader("Accept-Encoding", "gzip, deflate, br");
+            httpPost.setHeader("Content-Type", "application/json");
+            httpPost.setHeader("User-Agent", "PostmanRuntime/7.40.0");
+            httpPost.setHeader("Accept", "*/*");
+            httpPost.setHeader("Postman-Token", "6c41d85e-b55d-48a7-964c-4bd53895726c");
+            httpPost.setHeader("Host", "open-center-platform-gateway.sandload.cn");
+            httpPost.setHeader("Accept-Encoding", "gzip, deflate, br");
+            httpPost.setHeader("Connection", "keep-alive");
+            StringEntity entity = new StringEntity(headDataJson, "UTF-8");
+            httpPost.setEntity(entity);
 
-            // Set payload
-            if (json == null) {
-                httpPost.setEntity(null);
-            } else {
-                StringEntity entity = new StringEntity(json);
-                httpPost.setEntity(entity);
-            }
-
-            // Send request and get response
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                // Print response status and body
                 System.out.println("Response Status: " + response.getStatusLine());
-                String responseBody = EntityUtils.toString(response.getEntity());
+                String responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
                 System.out.println("Response Body: " + responseBody);
             }
         } catch (Exception e) {
