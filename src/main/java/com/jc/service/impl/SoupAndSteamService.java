@@ -27,7 +27,7 @@ public class SoupAndSteamService {
         String ioStatus = ioDeviceService.getStatus();
         String[] split = ioStatus.split(",");
         //如果传感器是高电平时
-        if(split[Constants.SOUP_AND_STEAM].equals(SignalLevel.HIGH.getValue())){
+        if(split[Constants.STEAM_GENERATOR_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())){
             relayDeviceService.steamClose();
         }else {
             relayDeviceService.steamOpen();
