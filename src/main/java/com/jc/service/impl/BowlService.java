@@ -1,13 +1,10 @@
 package com.jc.service.impl;
 
-import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
-import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -51,7 +48,7 @@ public class BowlService implements DeviceHandler {
         String ioStatus = ioDeviceService.getStatus();
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
-        boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
+        boolean bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
         boolean lowerLimit = split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最低极限点状态
         boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
 
@@ -69,7 +66,7 @@ public class BowlService implements DeviceHandler {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
-                    bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
+                    bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (!bowlSensor) {
                         relayDeviceService.stopBowl();
                     }
@@ -89,7 +86,7 @@ public class BowlService implements DeviceHandler {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
-                    bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
+                    bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
                         relayDeviceService.stopBowl();
                     }
@@ -115,7 +112,7 @@ public class BowlService implements DeviceHandler {
 
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
-        boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
+        boolean bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
         boolean upperLimit = split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()); // 轨道最高极限点状态
         //如果传感器无值到达了上限——没有碗了
         if (!bowlSensor && upperLimit) {
@@ -132,7 +129,7 @@ public class BowlService implements DeviceHandler {
                     count++;
                     ioStatus = ioDeviceService.getIoStatus();
                     split = ioStatus.split(",");
-                    bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
+                    bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
                         relayDeviceService.stopBowl();
                     }

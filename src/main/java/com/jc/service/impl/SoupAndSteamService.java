@@ -19,7 +19,7 @@ public class SoupAndSteamService {
     //打开蒸汽时——温度根据蒸汽罐体最大气压或者订单完成就停止，不根据蒸汽发生器上温度无法控制
     public void openSteam(){
         //给10秒钟时间
-        relayDeviceService.openClose(Constants.STEAM,10);
+        relayDeviceService.openClose(Constants.STEAM_SWITCH,10);
     }
     //自动保温——温度根据蒸汽发生器上温度进行控制
     public void automaticInsulation(){

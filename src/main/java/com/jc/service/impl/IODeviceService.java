@@ -6,10 +6,8 @@ import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -146,6 +144,27 @@ public class IODeviceService implements DeviceHandler {
         calculateWorkstationValue(split);
         //蒸汽发生器温度控制
         steamGeneratorReachesTemperature(split);
+        //蒸汽发生器中是否有水
+        steamGeneratorWaterPresence(split);
+
+    }
+
+    /**
+     * 蒸汽发生器中是否有水，如果没有不加水，
+     *
+     * @param split
+     */
+    private void steamGeneratorWaterPresence(String[] split) {
+        if (split[Constants.STEAM_GENERATOR_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            pubConfig.setSteamGeneratorWaterStatus(true);
+            //到达液位后加一段时间再停止
+            relayDeviceService.pumpStop();
+        }
+        if(split[Constants.STEAM_GENERATOR_LEVEL_SENSOR].equals(SignalLevel.LOW.getValue())){
+            log.info("不够自动加水");
+            relayDeviceService.pumpStart();
+            pubConfig.setSteamGeneratorWaterStatus(false);
+        }
     }
 
     /**
@@ -157,7 +176,7 @@ public class IODeviceService implements DeviceHandler {
         //温度到了最低就加热半分钟
         if (split[Constants.STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             //打开半分钟后关闭
-            relayDeviceService.openClose(Constants.STEAM, 30);
+            relayDeviceService.openClose(Constants.STEAM_SWITCH, 30);
         }
         //如果是保湿情况下到了最高温度就关闭
         if (pubConfig.getSteamGeneratorCurrentState() == 1 && split[Constants.STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {

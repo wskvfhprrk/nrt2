@@ -1,5 +1,6 @@
 package com.jc.controller;
 
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.RelayDeviceService;
@@ -28,6 +29,8 @@ public class ButtonController {
     private StepperMotorService stepperMotorService;
     @Autowired
     private SeasoningMachineService seasoningMachineService;
+    @Autowired
+    private PubConfig pubConfig;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id) {
@@ -79,7 +82,8 @@ public class ButtonController {
             case 10:
                 actionResult = "'转台移动下一工位操作完成";
                 // '转台移动下一工位的操作逻辑
-                turntableService.moveToNext();
+//                turntableService.moveToNext();
+                pubConfig.setTurntableRotationStatus(true);
                 break;
             case 11:
                 actionResult = "碗复位操作完成";

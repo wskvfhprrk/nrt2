@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
@@ -20,12 +21,14 @@ public class RelayDeviceService implements DeviceHandler {
 
     @Autowired
     private IpConfig ipConfig;
+    @Autowired
+    private PubConfig pubConfig;
 
     /**
      * 处理消息
      *
      * @param message 消息内容
-     * @param isHex 是否为16进制消息
+     * @param isHex   是否为16进制消息
      */
     @Override
     public void handle(String message, boolean isHex) {
@@ -88,7 +91,7 @@ public class RelayDeviceService implements DeviceHandler {
     /**
      * 继电器打开一段时间后自动关
      *
-     * @param no 继电器编号，范围为1-32
+     * @param no     继电器编号，范围为1-32
      * @param second 延迟关闭的时间，单位为秒，范围为1-177777
      */
     public void openClose(int no, int second) {
@@ -138,17 +141,18 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 出餐口向下
+     *
      * @return
      */
-    public String theFoodOutletIsFacingDownwards(){
+    public String theFoodOutletIsFacingDownwards() {
         log.info("出餐口向下");
-        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS);
+        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS,15);
+        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH, 15);
         //出完后盖板盖上
         try {
             Thread.sleep(5000L);
@@ -158,11 +162,13 @@ public class RelayDeviceService implements DeviceHandler {
         this.coverClosed();
         return "ok";
     }
+
     /**
      * 出餐口向上
+     *
      * @return
      */
-    public String theFoodOutletIsFacingUpwards(){
+    public String theFoodOutletIsFacingUpwards() {
         log.info("出餐口向上");
         //先打开盖板
         this.coverOpen();
@@ -171,43 +177,47 @@ public class RelayDeviceService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS);
+        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS,15);
+        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
         return "ok";
     }
+
     /**
      * 出料开仓出料
+     *
      * @return
      */
-    public String coverOpen(){
+    public String coverOpen() {
         log.info("出料开仓出料");
-        relayClosing(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE);
+        relayClosing(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openClose(Constants.DISCHARGING_FROM_WAREHOUSE,15);
+        openClose(Constants.DISCHARGING_FROM_WAREHOUSE_SWITCH, 15);
         return "ok";
     }
+
     /**
      * 出料关仓禁止出料
+     *
      * @return
      */
-    public String coverClosed(){
+    public String coverClosed() {
         log.info("出料关仓禁止出料");
-        relayClosing(Constants.DISCHARGING_FROM_WAREHOUSE);
+        relayClosing(Constants.DISCHARGING_FROM_WAREHOUSE_SWITCH);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openClose(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE,15);
+        openClose(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH, 15);
         return "ok";
     }
 
@@ -217,24 +227,25 @@ public class RelayDeviceService implements DeviceHandler {
     public void steam() {
         log.info("蒸汽测试,打开5秒后关闭");
         //继电器7打开15秒关闭
-        this.openClose(Constants.STEAM,5);
+        this.openClose(Constants.STEAM_SWITCH, 5);
     }
 
 
     /**
      * 打开柜体排气风扇
      */
-    public String openFan(){
+    public String openFan() {
         log.info("打开柜体排气风扇");
-        relayOpening(Constants.CABINET_EXHAUST_FAN);
+        relayOpening(Constants.CABINET_EXHAUST_FAN_SWITCH);
         return "ok";
     }
+
     /**
      * 关闭柜体排气风扇
      */
-    public String closeFan(){
+    public String closeFan() {
         log.info("关闭柜体排气风扇");
-        relayClosing(Constants.CABINET_EXHAUST_FAN);
+        relayClosing(Constants.CABINET_EXHAUST_FAN_SWITCH);
         return "ok";
     }
 
@@ -243,35 +254,39 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void stopBowl() {
         log.info("停止碗开关");
-        relayClosing(Constants.BOWL_L);
+        relayClosing(Constants.BOWL_L_SWITCH);
     }
+
     /**
      * 打碗开关
      */
     public void openBowl() {
         log.info("打碗开关");
-        relayOpening(Constants.BOWL_L);
+        relayOpening(Constants.BOWL_L_SWITCH);
     }
+
     /**
      * 碗上升
      */
-    public void bowlRise(){
+    public void bowlRise() {
         log.info("碗上升");
-        relayOpening(Constants.BOWL_N);
+        relayOpening(Constants.BOWL_N_SWITCH);
     }
+
     /**
      * 碗下降
      */
-    public void bowlDrop(){
+    public void bowlDrop() {
         log.info("碗下降");
-        relayClosing(Constants.BOWL_N);
+        relayClosing(Constants.BOWL_N_SWITCH);
     }
+
     /**
      * 打开抽汤泵10秒钟时间
      */
-    public void soupPump(){
+    public void soupPump() {
         log.info("打开抽汤泵10秒钟时间");
-        openClose(Constants.SOUP_PUMP,10);
+        openClose(Constants.SOUP_PUMP_SWITCH, 10);
     }
 
     /**
@@ -279,7 +294,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void steamOpen() {
         log.info("蒸汽打开");
-        relayOpening(Constants.STEAM);
+        relayOpening(Constants.STEAM_SWITCH);
     }
 
     /**
@@ -287,6 +302,37 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void steamClose() {
         log.info("蒸汽关闭");
-        relayClosing(Constants.STEAM);
+        relayClosing(Constants.STEAM_SWITCH);
+    }
+
+    /**
+     * 抽水机打开3分钟——最大抽水时间，如果抽不上来就不抽了
+     */
+    public void pumpStart() {
+        //抽180秒后检测一下
+        openClose(Constants.WATER_PUMP_SWITCH, 300);
+        //三分钟后检测
+        affterTest();
+    }
+
+    private void affterTest() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(300L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //如果还抽不上水就说明抽水泵坏了
+            if (!pubConfig.getSteamGeneratorWaterStatus()) {
+                log.error("请检查水路，无法出上水！");
+            }
+        }).start();
+    }
+
+    /**
+     * 水到液位处再加半分钟
+     */
+    public void pumpStop() {
+        openClose(Constants.WATER_PUMP_SWITCH, 30);
     }
 }

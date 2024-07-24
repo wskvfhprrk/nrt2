@@ -1,5 +1,6 @@
 package com.jc.config;
 
+import com.jc.constants.Constants;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "pub")
 @Data
 public class PubConfig {
-
+    /**
+     * 是否要转台转动下一工位
+     */
+    private Boolean turntableRotationStatus = false;
     /**
      * 机器人在等机状态
      */
@@ -79,7 +83,7 @@ public class PubConfig {
     /**
      * 出餐完成
      */
-    private Boolean servingCompleted=false;
+    private Boolean servingCompleted = false;
     /**
      * 有碗工位号
      */
@@ -87,9 +91,15 @@ public class PubConfig {
     /**
      * 订单完成状态
      */
-    private Boolean orderCompletedStatus=false;
+    private Boolean orderCompletedStatus = false;
     /**
      * 蒸汽发生器当前状态：1表示保湿状态、2表示蒸汽状态
      */
-    private int steamGeneratorCurrentState=1;
+    private int steamGeneratorCurrentState = Constants.STEAM_GENERATOR_INSULATION_STATUS;
+    /**
+     * 蒸汽发生器是否有水
+     */
+    private Boolean steamGeneratorWaterStatus = false;
+
+
 }

@@ -8,7 +8,6 @@ import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.RobotService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -58,7 +57,7 @@ public class RobotServiceImpl implements RobotService {
         }
         // 解析传感器状态字符串
         String[] split = ioStatus.split(",");
-        boolean bowlSensor = split[Constants.EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
+        boolean bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
         if(!bowlSensor){
             bowlService.bowlReset();
         }
