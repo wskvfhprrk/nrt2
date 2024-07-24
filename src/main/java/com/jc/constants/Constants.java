@@ -105,9 +105,13 @@ public class Constants {
      */
     public static final int DOOR_MAGNETIC_UPPER_MIDDLE = 11;
     /**
-     * 门磁中下
+     * 蒸汽发生器最高温度传感器
      */
-    public static final int DOOR_MAGNETIC_LOWER_MIDDLE = 12;
+    public static final int STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR = 12;
+    /**
+     * 蒸汽发生器最低温度传感器
+     */
+    public static final int STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR = 13;
     /**
      * 震动器
      */

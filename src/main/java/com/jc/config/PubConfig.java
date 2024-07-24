@@ -84,4 +84,12 @@ public class PubConfig {
      * 有碗工位号
      */
     private String bowlStationNumber;
+    /**
+     * 订单完成状态
+     */
+    private Boolean orderCompletedStatus=false;
+    /**
+     * 蒸汽发生器当前状态：1表示保湿状态、2表示蒸汽状态
+     */
+    private int steamGeneratorCurrentState=1;
 }

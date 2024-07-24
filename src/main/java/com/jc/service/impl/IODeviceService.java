@@ -36,7 +36,6 @@ public class IODeviceService implements DeviceHandler {
     //当前转台的工位状态
     private String turntableStatus;
 
-
     public IODeviceService() {
         this.ioStatus = Constants.NOT_INITIALIZED;
     }
@@ -143,8 +142,28 @@ public class IODeviceService implements DeviceHandler {
             log.info("到达限位点，停止碗升降的步进电机");
             relayDeviceService.stopBowl();
         }
+        //计算工位的值
         calculateWorkstationValue(split);
+        //蒸汽发生器温度控制
+        steamGeneratorReachesTemperature(split);
+    }
 
+    /**
+     * 蒸汽发生器温度控制——到最低加热打开加热半分钟,达到最高温度就关闭
+     *
+     * @param split
+     */
+    private void steamGeneratorReachesTemperature(String[] split) {
+        //温度到了最低就加热半分钟
+        if (split[Constants.STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            //打开半分钟后关闭
+            relayDeviceService.openClose(Constants.STEAM, 30);
+        }
+        //如果是保湿情况下到了最高温度就关闭
+        if (pubConfig.getSteamGeneratorCurrentState() == 1 && split[Constants.STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            //打开一分钟后关闭
+            relayDeviceService.steamClose();
+        }
     }
 
     /**

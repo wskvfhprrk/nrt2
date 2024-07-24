@@ -149,4 +149,8 @@ public class TurntableService {
         }
         log.info("工位数值：{}", pubConfig.getTurntableNumber());
     }
+    /**
+     * 当有订单完成状态为true时需要转动转台
+     */
+    
 }
