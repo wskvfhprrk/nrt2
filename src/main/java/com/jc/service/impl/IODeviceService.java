@@ -173,6 +173,11 @@ public class IODeviceService implements DeviceHandler {
      * @param split
      */
     private void steamGeneratorReachesTemperature(String[] split) {
+        //如果到达液位以下不能够自动加热
+        if(!pubConfig.getSteamGeneratorWaterStatus()){
+            log.error("蒸汽发生器中没有水，不能自动加热！");
+            return;
+        }
         //温度到了最低就加热半分钟
         if (split[Constants.STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             //打开半分钟后关闭
