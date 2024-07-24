@@ -306,7 +306,7 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 抽水机打开3分钟——最大抽水时间，如果抽不上来就不抽了
+     * 抽水机打开5分钟——最大抽水时间，如果抽不上来就不抽了
      */
     public void pumpStart() {
         //抽180秒后检测一下
@@ -315,6 +315,7 @@ public class RelayDeviceService implements DeviceHandler {
         affterTest();
     }
 
+    //检测有没有水
     private void affterTest() {
         new Thread(() -> {
             try {
@@ -324,7 +325,7 @@ public class RelayDeviceService implements DeviceHandler {
             }
             //如果还抽不上水就说明抽水泵坏了
             if (!pubConfig.getSteamGeneratorWaterStatus()) {
-                log.error("请检查水路，无法出上水！");
+                log.error("请检查水路，无法抽水到蒸器发生器中！");
             }
         }).start();
     }
