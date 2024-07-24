@@ -59,11 +59,11 @@ public class Constants {
     /**
      * 蒸汽发生器最高温度传感器
      */
-    public static final int STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR = 13;
+    public static final int STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR = 12;
     /**
      * 蒸汽发生器最低温度传感器
      */
-    public static final int STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR = 14;
+    public static final int STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR = 13;
 
 
     /** 继电器 */

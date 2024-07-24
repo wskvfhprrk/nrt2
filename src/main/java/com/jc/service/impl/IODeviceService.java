@@ -4,6 +4,7 @@ import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
+import com.jc.enums.SteamGeneratorState;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
- * IO设备处理类
+ * IO设备处理类——根据传感器自动控制设备
  * 实现了DeviceHandler接口，提供了处理IO设备消息的功能
  */
 @Service
@@ -146,7 +147,27 @@ public class IODeviceService implements DeviceHandler {
         steamGeneratorReachesTemperature(split);
         //蒸汽发生器中是否有水
         steamGeneratorWaterPresence(split);
+        //蒸汽发生器自动控制温度
+        steamGeneratorAutoTemperatureControl(split);
 
+    }
+
+    /**
+     * 蒸汽发生器自动控制温度
+     *
+     * @param split
+     */
+    private void steamGeneratorAutoTemperatureControl(String[] split) {
+        //如果到达最低温度就加热10秒钟时间
+        if (split[Constants.STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            //给10秒钟时间
+            relayDeviceService.openClose(Constants.STEAM_SWITCH, 10);
+        }
+        //如果达到最高值并且是在保温状态下时才停止加热
+        if (split[Constants.STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())
+                && pubConfig.getSteamGeneratorCurrentState() == SteamGeneratorState.HUMIDIFYING.getValue()) {
+            relayDeviceService.steamClose();
+        }
     }
 
     /**
@@ -160,7 +181,7 @@ public class IODeviceService implements DeviceHandler {
             //到达液位后加一段时间再停止
             relayDeviceService.pumpStop();
         }
-        if(split[Constants.STEAM_GENERATOR_LEVEL_SENSOR].equals(SignalLevel.LOW.getValue())){
+        if (split[Constants.STEAM_GENERATOR_LEVEL_SENSOR].equals(SignalLevel.LOW.getValue())) {
             log.info("不够自动加水");
             relayDeviceService.pumpStart();
             pubConfig.setSteamGeneratorWaterStatus(false);
@@ -174,7 +195,7 @@ public class IODeviceService implements DeviceHandler {
      */
     private void steamGeneratorReachesTemperature(String[] split) {
         //如果到达液位以下不能够自动加热
-        if(!pubConfig.getSteamGeneratorWaterStatus()){
+        if (!pubConfig.getSteamGeneratorWaterStatus()) {
             log.error("蒸汽发生器中没有水，不能自动加热！");
             return;
         }

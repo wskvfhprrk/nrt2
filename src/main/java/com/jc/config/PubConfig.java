@@ -1,6 +1,7 @@
 package com.jc.config;
 
 import com.jc.constants.Constants;
+import com.jc.enums.SteamGeneratorState;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class PubConfig {
      */
     private Boolean turntableRotationStatus = false;
     /**
-     * 机器人在等机状态
+     * 机器人在待机状态
      */
     private Boolean robotStatus = true;
     /**
@@ -95,7 +96,7 @@ public class PubConfig {
     /**
      * 蒸汽发生器当前状态：1表示保湿状态、2表示蒸汽状态
      */
-    private int steamGeneratorCurrentState = Constants.STEAM_GENERATOR_INSULATION_STATUS;
+    private int steamGeneratorCurrentState = SteamGeneratorState.HUMIDIFYING.getValue();
     /**
      * 蒸汽发生器是否有水
      */
