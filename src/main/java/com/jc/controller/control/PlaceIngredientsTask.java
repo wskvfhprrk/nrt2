@@ -10,7 +10,6 @@ import java.util.concurrent.Callable;
 /**
  * 放置配料任务
  */
-@Service
 @Slf4j
 public class PlaceIngredientsTask implements Callable<Result> {
 
@@ -23,6 +22,7 @@ public class PlaceIngredientsTask implements Callable<Result> {
     public Result call() throws Exception {
         // 模拟任务处理
         Thread.sleep(1000);
+        log.info("放置配料任务");
         return Result.error(500,"放置配料任务");
     }
 }
