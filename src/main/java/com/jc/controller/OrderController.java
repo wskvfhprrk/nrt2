@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.ClientConfig;
 import com.jc.config.IpConfig;
+import com.jc.controller.control.TaskCoordinator;
 import com.jc.entity.Order;
 import com.jc.netty.server.NettyServerHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 订单控制器
@@ -32,6 +34,8 @@ public class OrderController {
     private ObjectMapper objectMapper;
     @Autowired
     private ClientConfig clientConfig;
+    @Autowired
+    private TaskCoordinator taskCoordinator;
 
     /**
      * 提交订单
@@ -40,11 +44,12 @@ public class OrderController {
      * @return ResponseEntity<String> 响应实体
      */
     @PostMapping
-    public ResponseEntity<String> submitOrder(@RequestBody Order order) {
+    public ResponseEntity<String> submitOrder(@RequestBody Order order) throws ExecutionException, InterruptedException {
         // 在这里处理订单逻辑，例如保存到数据库或其他操作
         log.info("收到订单: " + order);
         // 发送订单信息到设备
         nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), order.toString(), false);
+        taskCoordinator.executeTasks(order);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }
 

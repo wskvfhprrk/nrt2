@@ -2,20 +2,26 @@ package com.jc.controller.control;
 
 import com.jc.config.Result;
 import com.jc.entity.Order;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Callable;
 
-public class Task2 implements Callable<Result> {
+/**
+ * 取牛肉汤
+ */
+@Service
+@Slf4j
+public class RetrieveBeefSoup implements Callable<Result> {
 
     private final Order order;
-
-    public Task2(Order order) {
+    public RetrieveBeefSoup(Order order) {
         this.order = order;
     }
     @Override
     public Result call() throws Exception {
         // 模拟任务处理
         Thread.sleep(1000);
-        return Result.error(500,order.getOrderId());
+        return Result.error(500,"取牛肉汤");
     }
 }

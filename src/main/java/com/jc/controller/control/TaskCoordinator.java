@@ -1,5 +1,6 @@
 package com.jc.controller.control;
 
+import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,15 @@ public class TaskCoordinator {
 
     @Autowired
     private ExecutorService executorService;
+    @Autowired
+    private PubConfig pubConfig;
 
-    public void executeTasks() throws InterruptedException, ExecutionException {
+    public void executeTasks(Order order) throws InterruptedException, ExecutionException {
+        //判断转台是否在1和4两个工位才能够放置空碗
+        if(pubConfig.getTurntableNumber()==1||pubConfig.getTurntableNumber()==4){
+
+        }
+
         //
         Order order1=new Order("1","asb1");
         Order order2=new Order("2","asb2");
@@ -28,12 +36,12 @@ public class TaskCoordinator {
         Order order5=new Order("5","asb5");
         Order order6=new Order("6","asb6");
         // 创建任务列表
-        Callable<Result> task1 = new Task1(order1);
-        Callable<Result> task2 = new Task2(order2);
-        Callable<Result> task3 = new Task3(order3);
-        Callable<Result> task4 = new Task4(order4);
-        Callable<Result> task5 = new Task5(order5);
-        Callable<Result> task6 = new Task6(order6);
+        Callable<Result> task1 = new RobotPlaceEmptyBowlTask(order1);
+        Callable<Result> task2 = new IngredientPreparationTask(order2);
+        Callable<Result> task3 = new SteamPreparationTask(order3);
+        Callable<Result> task4 = new FanTask(order4);
+        Callable<Result> task5 = new PlaceIngredientsTask(order5);
+        Callable<Result> task6 = new AddSteamTask(order6);
 
         // 提交任务到线程池并获取 Future 对象
         Future<Result> future1 = executorService.submit(task1);
