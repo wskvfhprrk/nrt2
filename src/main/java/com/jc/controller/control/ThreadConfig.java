@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * 根据任务配置多线程——6个线程
+ */
 @Configuration
 public class ThreadConfig {
 
