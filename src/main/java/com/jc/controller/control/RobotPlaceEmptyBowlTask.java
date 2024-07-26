@@ -24,6 +24,6 @@ public class RobotPlaceEmptyBowlTask implements Callable<Result> {
         // 模拟任务处理
         Thread.sleep(2000);
         log.info("机器人放置空碗任务");
-        return Result.error(500,"机器人放置空碗任务");
+        return Result.success();
     }
 }

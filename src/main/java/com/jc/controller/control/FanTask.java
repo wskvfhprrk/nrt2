@@ -23,6 +23,6 @@ public class FanTask implements Callable<Result> {
         // 模拟任务处理
         Thread.sleep(1000);
         log.info("粉丝任务");
-        return Result.error(500,"粉丝任务");
+        return Result.success();
     }
 }

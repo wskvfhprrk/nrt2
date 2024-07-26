@@ -22,6 +22,6 @@ public class RetrieveBeefSoup implements Callable<Result> {
         // 模拟任务处理
         Thread.sleep(1000);
         log.info("取牛肉汤");
-        return Result.error(500,"取牛肉汤");
+        return Result.success();
     }
 }

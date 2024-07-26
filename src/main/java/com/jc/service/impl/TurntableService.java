@@ -46,7 +46,7 @@ public class TurntableService implements CommandLineRunner {
         //如果已经在原点
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("转盘已经在原点位置！");
-            pubConfig.setTurntableNumber(0);
+            pubConfig.setTurntableNumber(1);
             pubConfig.setTurntableReset(true);
             return "ok";
         }
@@ -68,7 +68,7 @@ public class TurntableService implements CommandLineRunner {
                     stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                     flag = false;
                     //工位为0
-                    pubConfig.setTurntableNumber(0);
+                    pubConfig.setTurntableNumber(1);
                     pubConfig.setTurntableReset(true);
                 }
             }

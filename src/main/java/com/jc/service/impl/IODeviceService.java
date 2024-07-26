@@ -220,7 +220,7 @@ public class IODeviceService implements DeviceHandler {
         // 如果转台复位传感器信号为高电平
         if (split[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             // 将转台的工位数设为0
-            pubConfig.setTurntableNumber(0);
+            pubConfig.setTurntableNumber(1);
             pubConfig.setTurntableReset(true);
         }
 

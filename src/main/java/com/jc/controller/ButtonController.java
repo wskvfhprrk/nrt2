@@ -82,8 +82,8 @@ public class ButtonController {
             case 10:
                 actionResult = "'转台移动下一工位操作完成";
                 // '转台移动下一工位的操作逻辑
-//                turntableService.moveToNext();
-                pubConfig.setTurntableRotationStatus(true);
+                turntableService.moveToNext();
+//                pubConfig.setTurntableRotationStatus(true);
                 break;
             case 11:
                 actionResult = "碗复位操作完成";
@@ -136,7 +136,6 @@ public class ButtonController {
         //碗重置
         bowlService.bowlReset();
         //盖板打开
-//        relayDeviceService.coverOpen();
         return "机器复位成功！";
     }
 }

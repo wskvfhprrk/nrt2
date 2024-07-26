@@ -22,6 +22,6 @@ public class AddSteamTask implements Callable<Result> {
         // 模拟任务处理
         Thread.sleep(1000);
         log.info("加蒸汽任务");
-        return Result.error(500,"加蒸汽任务");
+        return Result.success();
     }
 }
