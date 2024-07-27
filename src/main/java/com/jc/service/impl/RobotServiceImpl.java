@@ -34,6 +34,7 @@ public class RobotServiceImpl implements RobotService {
     public void reset() {
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
+            pubConfig.setRobotStatus(true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -65,10 +66,12 @@ public class RobotServiceImpl implements RobotService {
         //是否检测到有东西
         Boolean isObjectDetected = split[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
         if(isObjectDetected){
+            log.error("检测放碗位置到有东西！");
             return Result.error(500,"检测放碗位置到有东西！");
         }
         //检测机器人是否加home点
         if(!pubConfig.getRobotStatus()){
+            log.error("机器人未复位");
             return Result.error(500,"机器人未复位！");
         }
         if (!bowlSensor) {
@@ -77,8 +80,18 @@ public class RobotServiceImpl implements RobotService {
         //向机器人发送取碗指令
         try {
             nettyClientConfig.connectAndSendData("run(takeABowl.jspf)");
+
+            pubConfig.setRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        //等待到机器人发出HOME指令才算完成
+        while (pubConfig.getRobotStatus()){
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return Result.success();
     }
@@ -87,6 +100,7 @@ public class RobotServiceImpl implements RobotService {
     public void putBowl() {
         try {
             nettyClientConfig.connectAndSendData("run(putABowl.jspf)");
+            pubConfig.setRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

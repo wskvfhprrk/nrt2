@@ -142,4 +142,8 @@ public class Constants {
      * 蒸汽发生器蒸汽状态
      */
     public static final int STEAM_GENERATOR_STEAM_STATUS = 2;
+    /**
+     * 机器人到达home发送指令
+     */
+    public static final String ROBOT_HOME = "686F6D65";
 }

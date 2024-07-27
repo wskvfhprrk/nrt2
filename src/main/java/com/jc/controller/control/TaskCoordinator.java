@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * 任务中心管理器
@@ -20,14 +17,16 @@ import java.util.concurrent.Future;
 public class TaskCoordinator {
 
     @Autowired
-    private ExecutorService executorService;
-    @Autowired
     private PubConfig pubConfig;
-    /**
-     * 第一个工位订单
-     */
-    private Order order1 = new Order();
-    private Order order4 = new Order();
+    private Order order1;
+    private Order order4;
+
+    @Autowired
+    private RobotPlaceEmptyBowl robotPlaceEmptyBowl;
+    @Autowired
+    private IngredientPreparation ingredientPreparation;
+    @Autowired
+    private SteamPreparation steamPreparation;
 
     public void executeTasks(Order order) throws InterruptedException, ExecutionException {
         //判断转台是否在1和4两个工位才能够放置空碗
@@ -38,16 +37,11 @@ public class TaskCoordinator {
             if (pubConfig.getTurntableNumber() == 4) {
                 order4 = order;
             }
-            Callable<Result> robotPlaceEmptyBowlTask = new RobotPlaceEmptyBowlTask(order1);
-            Callable<Result> ingredientPreparationTask = new IngredientPreparationTask(order1);
-            Callable<Result> steamPreparationTask = new SteamPreparationTask(order1);
-            Future<Result> robotPlaceEmptyBowlTaskFuture = executorService.submit(robotPlaceEmptyBowlTask);
-            Future<Result> ingredientPreparationTaskFuture = executorService.submit(ingredientPreparationTask);
-            Future<Result> steamPreparationTaskFuture = executorService.submit(steamPreparationTask);
-            Result result1 = robotPlaceEmptyBowlTaskFuture.get();
-            Result result2 = ingredientPreparationTaskFuture.get();
-            Result result3 = steamPreparationTaskFuture.get();
-            if (result1.getCode() == 200 && result3.getCode() == 200 && result2.getCode() == 200){
+            Result result1 = robotPlaceEmptyBowl.start(order1);
+            Result result2 = ingredientPreparation.start(order1);
+            Result result3 = steamPreparation.start(order1);
+            //只要机器人把碗放到台上复位即可
+            if (result1.getCode() == 200) {
                 log.info("可以转转台");
             }
         }

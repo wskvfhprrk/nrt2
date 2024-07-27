@@ -2,6 +2,7 @@ package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
@@ -21,8 +22,6 @@ public class RelayDeviceService implements DeviceHandler {
 
     @Autowired
     private IpConfig ipConfig;
-    @Autowired
-    private PubConfig pubConfig;
 
     /**
      * 处理消息
@@ -69,10 +68,10 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @param no 继电器编号，范围为1-32
      */
-    public void relayClosing(int no) {
+    public Result relayClosing(int no) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return; // 添加return，防止继续执行
+            return Result.error(500,"编号继电器不存在"); // 添加return，防止继续执行
         }
         // 将编号转换为16进制字符串
         String hexString = Integer.toHexString(no).toUpperCase();
@@ -86,6 +85,7 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(" 00 00 00 45 44");
         // 发送指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
+        return Result.success();
     }
 
     /**
@@ -94,14 +94,14 @@ public class RelayDeviceService implements DeviceHandler {
      * @param no     继电器编号，范围为1-32
      * @param second 延迟关闭的时间，单位为秒，范围为1-177777
      */
-    public void openClose(int no, int second) {
+    public Result openClose(int no, int second) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return; // 添加return，防止继续执行
+            return Result.error(500,"编号继电器不存在"); // 添加return，防止继续执行
         }
         if (second <= 0 || second > 177777) {
             log.error("时间值不能限定", second);
-            return; // 添加return，防止继续执行
+            return Result.error(500,"时间值不能限定"); // 添加return，防止继续执行
         }
         // 将编号转换为16进制字符串
         String hexString = Integer.toHexString(no).toUpperCase();
@@ -119,24 +119,27 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(" 45 44");
         // 发送指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
+        return Result.success();
     }
 
     /**
      * 关闭所有继电器
      */
-    public void closeAll() {
+    public Result closeAll() {
         log.info("关闭所有继电器");
         // 发送关闭所有继电器的指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
+        return  Result.success();
     }
 
     /**
      * 打开所有继电器
      */
-    public void openAll() {
+    public Result openAll() {
         log.info("打开所有继电器");
         // 发送打开所有继电器的指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44", true);
+        return Result.success();
     }
 
     /**
@@ -144,7 +147,7 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @return
      */
-    public String theFoodOutletIsFacingDownwards() {
+    public Result theFoodOutletIsFacingDownwards() {
         log.info("出餐口向下");
         relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH);
         try {
@@ -160,7 +163,7 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         this.coverClosed();
-        return "ok";
+        return Result.success();
     }
 
     /**
@@ -168,7 +171,7 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @return
      */
-    public String theFoodOutletIsFacingUpwards() {
+    public Result theFoodOutletIsFacingUpwards() {
         log.info("出餐口向上");
         //先打开盖板
         this.coverOpen();
@@ -184,7 +187,7 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
-        return "ok";
+        return Result.success();
     }
 
     /**
@@ -305,35 +308,35 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.STEAM_SWITCH);
     }
 
-    /**
-     * 抽水机打开5分钟——最大抽水时间，如果抽不上来就不抽了
-     */
-    public void pumpStart() {
-        //抽180秒后检测一下
-        openClose(Constants.WATER_PUMP_SWITCH, 300);
-        //三分钟后检测
-        affterTest();
-    }
-
-    //检测有没有水
-    private void affterTest() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(300L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //如果还抽不上水就说明抽水泵坏了
-            if (!pubConfig.getSteamGeneratorWaterStatus()) {
-                log.error("请检查水路，无法抽水到蒸器发生器中！");
-            }
-        }).start();
-    }
-
-    /**
-     * 水到液位处再加半分钟
-     */
-    public void pumpStop() {
-        openClose(Constants.WATER_PUMP_SWITCH, 30);
-    }
+//    /**
+//     * 抽水机打开5分钟——最大抽水时间，如果抽不上来就不抽了
+//     */
+//    public void pumpStart() {
+//        //抽180秒后检测一下
+//        openClose(Constants.WATER_PUMP_SWITCH, 300);
+//        //三分钟后检测
+//        affterTest();
+//    }
+//
+//    //检测有没有水
+//    private void affterTest() {
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(300L);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            //如果还抽不上水就说明抽水泵坏了
+//            if (!pubConfig.getSteamGeneratorWaterStatus()) {
+//                log.error("请检查水路，无法抽水到蒸器发生器中！");
+//            }
+//        }).start();
+//    }
+//
+//    /**
+//     * 水到液位处再加半分钟
+//     */
+//    public void pumpStop() {
+//        openClose(Constants.WATER_PUMP_SWITCH, 30);
+//    }
 }

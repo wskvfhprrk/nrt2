@@ -5,22 +5,16 @@ import com.jc.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Callable;
 
 /**
  * 取牛肉汤
  */
+@Service
 @Slf4j
-public class RetrieveBeefSoup implements Callable<Result> {
+public class RetrieveBeefSoup {
 
-    private final Order order;
-    public RetrieveBeefSoup(Order order) {
-        this.order = order;
-    }
-    @Override
-    public Result call() throws Exception {
+    public Result start(Order order) {
         // 模拟任务处理
-        Thread.sleep(1000);
         log.info("取牛肉汤");
         return Result.success();
     }

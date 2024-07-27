@@ -1,6 +1,7 @@
 package com.jc.config;
 
 import com.jc.constants.Constants;
+import com.jc.entity.Order;
 import com.jc.enums.SteamGeneratorState;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,7 +21,7 @@ public class PubConfig {
     /**
      * 机器人在待机状态
      */
-    private Boolean robotStatus = true;
+    private Boolean robotStatus = false;
     /**
      * 转台当前工位数
      */
@@ -101,6 +102,8 @@ public class PubConfig {
      * 蒸汽发生器是否有水
      */
     private Boolean steamGeneratorWaterStatus = false;
-
-
+    /**
+     * 所有设备连接状态
+     */
+    private Boolean allDevicesConnectedStatus = false;
 }

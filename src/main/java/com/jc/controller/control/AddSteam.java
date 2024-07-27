@@ -5,22 +5,16 @@ import com.jc.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Callable;
 
 /**
  * 加蒸汽任务
  */
+@Service
 @Slf4j
-public class AddSteamTask implements Callable<Result> {
+public class AddSteam {
 
-    private final Order order;
-    public AddSteamTask(Order order) {
-        this.order = order;
-    }
-    @Override
-    public Result call() throws Exception {
+    public Result start(Order order) {
         // 模拟任务处理
-        Thread.sleep(1000);
         log.info("加蒸汽任务");
         return Result.success();
     }

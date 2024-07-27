@@ -1,6 +1,7 @@
 package com.jc;
 
 import com.jc.controller.control.TaskCoordinator;
+import com.jc.service.impl.Reset;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class Application {
     @Autowired
     private ApplicationContext ctx;
     @Autowired
-    private TaskCoordinator taskCoordinator;
+    private Reset  reset;
 
 
     public static void main(String[] args) {
@@ -32,18 +33,11 @@ public class Application {
 
     @PostConstruct
     public void openBrowser() {
-//        try {
-//            //启动线程
-//            taskCoordinator.executeTasks();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
         try {
             String scriptPath = "C:\\scripts\\open_browser.ps1";
             String command = "powershell.exe -ExecutionPolicy Bypass -File \"" + scriptPath + "\"";
             Runtime.getRuntime().exec(command);
+            reset.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
