@@ -31,13 +31,14 @@ public class RobotServiceImpl implements RobotService {
 
     // TODO: 2024/6/22 先判断机器人是否在原点后再执行 
     @Override
-    public void reset() {
+    public Result reset() {
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
             pubConfig.setRobotStatus(true);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return Result.success();
     }
 
     @Override
@@ -80,7 +81,6 @@ public class RobotServiceImpl implements RobotService {
         //向机器人发送取碗指令
         try {
             nettyClientConfig.connectAndSendData("run(takeABowl.jspf)");
-
             pubConfig.setRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -97,17 +97,19 @@ public class RobotServiceImpl implements RobotService {
     }
 
     @Override
-    public void putBowl() {
+    public Result putBowl() {
+        //检测机器人是否加home点
+        if(!pubConfig.getRobotStatus()){
+            log.error("机器人未复位");
+            return Result.error(500,"机器人未复位！");
+        }
         try {
             nettyClientConfig.connectAndSendData("run(putABowl.jspf)");
             pubConfig.setRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return Result.success();
     }
 
-    @Override
-    public void getFans() {
-
-    }
 }
