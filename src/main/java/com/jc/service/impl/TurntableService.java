@@ -7,7 +7,6 @@ import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class TurntableService implements CommandLineRunner {
+public class TurntableService {
     private final NettyServerHandler nettyServerHandler;
     private final IODeviceService ioDeviceService;
     private final IpConfig ipConfig;
@@ -151,24 +150,4 @@ public class TurntableService implements CommandLineRunner {
         log.info("工位数值：{}", pubConfig.getTurntableNumber());
     }
 
-
-    @Override
-    public void run(String... args) throws Exception {
-        //启动后不停的在看状态是否转到下一个工位？
-        while (true) {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
-            //转台转动状态
-            if (pubConfig.getTurntableRotationStatus()) {
-                this.moveToNext1();
-                //重置
-                pubConfig.setTurntableRotationStatus(false);
-            }
-        }
-    }
-
-    private void moveToNext1() throws InterruptedException {
-//        Thread.sleep(20000L);
-        pubConfig.setTurntableNumber(pubConfig.getTurntableNumber()+1);
-        log.info("转台转到下一个工位：{}",pubConfig.getTurntableNumber());
-    }
 }

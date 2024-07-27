@@ -28,6 +28,7 @@ public class RobotServiceImpl implements RobotService {
     private BowlService bowlService;
     @Autowired
     private PubConfig pubConfig;
+    private int takeBowlNumber = 0;
 
     // TODO: 2024/6/22 先判断机器人是否在原点后再执行 
     @Override
@@ -43,6 +44,11 @@ public class RobotServiceImpl implements RobotService {
 
     @Override
     public Result takeBowl() {
+        //如果重试三次不再重试
+        if(takeBowlNumber>3){
+            log.error("重试三次无法取到碗，请检查!");
+            return Result.error(500,"重试三次无法取到碗，请检查 ");
+        }
         //如果碗传感器为低电平，则重新发出碗重置命令
         String ioStatus = ioDeviceService.getIoStatus();
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
@@ -66,14 +72,14 @@ public class RobotServiceImpl implements RobotService {
         boolean bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
         //是否检测到有东西
         Boolean isObjectDetected = split[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
-        if(isObjectDetected){
+        if (isObjectDetected) {
             log.error("检测放碗位置到有东西！");
-            return Result.error(500,"检测放碗位置到有东西！");
+            return Result.error(500, "检测放碗位置到有东西！");
         }
         //检测机器人是否加home点
-        if(!pubConfig.getRobotStatus()){
+        if (!pubConfig.getRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500,"机器人未复位！");
+            return Result.error(500, "机器人未复位！");
         }
         if (!bowlSensor) {
             bowlService.bowlReset();
@@ -86,12 +92,21 @@ public class RobotServiceImpl implements RobotService {
             e.printStackTrace();
         }
         //等待到机器人发出HOME指令才算完成
-        while (pubConfig.getRobotStatus()){
+        while (!pubConfig.getRobotStatus()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
+                if(pubConfig.getRobotStatus()){
+                    continue;
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        String status = ioDeviceService.getStatus();
+        String[] split1 = status.split(",");
+        if(split1[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.LOW.getValue())){
+            takeBowlNumber+=1;
+            this.takeBowl();
         }
         return Result.success();
     }
@@ -99,9 +114,9 @@ public class RobotServiceImpl implements RobotService {
     @Override
     public Result putBowl() {
         //检测机器人是否加home点
-        if(!pubConfig.getRobotStatus()){
+        if (!pubConfig.getRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500,"机器人未复位！");
+            return Result.error(500, "机器人未复位！");
         }
         try {
             nettyClientConfig.connectAndSendData("run(putABowl.jspf)");

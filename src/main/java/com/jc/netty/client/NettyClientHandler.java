@@ -5,7 +5,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     public static void sendData(Channel channel, String data) {
@@ -21,7 +25,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         byte[] data = new byte[buf.readableBytes()];
         buf.readBytes(data);
         String response = new String(data);
-        System.out.println("Server response: " + response);
+        log.info("机器人服务器返回信息:{} " , response);
         ctx.close(); // 关闭连接
     }
 

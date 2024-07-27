@@ -15,10 +15,6 @@ import org.springframework.stereotype.Component;
 @Data
 public class PubConfig {
     /**
-     * 是否要转台转动下一工位
-     */
-    private Boolean turntableRotationStatus = false;
-    /**
      * 机器人在待机状态
      */
     private Boolean robotStatus = false;

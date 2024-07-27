@@ -3,6 +3,7 @@ package com.jc.controller.control;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.entity.Order;
+import com.jc.service.impl.TurntableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class TaskCoordinator {
     private IngredientPreparation ingredientPreparation;
     @Autowired
     private SteamPreparation steamPreparation;
+    @Autowired
+    private TurntableService turntableService;
 
     public void executeTasks(Order order) throws InterruptedException, ExecutionException {
         //判断转台是否在1和4两个工位才能够放置空碗
@@ -42,47 +45,10 @@ public class TaskCoordinator {
             Result result3 = steamPreparation.start(order1);
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
-                log.info("可以转转台");
+                turntableService.moveNumber(3);
+            }else {
+                log.error(result1.getMessage());
             }
         }
-
-//        //
-//        Order order1 = new Order();
-//        Order order2 = new Order();
-//        Order order3 = new Order();
-//        Order order4 = new Order();
-//        Order order5 = new Order();
-//        Order order6 = new Order();
-//        // 创建任务列表
-//        Callable<Result> task1 = new RobotPlaceEmptyBowlTask(order1);
-//        Callable<Result> task2 = new IngredientPreparationTask(order2);
-//        Callable<Result> task3 = new SteamPreparationTask(order3);
-//        Callable<Result> task4 = new FanTask(order4);
-//        Callable<Result> task5 = new PlaceIngredientsTask(order5);
-//        Callable<Result> task6 = new AddSteamTask(order6);
-//
-//        // 提交任务到线程池并获取 Future 对象
-//        Future<Result> future1 = executorService.submit(task1);
-//        Future<Result> future2 = executorService.submit(task2);
-//        Future<Result> future3 = executorService.submit(task3);
-//        Future<Result> future4 = executorService.submit(task4);
-//        Future<Result> future5 = executorService.submit(task5);
-//        Future<Result> future6 = executorService.submit(task6);
-//
-//        // 等待并获取任务结果
-//        Result result1 = future1.get();
-//        Result result2 = future2.get();
-//        Result result3 = future3.get();
-//        Result result4 = future4.get();
-//        Result result5 = future5.get();
-//        Result result6 = future6.get();
-//
-//        // 打印结果
-//        System.out.println("result1……" + result1.getMessage());
-//        System.out.println("result2……" + result2.getMessage());
-//        System.out.println("result3……" + result3.getMessage());
-//        System.out.println("result4……" + result4.getMessage());
-//        System.out.println("result5……" + result5.getMessage());
-//        System.out.println("result6……" + result6.getMessage());
     }
 }
