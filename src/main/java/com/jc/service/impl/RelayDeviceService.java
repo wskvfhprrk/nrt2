@@ -308,6 +308,14 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.STEAM_SWITCH);
     }
 
+    /**
+     * 打开震动器
+     */
+    public Result openVibrator(){
+        openClose(Constants.SHAKER_SWITCH,5);
+        return Result.success();
+    }
+
 //    /**
 //     * 抽水机打开5分钟——最大抽水时间，如果抽不上来就不抽了
 //     */

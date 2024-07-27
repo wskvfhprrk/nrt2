@@ -114,4 +114,9 @@ public class RelayController {
     public void closeFan(){
         relayDeviceService.closeFan();
     }
+
+    @GetMapping("openVibrator")
+    public void openVibrator(){
+        relayDeviceService.openVibrator();
+    }
 }

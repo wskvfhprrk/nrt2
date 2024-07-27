@@ -106,8 +106,8 @@ public class ButtonController {
                 relayDeviceService.steamClose();
                 break;
             case 15:
-                actionResult = "出料测试操作完成";
-                // 执行出料测试的操作逻辑
+                actionResult = "震动器测试";
+                relayDeviceService.openVibrator();
                 break;
             default:
                 actionResult = "未知操作";
