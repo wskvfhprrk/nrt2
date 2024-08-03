@@ -121,9 +121,9 @@ public class ButtonController {
         // 实现急停逻辑，例如停止所有关键操作——即关闭所以继电器
         relayDeviceService.closeAll();
         //所有步进电机停止
-        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
+//        stepperMotorService.stop(Constants.BOWL_STEPPER_MOTOR);
         stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
-        stepperMotorService.stop(Constants.FAN_STEPPER_MOTOR);
+//        stepperMotorService.stop(Constants.FAN_STEPPER_MOTOR);
 
         return "急停操作完成";
     }

@@ -13,6 +13,7 @@ public class IpConfig {
     private int nettyPort;
     private String io;
     private String relay;
+    private String relay11;
     private String send485Order;
     private String receive485Signal;
     private String ducuIp;

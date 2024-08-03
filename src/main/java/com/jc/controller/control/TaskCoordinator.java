@@ -40,15 +40,34 @@ public class TaskCoordinator {
             if (pubConfig.getTurntableNumber() == 4) {
                 order4 = order;
             }
-            Result result1 = robotPlaceEmptyBowl.start(order1);
+            Result result1 = robotPlaceEmptyBowl.start();
             Result result2 = ingredientPreparation.start(order1);
             Result result3 = steamPreparation.start(order1);
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
                 turntableService.moveNumber(3);
-            }else {
+            } else {
                 log.error(result1.getMessage());
             }
+        }
+        if (pubConfig.getTurntableNumber() == 3) {
+            // TODO: 2024/7/27 打开称重传感器料仓
+            // TODO: 2024/7/27 粉丝货道掉下来
+            // TODO: 2024/7/27 震动器打开后自动关闭
+            Thread.sleep(5000L);//模拟下配料
+            //旋转到第四个工位
+            turntableService.moveNumber(4);
+        }
+        if (pubConfig.getTurntableNumber() == 4) {
+            // TODO: 2024/7/27 盖板盖到碗上
+            // TODO: 2024/7/27 打开蒸汽
+            Thread.sleep(5000L);//模拟下配料
+            //旋转到第起始工位
+            turntableService.moveNumber(5);
+        }
+        if (pubConfig.getTurntableNumber() == 5) {
+            //放汤
+
         }
     }
 }

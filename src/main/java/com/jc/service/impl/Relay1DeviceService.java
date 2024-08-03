@@ -1,7 +1,6 @@
 package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
-import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.netty.server.NettyServerHandler;
@@ -11,15 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * 继电器设备处理类
+ * 亿佰特继电器设备处理类
  * 实现了DeviceHandler接口，提供了继电器的打开、关闭及定时关闭功能
  */
 @Service
 @Slf4j
-public class RelayDeviceService implements DeviceHandler {
+public class Relay1DeviceService implements DeviceHandler {
     @Autowired
     private NettyServerHandler nettyServerHandler;
-
     @Autowired
     private IpConfig ipConfig;
 
@@ -32,9 +30,9 @@ public class RelayDeviceService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("继电器设备——HEX消息: {}", message);
+            log.info("亿佰特继电器设备——HEX消息: {}", message);
         } else {
-            log.info("继电器设备——普通消息: {}", message);
+            log.info("亿佰特继电器设备——普通消息: {}", message);
             // 在这里添加处理普通字符串消息的逻辑
         }
     }
@@ -316,4 +314,35 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
+//    /**
+//     * 抽水机打开5分钟——最大抽水时间，如果抽不上来就不抽了
+//     */
+//    public void pumpStart() {
+//        //抽180秒后检测一下
+//        openClose(Constants.WATER_PUMP_SWITCH, 300);
+//        //三分钟后检测
+//        affterTest();
+//    }
+//
+//    //检测有没有水
+//    private void affterTest() {
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(300L);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            //如果还抽不上水就说明抽水泵坏了
+//            if (!pubConfig.getSteamGeneratorWaterStatus()) {
+//                log.error("请检查水路，无法抽水到蒸器发生器中！");
+//            }
+//        }).start();
+//    }
+//
+//    /**
+//     * 水到液位处再加半分钟
+//     */
+//    public void pumpStop() {
+//        openClose(Constants.WATER_PUMP_SWITCH, 30);
+//    }
 }

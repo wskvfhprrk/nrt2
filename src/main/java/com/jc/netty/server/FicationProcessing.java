@@ -24,6 +24,9 @@ public class FicationProcessing {
     @Lazy
     private RelayDeviceService relayDeviceService; // 继电器设备处理器
     @Autowired
+    @Lazy
+    private Relay1DeviceService relay1DeviceService; // 继电器设备处理器
+    @Autowired
     private Send485OrderService send485OrderService;
     @Autowired
     private Receive485SignalService receive485SignalService;
@@ -44,6 +47,8 @@ public class FicationProcessing {
             ioDeviceService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getRelay())) {
             relayDeviceService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getRelay11())) {
+            relay1DeviceService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getSend485Order())) {
             send485OrderService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getReceive485Signal())) {

@@ -102,4 +102,8 @@ public class PubConfig {
      * 所有设备连接状态
      */
     private Boolean allDevicesConnectedStatus = false;
+    /**
+     *
+     */
+    public Double soupTemperatureValue=0.0;
 }

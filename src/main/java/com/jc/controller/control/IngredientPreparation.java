@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class IngredientPreparation{
 
     public Result start(Order order) {
-        // 模拟任务处理
         log.info("配料准备任务");
         return Result.success();
     }
