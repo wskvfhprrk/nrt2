@@ -43,7 +43,7 @@ public class BowlController {
      * @return 操作结果
      */
     @GetMapping("bowlDescent")
-    public String bowlDescent() {
+    public String bowlDown() {
         return bowlService.bowlDescent();
     }
 

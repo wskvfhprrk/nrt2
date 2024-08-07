@@ -71,7 +71,7 @@ public class RelayDeviceService implements DeviceHandler {
     public Result relayClosing(int no) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return Result.error(500,"编号继电器不存在"); // 添加return，防止继续执行
+            return Result.error(500, "编号继电器不存在"); // 添加return，防止继续执行
         }
         // 将编号转换为16进制字符串
         String hexString = Integer.toHexString(no).toUpperCase();
@@ -97,11 +97,11 @@ public class RelayDeviceService implements DeviceHandler {
     public Result openClose(int no, int second) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return Result.error(500,"编号继电器不存在"); // 添加return，防止继续执行
+            return Result.error(500, "编号继电器不存在"); // 添加return，防止继续执行
         }
         if (second <= 0 || second > 177777) {
             log.error("时间值不能限定", second);
-            return Result.error(500,"时间值不能限定"); // 添加return，防止继续执行
+            return Result.error(500, "时间值不能限定"); // 添加return，防止继续执行
         }
         // 将编号转换为16进制字符串
         String hexString = Integer.toHexString(no).toUpperCase();
@@ -129,7 +129,7 @@ public class RelayDeviceService implements DeviceHandler {
         log.info("关闭所有继电器");
         // 发送关闭所有继电器的指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
-        return  Result.success();
+        return Result.success();
     }
 
     /**
@@ -226,31 +226,15 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 蒸汽测试,打开5秒后关闭
+     *
+     * @param number
      */
-    public void steam() {
-        log.info("蒸汽测试,打开5秒后关闭");
+    public void steam(int number) {
+        log.info("蒸汽测试,打开{}}秒后关闭", number);
         //继电器7打开15秒关闭
-        this.openClose(Constants.STEAM_SWITCH, 5);
+        this.openClose(Constants.STEAM_SWITCH, number);
     }
 
-
-    /**
-     * 打开柜体排气风扇
-     */
-    public String openFan() {
-        log.info("打开柜体排气风扇");
-        relayOpening(Constants.CABINET_EXHAUST_FAN_SWITCH);
-        return "ok";
-    }
-
-    /**
-     * 关闭柜体排气风扇
-     */
-    public String closeFan() {
-        log.info("关闭柜体排气风扇");
-        relayClosing(Constants.CABINET_EXHAUST_FAN_SWITCH);
-        return "ok";
-    }
 
     /**
      * 停止碗开关
@@ -286,10 +270,12 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 打开抽汤泵10秒钟时间
+     *
+     * @param number
      */
-    public void soupPump() {
+    public void soupPump(int number) {
         log.info("打开抽汤泵10秒钟时间");
-        openClose(Constants.SOUP_PUMP_SWITCH, 10);
+        openClose(Constants.SOUP_PUMP_SWITCH, number);
     }
 
     /**
@@ -311,9 +297,39 @@ public class RelayDeviceService implements DeviceHandler {
     /**
      * 打开震动器
      */
-    public Result openVibrator(){
-        openClose(Constants.SHAKER_SWITCH,5);
+    public Result openVibrator() {
+        openClose(Constants.SHAKER_SWITCH, 5);
         return Result.success();
     }
 
+
+    public Result rearFanOpen() {
+        relayOpening(Constants.CABINET_EXHAUST_FAN_SWITCH);
+        return Result.success();
+    }
+
+    public Result rearFanClose() {
+        relayClosing(Constants.CABINET_EXHAUST_FAN_SWITCH);
+        return Result.success();
+    }
+
+    public Result vibratorTest(Integer number) {
+        openClose(Constants.REAR_BOX_FAN, number);
+        return Result.success();
+    }
+
+    public Result bowlSteam(Integer number) {
+        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE, number);
+        return Result.success();
+    }
+
+    public Result steamTest(Integer number) {
+        openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
+        return Result.success();
+    }
+
+    public Result heatSoupToTemperature(Integer number) {
+        openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
+        return Result.success();
+    }
 }

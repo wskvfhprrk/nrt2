@@ -117,7 +117,7 @@ public class TurntableService {
      *
      * @param number
      */
-    public void moveNumber(int number) {
+    public void alignToPosition(int number) {
         //如果没有初始化要多转一圈第一圈让重置
         //除以6求余为工位
         if (pubConfig.getTurntableReset() && pubConfig.getTurntableNumber() % Constants.WORKSTATION_NUMBER == number) {

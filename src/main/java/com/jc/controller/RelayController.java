@@ -1,5 +1,6 @@
 package com.jc.controller;
 
+import com.jc.config.Result;
 import com.jc.service.impl.RelayDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +70,7 @@ public class RelayController {
     public void theFoodOutletIsFacingDownwards() {
         relayDeviceService.theFoodOutletIsFacingDownwards();
     }
+
     /**
      * 出餐口向上复位
      */
@@ -100,23 +102,11 @@ public class RelayController {
     public void dischargingIsProhibitedAfterClosingTheWarehouse() {
 //        relayDeviceService.dischargingIsProhibitedAfterClosingTheWarehouse();
     }
-    /**
-     * 打开排气风扇
-     */
-    @GetMapping("openFan")
-    public void openFan(){
-        relayDeviceService.openFan();
-    }
-    /**
-     * 关闭排气风扇
-     */
-    @GetMapping("closeFan")
-    public void closeFan(){
-        relayDeviceService.closeFan();
-    }
+
 
     @GetMapping("openVibrator")
-    public void openVibrator(){
+    public void openVibrator() {
         relayDeviceService.openVibrator();
     }
+
 }

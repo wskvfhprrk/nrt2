@@ -1,5 +1,6 @@
 package com.jc.controller;
 
+import com.jc.config.Result;
 import com.jc.service.impl.TurntableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +21,8 @@ public class TurntableController {
 
 
     @GetMapping("moveNumber")
-    public String moveNumber(int number){
-        turntableService.moveNumber(number);
-        return "ok";
+    public Result moveNumber(int number){
+        turntableService.alignToPosition(number);
+        return Result.success();
     }
 }
