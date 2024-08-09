@@ -42,13 +42,13 @@ public class Receive485SignalService implements DeviceHandler {
      * @param message
      */
     private void ParseCommand(String message) {
-        String s = message.substring(0, 2);
-        Integer integer = Integer.valueOf(s);
         //先modbus验证，如果验证不过就不管
         boolean b = CRC16.validateCRC(HexConvert.hexStringToBytes(message));
         if(!b){
             return;
         }
+        String s = message.substring(0, 2);
+        Integer integer = Integer.valueOf(s);
         //计算汤的温度值
         if (integer.equals(Constants.SOUP_TEMPERATURE_SENSOR)) {
             CalculateSoupTemperatureValue(message);
@@ -63,7 +63,8 @@ public class Receive485SignalService implements DeviceHandler {
         //截取第六位到第10位数据位
         String substring = message.substring(6, 10);
         int i = Integer.parseInt(substring, 16);
-        pubConfig.setSoupTemperatureValue(i/10.0);
-        log.info("测量汤的温度为：{}",i/10.0);
+        double soupTemperatureValue = i / 10.0;
+        pubConfig.setSoupTemperatureValue(soupTemperatureValue);
+        log.info("测量汤的温度为：{}", soupTemperatureValue);
     }
 }

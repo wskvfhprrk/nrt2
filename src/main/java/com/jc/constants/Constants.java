@@ -53,6 +53,10 @@ public class Constants {
      */
     public static final int ROBOT_EMPTY_BOWL_SENSOR = 5;
     /**
+     * 蒸器发生器液位传感器X7
+     */
+    public static final int STEAM_GENERATOR_LEVEL_SENSOR = 6;
+    /**
      * 蒸汽发生器最高温度传感器
      */
     public static final int STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR = 12;
@@ -100,29 +104,69 @@ public class Constants {
      */
     public static final int REAR_BOX_FAN = 8;
     /**
-     * 碗交流电机N极
+     * 配菜称重盒开关1打开
      */
-    public static final int BOWL_N_SWITCH = 31;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_OPNE = 9;
     /**
-     * 碗交流电机L极
+     * 配菜称重盒开关1关闭
      */
-    public static final int BOWL_L_SWITCH = 32;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_CLOSE = 10;
+    /**
+     * 配菜称重盒开关2打开
+     */
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_OPNE = 11;
+    /**
+     * 配菜称重盒开关2关闭
+     */
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_CLOSE = 12;
+    /**
+     * 配菜称重盒开关3打开
+     */
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_OPNE = 13;
+    /**
+     * 配菜称重盒开关3关闭
+     */
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_CLOSE = 14;
+    /**
+     * 配菜称重盒开关4打开
+     */
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_OPNE = 15;
+    /**
+     * 配菜称重盒开关4关闭
+     */
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_CLOSE = 16;
     /**
      * 抽汤泵
      */
     public static final int SOUP_PUMP_SWITCH = 17;
     /**
+     * 弹簧货道电机5
+     */
+    public static final int SPRING_TRACK_MOTOR5 = 18;
+    /**
+     * 弹簧货道电机4
+     */
+    public static final int SPRING_TRACK_MOTOR4 = 19;
+    /**
+     * 弹簧货道电机3
+     */
+    public static final int SPRING_TRACK_MOTOR3 = 20;
+    /**
+     * 弹簧货道电机2
+     */
+    public static final int SPRING_TRACK_MOTOR2 = 21;
+    /**
+     * 弹簧货道电机1
+     */
+    public static final int SPRING_TRACK_MOTOR1 = 22;
+    /**
      * 碗蒸汽电磁阀
      */
-    public static final int BOWL_STEAM_SOLENOID_VALVE = 10;
+    public static final int BOWL_STEAM_SOLENOID_VALVE = 23;
     /**
      * 汤蒸汽电磁阀
      */
-    public static final int SOUP_STEAM_SOLENOID_VALVE = 11;
-    /**
-     * 抽汤泵
-     */
-    public static final int SOUP_PUMP = 17;
+    public static final int SOUP_STEAM_SOLENOID_VALVE = 24;
     /**
      * 汤开关
      */
@@ -131,54 +175,6 @@ public class Constants {
      * 震动器
      */
     public static final int SHAKER_SWITCH = 26;
-
-    /**
-     * 端子盒
-     */
-    /**
-     * 弹簧货道电机5
-     */
-    public static final int SPRING_TRACK_MOTOR5 = 12;
-    /**
-     * 弹簧货道电机4
-     */
-    public static final int SPRING_TRACK_MOTOR4 = 13;
-    /**
-     * 弹簧货道电机3
-     */
-    public static final int SPRING_TRACK_MOTOR3 = 14;
-    /**
-     * 弹簧货道电机2
-     */
-    public static final int SPRING_TRACK_MOTOR2 = 15;
-    /**
-     * 弹簧货道电机1
-     */
-    public static final int SPRING_TRACK_MOTOR1 = 16;
-    /**
-     * 配菜称重盒开关1
-     */
-    public static final int VEGETABLE_WEIGHING_BOX_SWITCH1 = 5;
-    /**
-     * 配菜称重盒开关2
-     */
-    public static final int VEGETABLE_WEIGHING_BOX_SWITCH2 = 6;
-    /**
-     * 配菜称重盒开关3
-     */
-    public static final int VEGETABLE_WEIGHING_BOX_SWITCH3 = 7;
-    /**
-     * 配菜称重盒方向1
-     */
-    public static final int VEGETABLE_WEIGHING_BOX_DIRECTION1 = 9;
-    /**
-     * 配菜称重盒方向2
-     */
-    public static final int VEGETABLE_WEIGHING_BOX_DIRECTION2 = 10;
-    /**
-     * 配菜称重盒方向3
-     */
-    public static final int VEGETABLE_WEIGHING_BOX_DIRECTION3 = 11;
     /**
      * 配料电机4
      */
@@ -195,8 +191,14 @@ public class Constants {
      * 配料电机1
      */
     public static final int INGREDIENT_MOTOR1 = 30;
-
-
+    /**
+     * 碗交流电机N极
+     */
+    public static final int BOWL_N_SWITCH = 31;
+    /**
+     * 碗交流电机L极
+     */
+    public static final int BOWL_L_SWITCH = 32;
 
 
     /** 485设备指令 */
@@ -215,7 +217,7 @@ public class Constants {
     /**
      * 汤温度传感器
      */
-    public static final int SOUP_TEMPERATURE_SENSOR = 1;
+    public static final int SOUP_TEMPERATURE_SENSOR=1;
 
 
     /**
@@ -223,11 +225,19 @@ public class Constants {
      */
     public static final int WORKSTATION_NUMBER = 6;
     /**
+     * 蒸汽发生器保温状态
+     */
+    public static final int STEAM_GENERATOR_INSULATION_STATUS = 1;
+    /**
+     * 蒸汽发生器蒸汽状态
+     */
+    public static final int STEAM_GENERATOR_STEAM_STATUS = 2;
+    /**
      * 机器人到达home发送指令
      */
     public static final String ROBOT_HOME = "686F6D65";
     /**
      * 读取汤温度指令
      */
-    public static final String READ_SOUP_TEMPERATURE_COMMAND = "01 03 00 04 00 01 C5 CB";
+    public static final String READ_SOUP_TEMPERATURE_COMMAND="01 03 00 04 00 01 C5 CB";
 }

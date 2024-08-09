@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.Result;
 import com.jc.config.RobotConfig;
 import com.jc.constants.Constants;
 import com.jc.utils.CRC16;
@@ -109,5 +110,22 @@ public class SeasoningMachineService {
         String modbusrtuString = CRC16.getModbusrtuString(order);
         send485OrderService.sendOrder(order+modbusrtuString);
         log.info("配方：{}发送完毕",formula);
+    }
+
+    /**
+     * 称重测试打开
+     * @return
+     */
+    public Result selectionTestOpen() {
+        // TODO: 2024/8/8 称重传感器连续发送数据
+        return Result.success();
+    }
+
+    /**
+     * 称重测试关闭
+     * @return
+     */
+    public Result selectionTestClose() {
+        return Result.success();
     }
 }

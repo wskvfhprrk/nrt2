@@ -27,9 +27,9 @@ public class ButtonController {
     @Autowired
     private SeasoningMachineService seasoningMachineService;
     @Autowired
-    private PubConfig pubConfig;
+    private Send485OrderService send485OrderService;
     @Autowired
-    private IngredientsSystemService ingredientsSystemService;
+    private PubConfig pubConfig;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) {
@@ -129,56 +129,72 @@ public class ButtonController {
                 break;
             case 19:
                 if (number != null) {
-                    actionResult = "碗蒸汽（秒）";
-                    relayDeviceService.bowlSteam(number);
+                    actionResult = "弹簧货道（编号）";
+                    relayDeviceService.springChannel(number);
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
             case 20:
+                actionResult = "称重测试打开";
+                seasoningMachineService.selectionTestOpen();
+                break;
+            case 21:
+                actionResult = "称重测试关闭";
+                seasoningMachineService.selectionTestClose();
+                break;
+            case 22:
                 if (number != null) {
-                    actionResult = "弹簧货道（编号）";
-                    ingredientsSystemService.springChannel(number);
+                    actionResult = "配菜称重盒打开（编号）";
+                    relayDeviceService.openWeighingBox(number);
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 21:
-                actionResult = "称重测试打开";
-                ingredientsSystemService.selectionTestOpen();
-                break;
-            case 22:
-                actionResult = "称重测试关闭";
-                ingredientsSystemService.selectionTestClose();
-                break;
             case 23:
                 if (number != null) {
-                    actionResult = "配菜称重盒打开（编号）";
-                    ingredientsSystemService.openWeighingBox(number);
+                    actionResult = "配菜称重盒关闭（编号）";
+                    relayDeviceService.closeWeighingBox(number);
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
             case 24:
                 if (number != null) {
-                    actionResult = "配菜称重盒关闭（编号）";
-                    ingredientsSystemService.closeWeighingBox(number);
+                    actionResult = "配菜电机打开（编号）";
+                    relayDeviceService.vegetableMotor(number);
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
             case 25:
                 if (number != null) {
-                    actionResult = "配菜电机（编号）";
-                    ingredientsSystemService.vegetableMotor(number);
+                    actionResult = "配菜电机关闭（编号）";
+                    relayDeviceService.vegetableMotorStop(number);
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
             case 26:
                 if (number != null) {
-                    actionResult = "配菜电机（Kg）";
-                    ingredientsSystemService.vegetableMotorInKg(number);
+                    actionResult = "1号配菜电机（KG）";
+                    relayDeviceService.vegetableMotorInKg(1, number);
+                } else {
+                    actionResult = "缺少必要参数";
+                }
+                break;
+            case 27:
+                if (number != null) {
+                    actionResult = "2号配菜电机（KG）";
+                    relayDeviceService.vegetableMotorInKg(2, number);
+                } else {
+                    actionResult = "缺少必要参数";
+                }
+                break;
+            case 28:
+                if (number != null) {
+                    actionResult = "3号配菜电机（KG）";
+                    relayDeviceService.vegetableMotorInKg(3, number);
                 } else {
                     actionResult = "缺少必要参数";
                 }

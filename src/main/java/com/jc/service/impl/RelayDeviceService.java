@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 public class RelayDeviceService implements DeviceHandler {
     @Autowired
     private NettyServerHandler nettyServerHandler;
-
+    @Autowired
+    private PubConfig pubConfig;
     @Autowired
     private IpConfig ipConfig;
 
@@ -318,18 +319,178 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    public Result bowlSteam(Integer number) {
-        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE, number);
+    public Result heatSoupToTemperature(Integer number)  {
+        openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
+        //发送查询温度指令
+        Boolean flag = true;
+        while (flag) {
+            if (pubConfig.getSoupTemperatureValue() >= number) {
+                flag = false;
+            }
+            //发送温度
+            nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return Result.success();
     }
 
-    public Result steamTest(Integer number) {
-        openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
+    /**
+     * 弹簧货道（编号）
+     *
+     * @param number
+     * @return
+     */
+    public Result springChannel(Integer number) {
+        int i = 0;
+        switch (number) {
+            case 1:
+                i = Constants.SPRING_TRACK_MOTOR1;
+                break;
+            case 2:
+                i = Constants.SPRING_TRACK_MOTOR2;
+                break;
+            case 3:
+                i = Constants.SPRING_TRACK_MOTOR3;
+                break;
+            case 4:
+                i = Constants.SPRING_TRACK_MOTOR4;
+                break;
+            case 5:
+                i = Constants.SPRING_TRACK_MOTOR5;
+                break;
+            default:
+
+        }
+        openClose(i, number);
         return Result.success();
     }
 
-    public Result heatSoupToTemperature(Integer number) {
-        openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
+    /**
+     * 配菜称重盒打开（编号）
+     *
+     * @param number
+     * @return
+     */
+    public Result openWeighingBox(Integer number) {
+        int i = 0;
+        switch (number) {
+            case 1:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_OPNE;
+                break;
+            case 2:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_OPNE;
+                break;
+            case 3:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_OPNE;
+                break;
+            case 4:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_OPNE;
+                break;
+            default:
+
+        }
+        relayOpening(i);
+        return Result.success();
+    }
+
+    /**
+     * 配菜称重盒关闭（编号）
+     *
+     * @param number
+     * @return
+     */
+    public Result closeWeighingBox(Integer number) {
+        int i = 0;
+        switch (number) {
+            case 1:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_CLOSE;
+                break;
+            case 2:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_CLOSE;
+                break;
+            case 3:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_CLOSE;
+                break;
+            case 4:
+                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_CLOSE;
+                break;
+            default:
+
+        }
+        relayClosing(i);
+        return Result.success();
+    }
+
+    /**
+     * 配菜电机打开（编号）
+     *
+     * @param number
+     * @return
+     */
+    public Result vegetableMotor(Integer number) {
+        int i = 0;
+        switch (number) {
+            case 1:
+                i = Constants.INGREDIENT_MOTOR1;
+                break;
+            case 2:
+                i = Constants.INGREDIENT_MOTOR2;
+                break;
+            case 3:
+                i = Constants.INGREDIENT_MOTOR3;
+                break;
+            case 4:
+                i = Constants.INGREDIENT_MOTOR4;
+                break;
+            default:
+
+        }
+        relayOpening(i);
+        return Result.success();
+    }
+
+    /**
+     * 配菜电机关闭（编号）
+     *
+     * @param number
+     */
+    public Result vegetableMotorStop(Integer number) {
+        int i = 0;
+        switch (number) {
+            case 1:
+                i = Constants.INGREDIENT_MOTOR1;
+                break;
+            case 2:
+                i = Constants.INGREDIENT_MOTOR2;
+                break;
+            case 3:
+                i = Constants.INGREDIENT_MOTOR3;
+                break;
+            case 4:
+                i = Constants.INGREDIENT_MOTOR4;
+                break;
+            default:
+
+        }
+        relayClosing(i);
+        return Result.success();
+    }
+
+    /**
+     * 配菜电机（KG）
+     *
+     * @param i
+     * @param number
+     * @return
+     */
+    public Result vegetableMotorInKg(int i, Integer number) {
+        vegetableMotor(i);
+        //todo 查看是否够重量
+        vegetableMotorStop(i);
         return Result.success();
     }
 }
