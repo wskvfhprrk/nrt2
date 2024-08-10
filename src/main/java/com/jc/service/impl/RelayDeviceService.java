@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 继电器设备处理类
  * 实现了DeviceHandler接口，提供了继电器的打开、关闭及定时关闭功能
@@ -269,15 +273,67 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.BOWL_N_SWITCH);
     }
 
-    /**
-     * 打开抽汤泵10秒钟时间
-     *
-     * @param number
-     */
-    public void soupPump(int number) {
-        log.info("打开抽汤泵10秒钟时间");
-        openClose(Constants.SOUP_PUMP_SWITCH, number);
+
+    // 创建一个固定线程池
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+    public void startSoupPump(int seconds) {
+        executorService.submit(() -> soupPump(seconds));
     }
+
+    /**
+     * 打开抽汤泵到液位后多少秒关闭——至少1秒
+     *
+     * @param seconds 多少秒关闭
+     */
+    public void soupPump(int seconds) {
+        log.info("打开抽汤泵，保持{}秒钟时间", seconds);
+
+        // 打开抽汤泵
+        relayOpening(Constants.SOUP_PUMP_SWITCH);
+
+        // 最少是1秒钟阻隔时间
+        if (seconds <= 0) {
+            seconds = 1;
+        }
+
+        // 将秒转换为毫秒
+        int milliseconds = seconds * 1000;
+
+        // 标志位，表示是否继续等待
+        Boolean flag = !pubConfig.getAddingSeasoningCompleted();
+
+        while (flag) {
+            try {
+                // 等待指定时间
+                Thread.sleep(milliseconds);
+
+                // 每次等待之后重新检查调料是否完成添加
+                flag = !pubConfig.getAddingSeasoningCompleted();
+            } catch (InterruptedException e) {
+                // 处理异常
+                Thread.currentThread().interrupt();
+                log.error("线程被中断", e);
+                break;
+            }
+        }
+
+        // 关闭抽汤泵
+        relayClosing(Constants.SOUP_PUMP_SWITCH);
+    }
+
+//    // 优雅地关闭线程池
+//    public void shutdown() {
+//        try {
+//            executorService.shutdown();
+//            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+//                executorService.shutdownNow();
+//            }
+//        } catch (InterruptedException e) {
+//            executorService.shutdownNow();
+//            Thread.currentThread().interrupt();
+//        }
+//    }
 
     /**
      * 蒸汽打开
@@ -319,7 +375,7 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    public Result heatSoupToTemperature(Integer number)  {
+    public Result heatSoupToTemperature(Integer number) {
         openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
         //发送查询温度指令
         Boolean flag = true;
@@ -365,7 +421,8 @@ public class RelayDeviceService implements DeviceHandler {
             default:
 
         }
-        openClose(i, number);
+        // 通电5秒，让货道自动转一圈
+        openClose(i, 5);
         return Result.success();
     }
 
@@ -426,7 +483,7 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 配菜电机打开（编号）
+     * 配菜称重盒关闭打开（编号）
      *
      * @param number
      * @return
@@ -454,7 +511,7 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 配菜电机关闭（编号）
+     * 配菜称重盒关闭关闭（编号）
      *
      * @param number
      */
@@ -489,7 +546,19 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result vegetableMotorInKg(int i, Integer number) {
         vegetableMotor(i);
-        //todo 查看是否够重量
+        //查看是否够重量
+        Boolean flag = true;
+        while (flag) {
+            nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_WEIGHT_VALUE, true);
+            if (pubConfig.getCalculateWeight()[i] >= number) {
+                flag = false;
+            }
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         vegetableMotorStop(i);
         return Result.success();
     }

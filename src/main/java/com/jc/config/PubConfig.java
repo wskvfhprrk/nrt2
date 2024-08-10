@@ -1,7 +1,5 @@
 package com.jc.config;
 
-import com.jc.constants.Constants;
-import com.jc.entity.Order;
 import com.jc.enums.SteamGeneratorState;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -103,7 +101,12 @@ public class PubConfig {
      */
     private Boolean allDevicesConnectedStatus = false;
     /**
-     *
+     * 汤的温度
      */
     public Double soupTemperatureValue=0.0;
+
+    /**
+     * 称重传感器
+     */
+    public int[] calculateWeight=new int[4];
 }

@@ -218,6 +218,10 @@ public class Constants {
      * 汤温度传感器
      */
     public static final int SOUP_TEMPERATURE_SENSOR=1;
+    /**
+     * 重量传感器一托四
+     */
+    public static final int WEIGHT_SENSOR_ONE_TO_FOUR=1;
 
 
     /**
@@ -240,4 +244,12 @@ public class Constants {
      * 读取汤温度指令
      */
     public static final String READ_SOUP_TEMPERATURE_COMMAND="01 03 00 04 00 01 C5 CB";
+    /**
+     * 读取所有重量的值
+     */
+    public static final String READ_WEIGHT_VALUE="01 03 00 00 00 08 45 CF";
+    /**
+     * 称重置零
+     */
+    public static final String TARE_WEIGHT="03 06 00 26 00 01 A8 23";
 }

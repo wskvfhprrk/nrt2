@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.service.DeviceHandler;
 import com.jc.utils.CRC16;
@@ -8,6 +9,7 @@ import com.jc.utils.HexConvert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 /**
  * 收到485信号
@@ -53,9 +55,33 @@ public class Receive485SignalService implements DeviceHandler {
         if (integer.equals(Constants.SOUP_TEMPERATURE_SENSOR)) {
             CalculateSoupTemperatureValue(message);
         }
+        //计算重量
+        if(integer.equals(Constants.WEIGHT_SENSOR_ONE_TO_FOUR)){
+            calculateWeight(message);
+        }
     }
 
     /**
+     * 计算重量
+     * @param message
+     * @return
+     */
+    private int[] calculateWeight(String message) {
+        // 01 03 10 00 00 03 E8 00 00 07 D0 00 00 0B B8 00 00 0F A0 A8 23
+        int[] sensorValues = new int[4];
+        for (int i = 0; i < 4; i++) {
+            int startIndex = 3 + i * 4;
+            String substring = message.substring(startIndex, startIndex + 4);
+            int number = Integer.parseInt(substring, 16);
+            sensorValues[i]=number;
+            log.info("称重传感器 {} 的值为：{} g",i,number);
+        }
+        pubConfig.setCalculateWeight(sensorValues);
+        return sensorValues;
+    }
+
+    /**
+     * 计算汤传感器数据
      * @param message
      */
     private void CalculateSoupTemperatureValue(String message) {
@@ -65,6 +91,6 @@ public class Receive485SignalService implements DeviceHandler {
         int i = Integer.parseInt(substring, 16);
         double soupTemperatureValue = i / 10.0;
         pubConfig.setSoupTemperatureValue(soupTemperatureValue);
-        log.info("测量汤的温度为：{}", soupTemperatureValue);
+        log.info("测量汤的温度为：{} 度", soupTemperatureValue);
     }
 }
