@@ -4,6 +4,7 @@ import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
+import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,8 @@ public class RelayDeviceService implements DeviceHandler {
     private PubConfig pubConfig;
     @Autowired
     private IpConfig ipConfig;
+    @Autowired
+    private IODeviceService ioDeviceService;
 
     /**
      * 处理消息
@@ -301,7 +304,7 @@ public class RelayDeviceService implements DeviceHandler {
         int milliseconds = seconds * 1000;
 
         // 标志位，表示是否继续等待
-        Boolean flag = !pubConfig.getAddingSeasoningCompleted();
+        Boolean flag = true;
 
         while (flag) {
             try {
@@ -309,7 +312,11 @@ public class RelayDeviceService implements DeviceHandler {
                 Thread.sleep(milliseconds);
 
                 // 每次等待之后重新检查调料是否完成添加
-                flag = !pubConfig.getAddingSeasoningCompleted();
+                String status = ioDeviceService.getStatus();
+                String[] split = status.split(",");
+                if(split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())){
+                    flag=false;
+                }
             } catch (InterruptedException e) {
                 // 处理异常
                 Thread.currentThread().interrupt();
@@ -376,13 +383,10 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     public Result heatSoupToTemperature(Integer number) {
-        openClose(Constants.SOUP_STEAM_SOLENOID_VALVE, number);
+        pubConfig.setSoupTemperatureValue(0.0);
         //发送查询温度指令
         Boolean flag = true;
         while (flag) {
-            if (pubConfig.getSoupTemperatureValue() >= number) {
-                flag = false;
-            }
             //发送温度
             nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
             try {
@@ -390,6 +394,13 @@ public class RelayDeviceService implements DeviceHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if (pubConfig.getSoupTemperatureValue() >= number) {
+                flag = false;
+                relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
+            } else {
+                relayOpening(Constants.SOUP_STEAM_SOLENOID_VALVE);
+            }
+
         }
         return Result.success();
     }
@@ -421,8 +432,8 @@ public class RelayDeviceService implements DeviceHandler {
             default:
 
         }
-        // 通电5秒，让货道自动转一圈
-        openClose(i, 5);
+        // 货道通电2秒，让货道自动转一圈
+        openClose(i, Constants.GOODS_AISLE_POWER_ON2_SECONDS);
         return Result.success();
     }
 
@@ -560,6 +571,36 @@ public class RelayDeviceService implements DeviceHandler {
             }
         }
         vegetableMotorStop(i);
+        return Result.success();
+    }
+
+    /**
+     * 碗蒸汽杆向上——电推杆
+     */
+    public Result bowlSteamRodUp() {
+        relayClosing(Constants.STEAM_COVER_DESCEND);
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relayClosing(Constants.STEAM_COVER_RISE);
+        return Result.success();
+    }
+
+    /**
+     * 碗蒸汽杆向下——电推杆
+     *
+     * @return
+     */
+    public Result bowlSteamRodDown() {
+        relayOpening(Constants.STEAM_COVER_RISE);
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relayOpening(Constants.STEAM_COVER_DESCEND);
         return Result.success();
     }
 }

@@ -45,7 +45,7 @@ public class Receive485SignalService implements DeviceHandler {
      */
     private void ParseCommand(String message) {
         //先modbus验证，如果验证不过就不管
-        boolean b = CRC16.validateCRC(HexConvert.hexStringToBytes(message));
+        boolean b = CRC16.validateCRC(message);
         if(!b){
             return;
         }
@@ -68,6 +68,7 @@ public class Receive485SignalService implements DeviceHandler {
      */
     private int[] calculateWeight(String message) {
         // 01 03 10 00 00 03 E8 00 00 07 D0 00 00 0B B8 00 00 0F A0 A8 23
+        message=message.replaceAll(" ","");
         int[] sensorValues = new int[4];
         for (int i = 0; i < 4; i++) {
             int startIndex = 3 + i * 4;
@@ -87,6 +88,7 @@ public class Receive485SignalService implements DeviceHandler {
     private void CalculateSoupTemperatureValue(String message) {
         //01 03 02 01 20 B8 0C
         //截取第六位到第10位数据位
+        message=message.replaceAll(" ","");
         String substring = message.substring(6, 10);
         int i = Integer.parseInt(substring, 16);
         double soupTemperatureValue = i / 10.0;

@@ -8,7 +8,7 @@ public class Constants {
     /**
      * 睡眠时间（毫秒）
      */
-    public static final long SLEEP_TIME_MS = 50L;
+    public static final long SLEEP_TIME_MS = 100L;
     /**
      * 最大步进电机编号
      */
@@ -53,17 +53,30 @@ public class Constants {
      */
     public static final int ROBOT_EMPTY_BOWL_SENSOR = 5;
     /**
-     * 蒸器发生器液位传感器X7
+     * 水桶报警位传感器X7
      */
-    public static final int STEAM_GENERATOR_LEVEL_SENSOR = 6;
+    public static final int BUCKET_ALARM_POSITION_SENSOR = 6;
     /**
-     * 蒸汽发生器最高温度传感器
+     * 水桶最低传感器X8
      */
-    public static final int STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR = 12;
+    public static final int BUCKET_LOWEST_SENSOR = 7;
     /**
-     * 蒸汽发生器最低温度传感器
+     * 汤桶报警传感器X9
      */
-    public static final int STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR = 13;
+    public static final int SOUP_BUCKET_ALARM_SENSOR = 8;
+    /**
+     * 汤桶最低传感器X10
+     */
+    public static final int SOUP_BUCKET_LOWEST_SENSOR = 9;
+    /**
+     * 汤液位传感器X12
+     */
+    public static final int SOUP_LEVEL_SENSOR = 11;
+    /**
+     * 货道对射传感器X13
+     */
+    public static final int GOODS_AISLE_PHOTOELECTRIC_SENSOR = 12;
+
 
 
     /** 32位继电器 */
@@ -221,7 +234,7 @@ public class Constants {
     /**
      * 重量传感器一托四
      */
-    public static final int WEIGHT_SENSOR_ONE_TO_FOUR=1;
+    public static final int WEIGHT_SENSOR_ONE_TO_FOUR=3;
 
 
     /**
@@ -252,4 +265,12 @@ public class Constants {
      * 称重置零
      */
     public static final String TARE_WEIGHT="03 06 00 26 00 01 A8 23";
+    /**
+     * 置零校准
+     */
+    public static final String ZEROING_CALIBRATION="01 06 00 26 00 01 a9 c1";
+    /**
+     * 货道通电2秒
+     */
+    public static final int GOODS_AISLE_POWER_ON2_SECONDS=2;
 }

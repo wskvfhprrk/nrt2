@@ -120,6 +120,14 @@ public class ButtonController {
                 relayDeviceService.steamClose();
                 break;
             case 18:
+                actionResult = "碗蒸汽杆向上";
+                relayDeviceService.bowlSteamRodUp();
+                break;
+            case 19:
+                actionResult = "碗蒸汽杆向下";
+                relayDeviceService.bowlSteamRodDown();
+                break;
+            case 20:
                 if (number != null) {
                     actionResult = "汤加热至（度）";
                     relayDeviceService.heatSoupToTemperature(number);
@@ -127,7 +135,7 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 19:
+            case 21:
                 if (number != null) {
                     actionResult = "弹簧货道（编号）";
                     relayDeviceService.springChannel(number);
@@ -135,15 +143,15 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 20:
+            case 22:
                 actionResult = "称重测试打开";
                 seasoningMachineService.selectionTestOpen();
                 break;
-            case 21:
+            case 23:
                 actionResult = "称重测试关闭";
                 seasoningMachineService.selectionTestClose();
                 break;
-            case 22:
+            case 24:
                 if (number != null) {
                     actionResult = "配菜称重盒打开（编号）";
                     relayDeviceService.openWeighingBox(number);
@@ -151,7 +159,7 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 23:
+            case 25:
                 if (number != null) {
                     actionResult = "配菜称重盒关闭（编号）";
                     relayDeviceService.closeWeighingBox(number);
@@ -159,7 +167,7 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 24:
+            case 26:
                 if (number != null) {
                     actionResult = "1号配菜电机（g）";
                     relayDeviceService.vegetableMotorInKg(1, number);
@@ -167,7 +175,7 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 25:
+            case 27:
                 if (number != null) {
                     actionResult = "2号配菜电机（g）";
                     relayDeviceService.vegetableMotorInKg(2, number);
@@ -175,7 +183,7 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 26:
+            case 28:
                 if (number != null) {
                     actionResult = "3号配菜电机（g）";
                     relayDeviceService.vegetableMotorInKg(3, number);

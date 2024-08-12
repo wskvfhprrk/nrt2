@@ -145,9 +145,6 @@ public class IODeviceService implements DeviceHandler {
         calculateWorkstationValue(split);
         //汤的液位解析
         soupLevelAnalysis(split);
-        //蒸汽发生器自动控制温度
-        steamGeneratorAutoTemperatureControl(split);
-
     }
 
     /**
@@ -155,7 +152,7 @@ public class IODeviceService implements DeviceHandler {
      * @param split
      */
     private void soupLevelAnalysis(String[] split) {
-        if (split[Constants.STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+        if (split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("加汤完成！");
             pubConfig.setAddingSoupCompleted(true);
         }else {
@@ -163,23 +160,6 @@ public class IODeviceService implements DeviceHandler {
         }
     }
 
-    /**
-     * 蒸汽发生器自动控制温度
-     *
-     * @param split
-     */
-    private void steamGeneratorAutoTemperatureControl(String[] split) {
-        //如果到达最低温度就加热10秒钟时间
-        if (split[Constants.STEAM_GENERATOR_LOWEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            //给10秒钟时间
-            relayDeviceService.openClose(Constants.STEAM_SWITCH, 10);
-        }
-        //如果达到最高值并且是在保温状态下时才停止加热
-        if (split[Constants.STEAM_GENERATOR_HIGHEST_TEMPERATURE_SENSOR].equals(SignalLevel.HIGH.getValue())
-                && pubConfig.getSteamGeneratorCurrentState() == SteamGeneratorState.HUMIDIFYING.getValue()) {
-            relayDeviceService.steamClose();
-        }
-    }
 
 
     /**
