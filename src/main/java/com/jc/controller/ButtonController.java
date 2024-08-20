@@ -32,7 +32,7 @@ public class ButtonController {
     private PubConfig pubConfig;
 
     @GetMapping("/{id}")
-    public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) {
+    public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
         String actionResult = "";
         switch (id) {
             case 1:
@@ -96,14 +96,22 @@ public class ButtonController {
                 }
                 break;
             case 13:
+                actionResult = "汤开关开";
+                relayDeviceService.soupSwitchOn();
+                break;
+            case 14:
+                actionResult = "汤开关关";
+                relayDeviceService.soupSwitchOff();
+                break;
+            case 15:
                 actionResult = "后箱风扇开";
                 relayDeviceService.rearFanOpen();
                 break;
-            case 14:
+            case 16:
                 actionResult = "后箱风扇关";
                 relayDeviceService.rearFanClose();
                 break;
-            case 15:
+            case 17:
                 if (number != null) {
                     actionResult = "震动器测试（秒）";
                     relayDeviceService.vibratorTest(number);
@@ -111,23 +119,23 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 16:
+            case 18:
                 actionResult = "蒸汽打开";
                 relayDeviceService.steamOpen();
                 break;
-            case 17:
+            case 19:
                 actionResult = "蒸汽关闭";
                 relayDeviceService.steamClose();
                 break;
-            case 18:
+            case 20:
                 actionResult = "碗蒸汽杆向上";
                 relayDeviceService.bowlSteamRodUp();
                 break;
-            case 19:
+            case 21:
                 actionResult = "碗蒸汽杆向下";
                 relayDeviceService.bowlSteamRodDown();
                 break;
-            case 20:
+            case 22:
                 if (number != null) {
                     actionResult = "汤加热至（度）";
                     relayDeviceService.heatSoupToTemperature(number);
@@ -135,7 +143,7 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 21:
+            case 23:
                 if (number != null) {
                     actionResult = "弹簧货道（编号）";
                     relayDeviceService.springChannel(number);
@@ -143,29 +151,13 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 22:
-                actionResult = "称重测试打开";
-                seasoningMachineService.selectionTestOpen();
-                break;
-            case 23:
-                actionResult = "称重测试关闭";
-                seasoningMachineService.selectionTestClose();
-                break;
             case 24:
-                if (number != null) {
-                    actionResult = "配菜称重盒打开（编号）";
-                    relayDeviceService.openWeighingBox(number);
-                } else {
-                    actionResult = "缺少必要参数";
-                }
+                actionResult = "配菜称重盒打开（编号）";
+                relayDeviceService.openWeighingBox(number);
                 break;
             case 25:
-                if (number != null) {
-                    actionResult = "配菜称重盒关闭（编号）";
-                    relayDeviceService.closeWeighingBox(number);
-                } else {
-                    actionResult = "缺少必要参数";
-                }
+                actionResult = "配菜称重盒关闭（编号）";
+                relayDeviceService.closeWeighingBox(number);
                 break;
             case 26:
                 if (number != null) {

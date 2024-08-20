@@ -117,37 +117,37 @@ public class Constants {
      */
     public static final int REAR_BOX_FAN = 8;
     /**
-     * 配菜称重盒开关1打开
+     * 配菜称重盒开关1-1
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_OPNE = 9;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_1 = 9;
     /**
-     * 配菜称重盒开关1关闭
+     * 配菜称重盒开关1-2
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_CLOSE = 10;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_2 = 10;
     /**
-     * 配菜称重盒开关2打开
+     * 配菜称重盒开关2-1
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_OPNE = 11;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_1 = 11;
     /**
-     * 配菜称重盒开关2关闭
+     * 配菜称重盒开关2-2
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_CLOSE = 12;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_2 = 12;
     /**
-     * 配菜称重盒开关3打开
+     * 配菜称重盒开关3-1
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_OPNE = 13;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_1 = 13;
     /**
-     * 配菜称重盒开关3关闭
+     * 配菜称重盒开关3-2
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_CLOSE = 14;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_2 = 14;
     /**
-     * 配菜称重盒开关4打开
+     * 配菜称重盒开关4-1
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_OPNE = 15;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_1 = 15;
     /**
-     * 配菜称重盒开关4关闭
+     * 配菜称重盒开关4-2
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_CLOSE = 16;
+    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_2 = 16;
     /**
      * 抽汤泵
      */
@@ -234,7 +234,7 @@ public class Constants {
     /**
      * 重量传感器一托四
      */
-    public static final int WEIGHT_SENSOR_ONE_TO_FOUR=3;
+    public static final int WEIGHT_SENSOR_ONE_TO_FOUR=2;
 
 
     /**
@@ -260,7 +260,7 @@ public class Constants {
     /**
      * 读取所有重量的值
      */
-    public static final String READ_WEIGHT_VALUE="01 03 00 00 00 08 45 CF";
+    public static final String READ_WEIGHT_VALUE="02 03 00 00 00 08 44 3F";
     /**
      * 称重置零
      */

@@ -4,7 +4,6 @@ import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
-import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 继电器设备处理类
@@ -28,8 +26,6 @@ public class RelayDeviceService implements DeviceHandler {
     private PubConfig pubConfig;
     @Autowired
     private IpConfig ipConfig;
-    @Autowired
-    private IODeviceService ioDeviceService;
 
     /**
      * 处理消息
@@ -291,42 +287,42 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void soupPump(int seconds) {
         log.info("打开抽汤泵，保持{}秒钟时间", seconds);
-
+        openClose(Constants.SOUP_PUMP_SWITCH, seconds);
         // 打开抽汤泵
-        relayOpening(Constants.SOUP_PUMP_SWITCH);
-
-        // 最少是1秒钟阻隔时间
-        if (seconds <= 0) {
-            seconds = 1;
-        }
-
-        // 将秒转换为毫秒
-        int milliseconds = seconds * 1000;
-
-        // 标志位，表示是否继续等待
-        Boolean flag = true;
-
-        while (flag) {
-            try {
-                // 等待指定时间
-                Thread.sleep(milliseconds);
-
-                // 每次等待之后重新检查调料是否完成添加
-                String status = ioDeviceService.getStatus();
-                String[] split = status.split(",");
-                if(split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())){
-                    flag=false;
-                }
-            } catch (InterruptedException e) {
-                // 处理异常
-                Thread.currentThread().interrupt();
-                log.error("线程被中断", e);
-                break;
-            }
-        }
-
-        // 关闭抽汤泵
-        relayClosing(Constants.SOUP_PUMP_SWITCH);
+//        relayOpening(Constants.SOUP_PUMP_SWITCH);
+//
+//        // 最少是1秒钟阻隔时间
+//        if (seconds <= 0) {
+//            seconds = 1;
+//        }
+//
+//        // 将秒转换为毫秒
+//        int milliseconds = seconds * 1000;
+//
+//        // 标志位，表示是否继续等待
+//        Boolean flag = true;
+//
+//        while (flag) {
+//            try {
+//                // 等待指定时间
+//                Thread.sleep(milliseconds);
+//
+//                // 每次等待之后重新检查调料是否完成添加
+//                String status = ioDeviceService.getStatus();
+//                String[] split = status.split(",");
+//                if (split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+//                    flag = false;
+//                }
+//            } catch (InterruptedException e) {
+//                // 处理异常
+//                Thread.currentThread().interrupt();
+//                log.error("线程被中断", e);
+//                break;
+//            }
+//        }
+//
+//        // 关闭抽汤泵
+//        relayClosing(Constants.SOUP_PUMP_SWITCH);
     }
 
 //    // 优雅地关闭线程池
@@ -366,19 +362,31 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-
+    /**
+     * 打开风扇
+     * @return
+     */
     public Result rearFanOpen() {
-        relayOpening(Constants.CABINET_EXHAUST_FAN_SWITCH);
+        relayOpening(Constants.REAR_BOX_FAN);
         return Result.success();
     }
 
+    /**
+     * 关闭风扇
+     * @return
+     */
     public Result rearFanClose() {
-        relayClosing(Constants.CABINET_EXHAUST_FAN_SWITCH);
+        relayClosing(Constants.REAR_BOX_FAN);
         return Result.success();
     }
 
+    /**
+     * 震动器测试（秒）
+     * @param number
+     * @return
+     */
     public Result vibratorTest(Integer number) {
-        openClose(Constants.REAR_BOX_FAN, number);
+        openClose(Constants.SHAKER_SWITCH, number);
         return Result.success();
     }
 
@@ -443,25 +451,31 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result openWeighingBox(Integer number) {
+    public Result openWeighingBox(Integer number) throws InterruptedException {
         int i = 0;
         switch (number) {
             case 1:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_OPNE;
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_2);
                 break;
             case 2:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_OPNE;
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_2);
                 break;
             case 3:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_OPNE;
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_2);
                 break;
             case 4:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_OPNE;
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_2);
                 break;
             default:
-
         }
-        relayOpening(i);
         return Result.success();
     }
 
@@ -471,25 +485,31 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result closeWeighingBox(Integer number) {
+    public Result closeWeighingBox(Integer number) throws InterruptedException {
         int i = 0;
         switch (number) {
             case 1:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_CLOSE;
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_2);
                 break;
             case 2:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_CLOSE;
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_2);
                 break;
             case 3:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_CLOSE;
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_2);
                 break;
             case 4:
-                i = Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_CLOSE;
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_1);
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_2);
                 break;
             default:
-
         }
-        relayClosing(i);
         return Result.success();
     }
 
@@ -560,8 +580,9 @@ public class RelayDeviceService implements DeviceHandler {
         //查看是否够重量
         Boolean flag = true;
         while (flag) {
+            //发送称重指令
             nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_WEIGHT_VALUE, true);
-            if (pubConfig.getCalculateWeight()[i] >= number) {
+            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i-1] >= number) {
                 flag = false;
             }
             try {
@@ -603,4 +624,25 @@ public class RelayDeviceService implements DeviceHandler {
         relayOpening(Constants.STEAM_COVER_DESCEND);
         return Result.success();
     }
+
+    /**
+     * @return
+     */
+    public Result soupSwitchOn() {
+        relayOpening(Constants.SOUP_SWITCH);
+        return Result.success();
+    }
+
+    /**
+     * 汤开关关
+     *
+     * @return
+     */
+    public Result soupSwitchOff() {
+        relayClosing(Constants.SOUP_SWITCH);
+        return Result.success();
+    }
+    /**
+     * 配菜电机1转动
+     */
 }

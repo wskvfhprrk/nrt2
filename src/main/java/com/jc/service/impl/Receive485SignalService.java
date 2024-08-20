@@ -67,12 +67,14 @@ public class Receive485SignalService implements DeviceHandler {
      * @return
      */
     private int[] calculateWeight(String message) {
-        // 01 03 10 00 00 03 E8 00 00 07 D0 00 00 0B B8 00 00 0F A0 A8 23
+        //02 03 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 04 A1 DE
+        //01 03 10 00 00 03 E8 00 00 07 D0 00 00 0B B8 00 00 0F A0 A8 23
+        //02 03 10 00 00 00 32 00 00 00 00 00 00 00 00 00 00 00 0E 67 6B
         message=message.replaceAll(" ","");
         int[] sensorValues = new int[4];
         for (int i = 0; i < 4; i++) {
-            int startIndex = 3 + i * 4;
-            String substring = message.substring(startIndex, startIndex + 4);
+            int startIndex = 6 + i * 8;
+            String substring = message.substring(startIndex, startIndex + 8);
             int number = Integer.parseInt(substring, 16);
             sensorValues[i]=number;
             log.info("称重传感器 {} 的值为：{} g",i,number);
