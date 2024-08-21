@@ -145,21 +145,30 @@ public class IODeviceService implements DeviceHandler {
         calculateWorkstationValue(split);
         //汤的液位解析
         soupLevelAnalysis(split);
+        //粉丝监测
+        fancheck(split);
+    }
+
+    private void fancheck(String[] split) {
+        if (split[Constants.GOODS_AISLE_PHOTOELECTRIC_SENSOR].equals(SignalLevel.HIGH.getValue())) {
+            log.info("检测粉丝掉下来");
+            pubConfig.setPlacingNoodlesCompleted(true);
+        }
     }
 
     /**
      * 汤的液位解析
+     *
      * @param split
      */
     private void soupLevelAnalysis(String[] split) {
         if (split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("加汤完成！");
             pubConfig.setAddingSoupCompleted(true);
-        }else {
+        } else {
             pubConfig.setAddingSoupCompleted(false);
         }
     }
-
 
 
     /**

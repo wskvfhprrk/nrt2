@@ -364,6 +364,7 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 打开风扇
+     *
      * @return
      */
     public Result rearFanOpen() {
@@ -373,6 +374,7 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 关闭风扇
+     *
      * @return
      */
     public Result rearFanClose() {
@@ -382,6 +384,7 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 震动器测试（秒）
+     *
      * @param number
      * @return
      */
@@ -420,6 +423,8 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result springChannel(Integer number) {
+        //先把粉丝为false
+        pubConfig.setPlacingNoodlesCompleted(false);
         int i = 0;
         switch (number) {
             case 1:
@@ -441,7 +446,9 @@ public class RelayDeviceService implements DeviceHandler {
 
         }
         // 货道通电2秒，让货道自动转一圈
-        openClose(i, Constants.GOODS_AISLE_POWER_ON2_SECONDS);
+        while (!pubConfig.getPlacingNoodlesCompleted()) {
+            openClose(i, Constants.GOODS_AISLE_POWER_ON2_SECONDS);
+        }
         return Result.success();
     }
 
@@ -575,21 +582,21 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result vegetableMotorInKg(int i, Integer number) {
+    public Result vegetableMotorInKg(int i, Integer number) throws InterruptedException {
+        //清零
+        //02 06 00 26 00 01 A9 F2
+        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
+        Thread.sleep(Constants.SLEEP_TIME_MS);
         vegetableMotor(i);
         //查看是否够重量
         Boolean flag = true;
         while (flag) {
             //发送称重指令
             nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_WEIGHT_VALUE, true);
-            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i-1] >= number) {
+            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i - 1] >= number) {
                 flag = false;
             }
-            try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(Constants.SLEEP_TIME_MS);
         }
         vegetableMotorStop(i);
         return Result.success();

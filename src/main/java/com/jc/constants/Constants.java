@@ -75,7 +75,7 @@ public class Constants {
     /**
      * 货道对射传感器X13
      */
-    public static final int GOODS_AISLE_PHOTOELECTRIC_SENSOR = 12;
+    public static final int GOODS_AISLE_PHOTOELECTRIC_SENSOR = 17;
 
 
 
@@ -218,7 +218,7 @@ public class Constants {
     /**
      * 转台步进电机控制器485地址
      */
-    public static final int ROTARY_TABLE_STEPPER_MOTOR = 1;
+    public static final int ROTARY_TABLE_STEPPER_MOTOR = 3;
     /**
      * 调味机485地址
      */
@@ -268,7 +268,7 @@ public class Constants {
     /**
      * 置零校准
      */
-    public static final String ZEROING_CALIBRATION="01 06 00 26 00 01 a9 c1";
+    public static final String ZEROING_CALIBRATION="02 06 00 26 00 01 A9 F2";
     /**
      * 货道通电2秒
      */
