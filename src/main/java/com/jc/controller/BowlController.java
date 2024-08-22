@@ -3,6 +3,7 @@
  */
 package com.jc.controller;
 
+import com.jc.config.Result;
 import com.jc.service.impl.BowlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,7 @@ public class BowlController {
      * @return 操作结果
      */
     @GetMapping("bowlRising")
-    public String bowlRising() {
+    public Result bowlRising() {
         return bowlService.bowlRising();
     }
 
@@ -43,7 +44,7 @@ public class BowlController {
      * @return 操作结果
      */
     @GetMapping("bowlDescent")
-    public String bowlDown() {
+    public Result bowlDown() {
         return bowlService.bowlDescent();
     }
 

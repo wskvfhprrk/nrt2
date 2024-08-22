@@ -279,11 +279,10 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void soupPump(int seconds) {
         //抽汤前先打开汤开关，防止水流
-        soupSwitchOn();
+        log.info("打开汤开关");
+        openClose(Constants.SOUP_SWITCH,seconds);
         log.info("打开抽汤泵，保持{}秒钟时间", seconds);
         openClose(Constants.SOUP_PUMP_SWITCH, seconds);
-        //关闭水开关
-        soupSwitchOff();
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.service.DeviceHandler;
@@ -142,20 +143,20 @@ public class BowlService implements DeviceHandler {
         log.info("碗已经升到位！");
     }
 
-    public String bowlRising() {
+    public Result bowlRising() {
         //先开关管方向
         relayDeviceService.bowlRise();
         //再打开开关
         relayDeviceService.openBowl();
-        return "ok";
+        return Result.success();
     }
 
-    public String bowlDescent() {
+    public Result bowlDescent() {
         //先开关管方向
         relayDeviceService.bowlDrop();
         //再打开开关
         relayDeviceService.openBowl();
-        return "ok";
+        return Result.success();
     }
 
 }
