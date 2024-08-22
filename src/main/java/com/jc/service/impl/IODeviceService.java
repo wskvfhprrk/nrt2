@@ -66,7 +66,11 @@ public class IODeviceService implements DeviceHandler {
             log.info("传感器的高低电平：{}", sb);
             // ioStatus赋值，以便其它类看到
             this.ioStatus = sb.toString();
-            sensorInstructionProcessing(sb);
+            try {
+                sensorInstructionProcessing(sb);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         } else {
             log.info("IO设备——普通消息: {}", message);
         }

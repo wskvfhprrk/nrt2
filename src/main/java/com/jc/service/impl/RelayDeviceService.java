@@ -272,71 +272,19 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.BOWL_N_SWITCH);
     }
 
-
-    // 创建一个固定线程池
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-
-    public void startSoupPump(int seconds) {
-        executorService.submit(() -> soupPump(seconds));
-    }
-
     /**
      * 打开抽汤泵到液位后多少秒关闭——至少1秒
      *
      * @param seconds 多少秒关闭
      */
     public void soupPump(int seconds) {
+        //抽汤前先打开汤开关，防止水流
+        soupSwitchOn();
         log.info("打开抽汤泵，保持{}秒钟时间", seconds);
         openClose(Constants.SOUP_PUMP_SWITCH, seconds);
-        // 打开抽汤泵
-//        relayOpening(Constants.SOUP_PUMP_SWITCH);
-//
-//        // 最少是1秒钟阻隔时间
-//        if (seconds <= 0) {
-//            seconds = 1;
-//        }
-//
-//        // 将秒转换为毫秒
-//        int milliseconds = seconds * 1000;
-//
-//        // 标志位，表示是否继续等待
-//        Boolean flag = true;
-//
-//        while (flag) {
-//            try {
-//                // 等待指定时间
-//                Thread.sleep(milliseconds);
-//
-//                // 每次等待之后重新检查调料是否完成添加
-//                String status = ioDeviceService.getStatus();
-//                String[] split = status.split(",");
-//                if (split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-//                    flag = false;
-//                }
-//            } catch (InterruptedException e) {
-//                // 处理异常
-//                Thread.currentThread().interrupt();
-//                log.error("线程被中断", e);
-//                break;
-//            }
-//        }
-//
-//        // 关闭抽汤泵
-//        relayClosing(Constants.SOUP_PUMP_SWITCH);
+        //关闭水开关
+        soupSwitchOff();
     }
-
-//    // 优雅地关闭线程池
-//    public void shutdown() {
-//        try {
-//            executorService.shutdown();
-//            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
-//                executorService.shutdownNow();
-//            }
-//        } catch (InterruptedException e) {
-//            executorService.shutdownNow();
-//            Thread.currentThread().interrupt();
-//        }
-//    }
 
     /**
      * 蒸汽打开
@@ -394,6 +342,9 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     public Result heatSoupToTemperature(Integer number) {
+        //关闭汤开关
+        soupSwitchOff();
+        //初始化温度
         pubConfig.setSoupTemperatureValue(0.0);
         //发送查询温度指令
         Boolean flag = true;
