@@ -97,13 +97,13 @@ public class Constants {
      */
     public static final int DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH = 4;
     /**
-     * 蒸汽盖上升——电推杆
+     * 蒸汽盖——电推杆
      */
-    public static final int STEAM_COVER_RISE = 5;
+    public static final int STEAM_COVER_1 = 5;
     /**
-     * 蒸汽盖下降——电推杆
+     * 蒸汽盖——电推杆
      */
-    public static final int STEAM_COVER_DESCEND = 6;
+    public static final int STEAM_COVER_2 = 6;
     /**
      * 柜体排气扇
      */

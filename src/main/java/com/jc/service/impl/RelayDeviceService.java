@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.BeefConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
@@ -9,9 +10,6 @@ import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 继电器设备处理类
@@ -26,6 +24,8 @@ public class RelayDeviceService implements DeviceHandler {
     private PubConfig pubConfig;
     @Autowired
     private IpConfig ipConfig;
+    @Autowired
+    private BeefConfig beefConfig;
 
     /**
      * 处理消息
@@ -340,7 +340,12 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    public Result heatSoupToTemperature(Integer number) {
+    /**
+     * 汤加热多少（度）
+     * @param number
+     * @return
+     */
+    public Result soupHeating(Integer number) {
         //关闭汤开关
         soupSwitchOff();
         //初始化温度
@@ -552,33 +557,43 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    /**
-     * 碗蒸汽杆向上——电推杆
-     */
-    public Result bowlSteamRodUp() {
-        relayClosing(Constants.STEAM_COVER_DESCEND);
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        relayClosing(Constants.STEAM_COVER_RISE);
-        return Result.success();
-    }
 
     /**
-     * 碗蒸汽杆向下——电推杆
+     * 碗蒸汽加热（秒）
      *
      * @return
      */
-    public Result bowlSteamRodDown() {
-        relayOpening(Constants.STEAM_COVER_RISE);
+    public Result bowlSteam(int number) {
+        //盖子下降盖着碗
+        relayOpening(Constants.STEAM_COVER_1);
         try {
             Thread.sleep(Constants.SLEEP_TIME_MS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        relayOpening(Constants.STEAM_COVER_DESCEND);
+        relayOpening(Constants.STEAM_COVER_2);
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE,number);
+        //加蒸汽完成后
+        try {
+            Thread.sleep(number);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //盖子再升起来
+        relayClosing(Constants.STEAM_COVER_2);
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relayClosing(Constants.STEAM_COVER_1);
+        //碗蒸汽加完状态赋值
+        pubConfig.setAddingSteamCompleted(true);
         return Result.success();
     }
 

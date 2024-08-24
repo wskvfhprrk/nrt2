@@ -1,6 +1,6 @@
 package com.jc.controller;
 
-import com.jc.config.PubConfig;
+import com.jc.config.BeefConfig;
 import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
@@ -27,9 +27,7 @@ public class ButtonController {
     @Autowired
     private SeasoningMachineService seasoningMachineService;
     @Autowired
-    private Send485OrderService send485OrderService;
-    @Autowired
-    private PubConfig pubConfig;
+    private BeefConfig beefConfig;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
@@ -88,12 +86,12 @@ public class ButtonController {
                 bowlService.bowlDown();
                 break;
             case 12:
-                if (number != null) {
-                    actionResult = "抽汤泵（秒）";
-                    relayDeviceService.soupPump(number);
-                } else {
-                    actionResult = "缺少必要参数";
+                if (number == null) {
+                    number = beefConfig.getSoupExtractionTime();
                 }
+                actionResult = "抽汤泵";
+                relayDeviceService.soupPump(number);
+
                 break;
             case 13:
                 actionResult = "汤开关开";
@@ -112,12 +110,11 @@ public class ButtonController {
                 relayDeviceService.rearFanClose();
                 break;
             case 17:
-                if (number != null) {
-                    actionResult = "震动器测试（秒）";
-                    relayDeviceService.vibratorTest(number);
-                } else {
-                    actionResult = "缺少必要参数";
+                if (number == null) {
+                    number = beefConfig.getVibratorTime();
                 }
+                actionResult = "震动器测试";
+                relayDeviceService.vibratorTest(number);
                 break;
             case 18:
                 actionResult = "蒸汽打开";
@@ -128,20 +125,18 @@ public class ButtonController {
                 relayDeviceService.steamClose();
                 break;
             case 20:
-                actionResult = "碗蒸汽杆向上";
-                relayDeviceService.bowlSteamRodUp();
-                break;
-            case 21:
-                actionResult = "碗蒸汽杆向下";
-                relayDeviceService.bowlSteamRodDown();
+                actionResult = "碗加蒸汽蒸汽（秒）";
+                if (number == null) {
+                    number = beefConfig.getSoupHeatingTemperature();
+                }
+                relayDeviceService.bowlSteam(number);
                 break;
             case 22:
-                if (number != null) {
-                    actionResult = "汤加热至（度）";
-                    relayDeviceService.heatSoupToTemperature(number);
-                } else {
-                    actionResult = "缺少必要参数";
+                if (number == null) {
+                    number = beefConfig.getSoupHeatingTemperature();
                 }
+                actionResult = "汤加热温度";
+                relayDeviceService.soupHeating(number);
                 break;
             case 23:
                 if (number != null) {
@@ -160,28 +155,25 @@ public class ButtonController {
                 relayDeviceService.closeWeighingBox(number);
                 break;
             case 26:
-                if (number != null) {
-                    actionResult = "1号配菜电机（g）";
-                    relayDeviceService.vegetableMotorInKg(1, number);
-                } else {
-                    actionResult = "缺少必要参数";
+                if (number == null) {
+                    number = beefConfig.getBeef10();
                 }
+                actionResult = "1号配菜电机";
+                relayDeviceService.vegetableMotorInKg(1, number);
                 break;
             case 27:
-                if (number != null) {
-                    actionResult = "2号配菜电机（g）";
-                    relayDeviceService.vegetableMotorInKg(2, number);
-                } else {
-                    actionResult = "缺少必要参数";
+                if (number == null) {
+                    number = beefConfig.getCilantro();
                 }
+                actionResult = "2号配菜电机（g）";
+                relayDeviceService.vegetableMotorInKg(2, number);
                 break;
             case 28:
-                if (number != null) {
-                    actionResult = "3号配菜电机（g）";
-                    relayDeviceService.vegetableMotorInKg(3, number);
-                } else {
-                    actionResult = "缺少必要参数";
+                if (number == null) {
+                    number=beefConfig.getChoppedGreenOnion();
                 }
+                actionResult = "3号配菜电机（g）";
+                relayDeviceService.vegetableMotorInKg(3, number);
                 break;
             default:
                 actionResult = "未知操作";

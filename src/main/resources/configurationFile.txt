@@ -1,0 +1,16 @@
+#10元牛肉
+10Beef=10
+#15元牛肉
+15Beef=15
+#20元牛肉
+20Beef=20
+#香菜配置
+cilantro=10
+#葱花配置
+choppedGreenOnion=10
+#抽汤时间
+soupExtractionTime=8
+#震动器时间
+vibratorTime=5
+#汤加热温度
+soupHeatingTemperature=120
