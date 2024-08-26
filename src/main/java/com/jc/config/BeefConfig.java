@@ -47,4 +47,8 @@ public class BeefConfig {
      * 碗蒸汽时间
      */
     private int bowlSteamTime;
+    /**
+     *
+     */
+    private int shakerSwitchTime;
 }

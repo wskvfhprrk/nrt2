@@ -1,6 +1,5 @@
 package com.jc;
 
-import com.jc.controller.control.TaskCoordinator;
 import com.jc.service.impl.Reset;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication(scanBasePackages = "com.jc")
 @EnableAsync

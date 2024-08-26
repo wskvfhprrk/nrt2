@@ -1,5 +1,6 @@
 package com.jc.controller.control;
 
+import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.entity.Order;
@@ -30,6 +31,8 @@ public class TaskCoordinator {
     private SteamPreparation steamPreparation;
     @Autowired
     private TurntableService turntableService;
+    @Autowired
+    private BeefConfig beefConfig;
 
     public void executeTasks(Order order) throws InterruptedException, ExecutionException {
         //判断转台是否在1和4两个工位才能够放置空碗
@@ -45,7 +48,16 @@ public class TaskCoordinator {
             Result result3 = steamPreparation.start(order1);
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
+                //送到第三个转台
                 turntableService.alignToPosition(3);
+                //下一个粉丝
+                //打开所有称重盒
+                //打开震动哭器下料
+                //阻塞震动器震动时间
+                Thread.sleep((beefConfig.getShakerSwitchTime() + 1) * 1000);
+                //转到碗加蒸汽位置
+                turntableService.alignToPosition(4);
+                //加蒸汽
             } else {
                 log.error(result1.getMessage());
             }

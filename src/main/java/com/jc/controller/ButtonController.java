@@ -127,7 +127,7 @@ public class ButtonController {
             case 20:
                 actionResult = "碗加蒸汽蒸汽（秒）";
                 if (number == null) {
-                    number = beefConfig.getSoupHeatingTemperature();
+                    number = beefConfig.getBowlSteamTime();
                 }
                 relayDeviceService.bowlSteam(number);
                 break;

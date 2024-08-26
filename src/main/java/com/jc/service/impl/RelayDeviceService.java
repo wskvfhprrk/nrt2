@@ -280,7 +280,7 @@ public class RelayDeviceService implements DeviceHandler {
     public void soupPump(int seconds) {
         //抽汤前先打开汤开关，防止水流
         log.info("打开汤开关");
-        openClose(Constants.SOUP_SWITCH,seconds);
+        openClose(Constants.SOUP_SWITCH, seconds);
         log.info("打开抽汤泵，保持{}秒钟时间", seconds);
         openClose(Constants.SOUP_PUMP_SWITCH, seconds);
     }
@@ -342,6 +342,7 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 汤加热多少（度）
+     *
      * @param number
      * @return
      */
@@ -573,14 +574,14 @@ public class RelayDeviceService implements DeviceHandler {
         }
         relayOpening(Constants.STEAM_COVER_2);
         try {
-            Thread.sleep(3000L);
+            Thread.sleep(2000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE,number);
+        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE, number);
         //加蒸汽完成后
         try {
-            Thread.sleep(number);
+            Thread.sleep(number * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
