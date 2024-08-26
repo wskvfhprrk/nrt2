@@ -273,4 +273,8 @@ public class Constants {
      * 货道通电2秒
      */
     public static final int GOODS_AISLE_POWER_ON2_SECONDS=2;
+    /**
+     *
+     */
+    public static final String SERVING_COMPLETED = "6F70656E";
 }

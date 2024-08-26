@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -38,7 +39,7 @@ public class TaskCoordinator {
     @Autowired
     private RelayDeviceService relayDeviceService;
 
-    public void executeTasks(Order order) throws InterruptedException, ExecutionException {
+    public void executeTasks(Order order) throws Exception {
         //判断转台是否在1和4两个工位才能够放置空碗
         if (pubConfig.getTurntableNumber() == 1 || pubConfig.getTurntableNumber() == 4) {
             if (pubConfig.getTurntableNumber() == 1) {
@@ -49,45 +50,47 @@ public class TaskCoordinator {
             }
             //初始化加碗完成
             pubConfig.setAddingBowlCompleted(false);
+            pubConfig.setServingCompleted(false);
+            //机器人取碗
             Result result1 = robotPlaceEmptyBowl.takeBowl();
-            Result result2 = ingredientPreparation.start(order1);
-            Result result3 = steamPreparation.start(order1);
-            //汤加热
-            new Thread(()->{relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());}).start();
-            //如果碗没有放到位就不往下走
-            if(!pubConfig.getAddingBowlCompleted()){
-                log.error("没有加碗成功！");
-                return;
-            }
-            //同时称重
-//            new Thread(()->{relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());}).start();
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
+
+                //汤加热
+                new Thread(()->{steamPreparation.start();}).start();
+                //称重
+//                Result start1 = ingredientPreparation.start1(order).call();
+//                Result start2 = ingredientPreparation.start2(order).call();
+//                Result start3 = ingredientPreparation.start3(order).call();
                 //送到第三个转台
-                turntableService.alignToPosition(3);
-                //下一个粉丝
-                //打开所有称重盒
-                //打开震动哭器下料
-//                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
+//                turntableService.alignToPosition(3);
+//                //下一个粉丝
+//                //打开所有称重盒
+//                //打开震动哭器下料
+////                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
                 //阻塞震动器震动时间
-                Thread.sleep((beefConfig.getVibratorTime() + 1) * 1000);
-                //转到碗加蒸汽位置
-                turntableService.alignToPosition(4);
-                //加蒸汽
-                relayDeviceService.bowlSteam( beefConfig.getBowlSteamTime());
-                //加完蒸转到第5个工位放汤
-                turntableService.alignToPosition(5);
-                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
-                //停留加汤时间
-                Thread.sleep(beefConfig.getSoupExtractionTime()*1000);
+//                Thread.sleep((beefConfig.getVibratorTime() + 1) * 1000);
+//                //转到碗加蒸汽位置
+//                turntableService.alignToPosition(4);
+//                //加蒸汽
+//                relayDeviceService.bowlSteam(beefConfig.getBowlSteamTime());
+//                //加完蒸转到第5个工位放汤
+//                turntableService.alignToPosition(5);
+//                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
+//                //停留加汤时间
+//                Thread.sleep((beefConfig.getSoupExtractionTime()+2) * 1000);
                 //转到第6工位出汤
                 turntableService.alignToPosition(0);
                 robotPlaceEmptyBowl.putBowl();
+                while (!pubConfig.getServingCompleted()){
+                    Thread.sleep(Constants.SLEEP_TIME_MS);
+                    continue;
+                }
                 //归位
-                turntableService.alignToPosition(0);
+                turntableService.alignToPosition(1);
                 //出汤
                 relayDeviceService.theFoodOutletIsFacingDownwards();
-                Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime()*1000);
+                Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime() * 1000);
                 relayDeviceService.theFoodOutletIsFacingUpwards();
             } else {
                 log.error(result1.getMessage());

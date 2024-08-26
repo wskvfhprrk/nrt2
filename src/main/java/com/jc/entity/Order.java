@@ -13,10 +13,4 @@ public class Order {
     private boolean addOnion;
     private boolean isProcessed;
 
-    // 构造方法
-//    public Order(String orderId, String customerName) {
-//        this.orderId = orderId;
-//        this.customerName = customerName;
-//        this.isProcessed = false;
-//    }
 }

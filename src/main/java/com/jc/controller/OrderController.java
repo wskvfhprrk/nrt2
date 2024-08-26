@@ -47,7 +47,7 @@ public class OrderController {
      * @return ResponseEntity<String> 响应实体
      */
     @PostMapping
-    public ResponseEntity<String> submitOrder(@RequestBody Order order) throws ExecutionException, InterruptedException {
+    public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
         // 在这里处理订单逻辑，例如保存到数据库或其他操作
         log.info("收到订单: " + order);
         // 发送订单信息到设备

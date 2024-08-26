@@ -47,7 +47,7 @@ public class RobotServiceImpl implements RobotService {
         //如果重试三次不再重试
         if(takeBowlNumber>3){
             log.error("重试三次无法取到碗，请检查!");
-            return Result.error(500,"重试三次无法取到碗，请检查 ");
+            return Result.error(500,"重试三次无法取到碗，请人工检查！");
         }
         //如果碗传感器为低电平，则重新发出碗重置命令
         String ioStatus = ioDeviceService.getIoStatus();
