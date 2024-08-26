@@ -48,7 +48,7 @@ public class BeefConfig {
      */
     private int bowlSteamTime;
     /**
-     *
+     * 出汤时间
      */
-    private int shakerSwitchTime;
+    private int theFoodOutletIsFacingDownwardsTime;
 }

@@ -2,6 +2,7 @@ package com.jc.netty.server;
 
 import com.jc.config.ClientConfig;
 import com.jc.config.IpConfig;
+import com.jc.constants.Constants;
 import com.jc.utils.HexConvert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -186,6 +187,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @param hex      是否为16进制消息
      */
     public void sendMessageToClient(String clientIp, String message, Boolean hex) {
+        //停一下防止多条造成混乱
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         for (Map.Entry<String, Channel> entry : clientMap.entrySet()) {
             String address = entry.getKey();
             if (address.equals(clientIp)) {

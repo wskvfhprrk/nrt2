@@ -3,7 +3,9 @@ package com.jc.controller.control;
 import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
+import com.jc.constants.Constants;
 import com.jc.entity.Order;
+import com.jc.service.impl.RelayDeviceService;
 import com.jc.service.impl.TurntableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class TaskCoordinator {
     private TurntableService turntableService;
     @Autowired
     private BeefConfig beefConfig;
+    @Autowired
+    private RelayDeviceService relayDeviceService;
 
     public void executeTasks(Order order) throws InterruptedException, ExecutionException {
         //判断转台是否在1和4两个工位才能够放置空碗
@@ -43,9 +47,20 @@ public class TaskCoordinator {
             if (pubConfig.getTurntableNumber() == 4) {
                 order4 = order;
             }
-            Result result1 = robotPlaceEmptyBowl.start();
+            //初始化加碗完成
+            pubConfig.setAddingBowlCompleted(false);
+            Result result1 = robotPlaceEmptyBowl.takeBowl();
             Result result2 = ingredientPreparation.start(order1);
             Result result3 = steamPreparation.start(order1);
+            //汤加热
+            new Thread(()->{relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());}).start();
+            //如果碗没有放到位就不往下走
+            if(!pubConfig.getAddingBowlCompleted()){
+                log.error("没有加碗成功！");
+                return;
+            }
+            //同时称重
+//            new Thread(()->{relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());}).start();
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
                 //送到第三个转台
@@ -53,11 +68,27 @@ public class TaskCoordinator {
                 //下一个粉丝
                 //打开所有称重盒
                 //打开震动哭器下料
+//                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
                 //阻塞震动器震动时间
-                Thread.sleep((beefConfig.getShakerSwitchTime() + 1) * 1000);
+                Thread.sleep((beefConfig.getVibratorTime() + 1) * 1000);
                 //转到碗加蒸汽位置
                 turntableService.alignToPosition(4);
                 //加蒸汽
+                relayDeviceService.bowlSteam( beefConfig.getBowlSteamTime());
+                //加完蒸转到第5个工位放汤
+                turntableService.alignToPosition(5);
+                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
+                //停留加汤时间
+                Thread.sleep(beefConfig.getSoupExtractionTime()*1000);
+                //转到第6工位出汤
+                turntableService.alignToPosition(0);
+                robotPlaceEmptyBowl.putBowl();
+                //归位
+                turntableService.alignToPosition(0);
+                //出汤
+                relayDeviceService.theFoodOutletIsFacingDownwards();
+                Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime()*1000);
+                relayDeviceService.theFoodOutletIsFacingUpwards();
             } else {
                 log.error(result1.getMessage());
             }

@@ -83,6 +83,8 @@ public class RobotServiceImpl implements RobotService {
         }
         if (!bowlSensor) {
             bowlService.bowlReset();
+        }else {
+            pubConfig.setAddingBowlCompleted(true);
         }
         //向机器人发送取碗指令
         try {

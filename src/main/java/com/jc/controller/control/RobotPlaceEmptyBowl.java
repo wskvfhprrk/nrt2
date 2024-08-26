@@ -19,10 +19,15 @@ public class RobotPlaceEmptyBowl {
     @Autowired
     private RobotService robotService;
 
-    public Result start() {
+    public Result takeBowl() {
         // 需要机器人把碗放置到工位上，传感器检测到即为完成任务，如果没有检测到再次抓碗放置到工位上
         // 执行碗重置的操作逻辑
         Result result = robotService.takeBowl();
+        return result;
+    }
+
+    public Result putBowl() {
+        Result result = robotService.putBowl();
         return result;
     }
 }

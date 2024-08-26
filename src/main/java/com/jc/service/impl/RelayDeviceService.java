@@ -356,11 +356,6 @@ public class RelayDeviceService implements DeviceHandler {
         while (flag) {
             //发送温度
             nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
-            try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             if (pubConfig.getSoupTemperatureValue() >= number) {
                 flag = false;
                 relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
@@ -552,7 +547,6 @@ public class RelayDeviceService implements DeviceHandler {
             if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i - 1] >= number) {
                 flag = false;
             }
-            Thread.sleep(Constants.SLEEP_TIME_MS);
         }
         vegetableMotorStop(i);
         return Result.success();

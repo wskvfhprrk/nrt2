@@ -73,6 +73,10 @@ public class PubConfig {
      */
     private Boolean addingSeasoningCompleted = false;
     /**
+     * 加碗完成
+     */
+    private Boolean addingBowlCompleted = false;
+    /**
      * 加汤完成
      */
     private Boolean addingSoupCompleted = false;
