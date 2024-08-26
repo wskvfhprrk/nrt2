@@ -20,6 +20,4 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
-/* You can also add styles for other components, like centering content */
 </style>

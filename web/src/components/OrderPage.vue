@@ -2,9 +2,9 @@
   <div id="app" class="outer-container">
     <div class="container">
       <el-container>
-        <el-header class="center-content">
+<!--        <el-header class="center-content">
           牛肉汤自助点餐系统
-        </el-header>
+        </el-header>-->
         <el-main>
           <el-form :model="form" label-width="120px">
             <el-form-item label="选择食谱">
@@ -118,7 +118,7 @@ html, body {
   max-width: 800px;
   width: 100%;
   padding: 20px;
-  background-color: #f0f0f0;
+  /*background-color: #f0f0f0;*/
   font-family: 'Arial', sans-serif;
 }
 
