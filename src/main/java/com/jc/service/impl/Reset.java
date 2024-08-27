@@ -25,12 +25,12 @@ public class Reset {
             Boolean falg = true;
             while (falg) {
                 if (pubConfig.getAllDevicesConnectedStatus()) {
+                    //机器人复位
+                    robotService.reset();
                     //转台复位
                     turntableService.turntableReset();
                     //碗复位
                     bowlService.bowlReset();
-                    //机器人复位
-                    robotService.reset();
                     //出汤口复位
                     relayDeviceService.theFoodOutletIsFacingUpwards();
                     falg = false;

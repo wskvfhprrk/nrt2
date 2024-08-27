@@ -41,7 +41,7 @@ public class TaskCoordinator {
 
     public void executeTasks(Order order) throws Exception {
         //判断转台是否在1和4两个工位才能够放置空碗
-        if (pubConfig.getTurntableNumber() == 1 || pubConfig.getTurntableNumber() == 4) {
+        if (pubConfig.getTurntableNumber()%6 == 1 || pubConfig.getTurntableNumber()%6 == 4) {
             if (pubConfig.getTurntableNumber() == 1) {
                 order1 = order;
             }

@@ -24,8 +24,6 @@ public class RelayDeviceService implements DeviceHandler {
     private PubConfig pubConfig;
     @Autowired
     private IpConfig ipConfig;
-    @Autowired
-    private BeefConfig beefConfig;
 
     /**
      * 处理消息
@@ -154,18 +152,13 @@ public class RelayDeviceService implements DeviceHandler {
     public Result theFoodOutletIsFacingDownwards() {
         log.info("出餐口向下");
         relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH);
-        try {
-            Thread.sleep(50L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH, 15);
         //出完后盖板盖上
-        try {
-            Thread.sleep(5000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(100L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         this.coverClosed();
         return Result.success();
     }
@@ -180,16 +173,11 @@ public class RelayDeviceService implements DeviceHandler {
         //先打开盖板
         this.coverOpen();
         try {
-            Thread.sleep(5000L);
+            Thread.sleep(3000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH);
-        try {
-            Thread.sleep(50L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
         return Result.success();
     }
