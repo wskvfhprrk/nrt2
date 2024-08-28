@@ -177,7 +177,7 @@ public class Constants {
      */
     public static final int BOWL_STEAM_SOLENOID_VALVE = 23;
     /**
-     * 汤蒸汽电磁阀
+     * 汤蒸汽开关
      */
     public static final int SOUP_STEAM_SOLENOID_VALVE = 24;
     /**

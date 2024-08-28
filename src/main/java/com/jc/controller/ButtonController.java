@@ -131,14 +131,14 @@ public class ButtonController {
                 }
                 relayDeviceService.bowlSteam(number);
                 break;
-            case 22:
+            case 21:
                 if (number == null) {
                     number = beefConfig.getSoupHeatingTemperature();
                 }
                 actionResult = "汤加热温度";
                 relayDeviceService.soupHeating(number);
                 break;
-            case 23:
+            case 22:
                 if (number != null) {
                     actionResult = "弹簧货道（编号）";
                     relayDeviceService.springChannel(number);
@@ -146,29 +146,29 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 24:
+            case 23:
                 actionResult = "配菜称重盒打开（编号）";
                 relayDeviceService.openWeighingBox(number);
                 break;
-            case 25:
+            case 24:
                 actionResult = "配菜称重盒关闭（编号）";
                 relayDeviceService.closeWeighingBox(number);
                 break;
-            case 26:
+            case 25:
                 if (number == null) {
                     number = beefConfig.getBeef10();
                 }
                 actionResult = "1号配菜电机";
                 relayDeviceService.vegetableMotorInKg(1, number);
                 break;
-            case 27:
+            case 26:
                 if (number == null) {
                     number = beefConfig.getCilantro();
                 }
                 actionResult = "2号配菜电机（g）";
                 relayDeviceService.vegetableMotorInKg(2, number);
                 break;
-            case 28:
+            case 27:
                 if (number == null) {
                     number=beefConfig.getChoppedGreenOnion();
                 }

@@ -40,23 +40,19 @@ public class TaskCoordinator {
     private RelayDeviceService relayDeviceService;
 
     public void executeTasks(Order order) throws Exception {
+        log.info("开始处理订单");
         //判断转台是否在1和4两个工位才能够放置空碗
         if (pubConfig.getTurntableNumber() % 6 == 1 || pubConfig.getTurntableNumber() % 6 == 4) {
-            if (pubConfig.getTurntableNumber() == 1) {
-                order1 = order;
-            }
-            if (pubConfig.getTurntableNumber() == 4) {
-                order4 = order;
-            }
             //初始化加碗完成
             pubConfig.setAddingBowlCompleted(false);
             pubConfig.setServingCompleted(false);
             //机器人取碗
+            log.info("机器人取碗");
             Result result1 = robotPlaceEmptyBowl.takeBowl();
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
-
                 //汤加热
+                log.info("汤加热");
                 new Thread(() -> {
                     log.info("汤加热至中");
                     steamPreparation.start();
@@ -66,6 +62,7 @@ public class TaskCoordinator {
 //                Result start2 = ingredientPreparation.start2(order).call();
 //                Result start3 = ingredientPreparation.start3(order).call();
                 //送到第三个转台
+                log.info("送到第三个转台");
                 turntableService.alignToPosition(3);
                 //下一个粉丝
                 //打开所有称重盒
@@ -75,14 +72,15 @@ public class TaskCoordinator {
                 Thread.sleep((beefConfig.getVibratorTime() + 1) * 1000);
                 //转到碗加蒸汽位置
                 turntableService.alignToPosition(4);
-                Thread.sleep(1000L);
                 //加蒸汽
                 relayDeviceService.bowlSteam(beefConfig.getBowlSteamTime());
+                Thread.sleep(1000L);
                 //加完蒸转到第5个工位放汤
                 turntableService.alignToPosition(5);
-                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
+                //出汤
+//                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
                 //停留加汤时间
-                Thread.sleep((beefConfig.getSoupExtractionTime() + 5) * 1000);
+//                Thread.sleep((beefConfig.getSoupExtractionTime() + 5) * 1000);
                 //转到第6工位出汤
                 turntableService.alignToPosition(0);
                 robotPlaceEmptyBowl.putBowl();

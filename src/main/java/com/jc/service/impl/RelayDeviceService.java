@@ -415,11 +415,6 @@ public class RelayDeviceService implements DeviceHandler {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
                 relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_2);
                 break;
-            case 4:
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_2);
-                break;
             default:
         }
         return Result.success();
@@ -448,11 +443,6 @@ public class RelayDeviceService implements DeviceHandler {
                 relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_1);
                 Thread.sleep(Constants.SLEEP_TIME_MS);
                 relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_2);
-                break;
-            case 4:
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH4_2);
                 break;
             default:
         }
