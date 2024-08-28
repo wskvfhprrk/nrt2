@@ -347,6 +347,8 @@ public class RelayDeviceService implements DeviceHandler {
             if (pubConfig.getSoupTemperatureValue() >= number) {
                 flag = false;
                 relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
+                //汤准备好了
+                pubConfig.setSoupHeatingComplete(true);
             } else {
                 relayOpening(Constants.SOUP_STEAM_SOLENOID_VALVE);
             }
@@ -588,6 +590,17 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
     /**
-     * 配菜电机1转动
+     * 打开蒸汽发生器
      */
+    public Result openSteamGenerator(){
+        relayOpening(Constants.STEAM_SWITCH);
+        return Result.success();
+    }
+    /**
+     * 关闭蒸汽发生器
+     */
+    public Result closeSteamGenerator(){
+        relayClosing(Constants.STEAM_SWITCH);
+        return Result.success();
+    }
 }

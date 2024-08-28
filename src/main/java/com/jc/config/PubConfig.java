@@ -17,6 +17,11 @@ public class PubConfig {
      */
     private Boolean robotStatus = false;
     /**
+     * 机器人成功执行命令
+     */
+    public boolean robotExecutionNaming=false;
+
+    /**
      * 转台当前工位数
      */
     private int turntableNumber = 0;
@@ -77,6 +82,10 @@ public class PubConfig {
      */
     private Boolean addingBowlCompleted = false;
     /**
+     * 汤加热完成
+     */
+    private Boolean soupHeatingComplete = false;
+    /**
      * 加汤完成
      */
     private Boolean addingSoupCompleted = false;
@@ -105,6 +114,11 @@ public class PubConfig {
      */
     private Boolean allDevicesConnectedStatus = false;
     /**
+     * 设备自检完成
+     */
+    public boolean deviceSelfCheckComplete =false;
+
+    /**
      * 汤的温度
      */
     public Double soupTemperatureValue=0.0;
@@ -113,4 +127,5 @@ public class PubConfig {
      * 称重传感器
      */
     public int[] calculateWeight=new int[4];
+
 }

@@ -8,6 +8,7 @@ import com.jc.config.PubConfig;
 import com.jc.controller.control.TaskCoordinator;
 import com.jc.entity.Order;
 import com.jc.netty.server.NettyServerHandler;
+import com.jc.service.impl.Reset;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,8 @@ public class OrderController {
     private TaskCoordinator taskCoordinator;
     @Autowired
     private PubConfig pubConfig;
+    @Autowired
+    private Reset reset;
 
     /**
      * 提交订单
@@ -77,11 +80,13 @@ public class OrderController {
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
                 clientConfig.getRelayDevice();
 
-        if (allDevicesConnected) {
-            //添加所有设备都已经连状态，方便启动时系统检测
-            pubConfig.setAllDevicesConnectedStatus(true);
+        if (allDevicesConnected && pubConfig.getAllDevicesConnectedStatus()) {
             statusMap.put("color", "green");
-            statusMap.put("message", "所有设备已经连接，可以正常工作！");
+            statusMap.put("message", "设备正常可以正常使用");
+
+        } else if (allDevicesConnected) {
+            statusMap.put("color", "orange");
+            statusMap.put("message", "设备自检中，请稍后……");
         } else {
             statusMap.put("color", "red");
             StringBuilder missingDevicesMessage = new StringBuilder();

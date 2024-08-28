@@ -2,7 +2,11 @@ package com.jc.netty.server;
 
 import com.jc.config.ClientConfig;
 import com.jc.config.IpConfig;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
+import com.jc.service.impl.RelayDeviceService;
+import com.jc.service.impl.Reset;
+import com.jc.service.impl.RobotServiceImpl;
 import com.jc.utils.HexConvert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,6 +43,14 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private ClientConfig clientConfig;
     @Autowired
     private IpConfig ipConfig;
+    @Autowired
+    private PubConfig pubConfig;
+    @Autowired
+    @Lazy
+    private RelayDeviceService relayDeviceService;
+    @Autowired
+    @Lazy
+    private RobotServiceImpl robotService;
 
     /**
      * 客户端连接时调用
@@ -64,27 +76,27 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private void updateClientConfig(InetSocketAddress clientAddress, Boolean flag) {
         if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setRelayDevice(flag);
-            return;
-        }
-        if (ipConfig.getSend485Order().equals(clientAddress.getAddress().getHostAddress())) {
+            log.info("打开蒸汽发生器");
+            relayDeviceService.openSteamGenerator();
+        } else if (ipConfig.getSend485Order().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setSend485Order(flag);
-            return;
-        }
-        if (ipConfig.getReceive485Signal().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getReceive485Signal().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setReceive485Singal(flag);
-            return;
-        }
-        if (ipConfig.getDucuIp().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getDucuIp().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setDocuOnLine(flag);
-            return;
-        }
-        if (ipConfig.getIo().equals(clientAddress.getAddress().getHostAddress())) {
+            //机器人复位
+            log.info("机器人复位");
+            new Thread(() -> robotService.reset()).start();
+        } else if (ipConfig.getIo().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setIOdevice(flag);
-            return;
-        }
-        if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setRelayDevice(flag);
-            return;
+        }
+        boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
+                clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
+                clientConfig.getRelayDevice();
+        if (allDevicesConnected) {
+            pubConfig.setAllDevicesConnectedStatus(true);
         }
     }
 

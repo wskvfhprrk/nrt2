@@ -35,7 +35,6 @@ public class Application {
             String scriptPath = "C:\\scripts\\open_browser.ps1";
             String command = "powershell.exe -ExecutionPolicy Bypass -File \"" + scriptPath + "\"";
             Runtime.getRuntime().exec(command);
-            reset.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

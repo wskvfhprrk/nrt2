@@ -30,12 +30,15 @@ public class RobotServiceImpl implements RobotService {
     private PubConfig pubConfig;
     private int takeBowlNumber = 0;
 
-    // TODO: 2024/6/22 先判断机器人是否在原点后再执行 
     @Override
     public Result reset() {
+        // TODO: 2024/8/28 如果机器人没有执行命令成功将循环执行此发送指令任务
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
-            pubConfig.setRobotStatus(true);
+            while (!pubConfig.getRobotStatus()){
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            }
+            log.info("机器人复位自检成功");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
