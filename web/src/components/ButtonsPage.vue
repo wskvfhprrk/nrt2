@@ -13,7 +13,7 @@
       <el-button type="success" class="reset-button" @click="resetSystem">复位</el-button>
       <el-button type="danger" class="emergency-button" @click="emergencyStop">急停</el-button>
     </div>
-    <el-dialog title="输入参数" :visible="dialogVisible" :before-close="handleClose">
+    <el-dialog title="输入参数" v-model="dialogVisible" :before-close="handleClose">
       <el-input v-model="parameter" placeholder="请输入参数"></el-input>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
