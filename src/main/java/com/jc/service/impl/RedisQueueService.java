@@ -51,9 +51,9 @@ public class RedisQueueService {
     }
 
     // 查看队列中的内容（不取出元素）
-    public List<Order> peekQueue(int start, int end) {
+    public List<Order> peekQueue() {
         // 获取Redis队列中的元素范围
-        List<String> orderJsonList = redisTemplate.opsForList().range(QUEUE_NAME, start, end);
+        List<String> orderJsonList = redisTemplate.opsForList().range(QUEUE_NAME, 0, -1);
         if (orderJsonList != null) {
             // 将JSON字符串转换为Order对象列表
             return orderJsonList.stream().map(orderJson -> {

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,8 +34,8 @@ public class QueueController {
     @PostMapping("/enqueueOrder")
     public Result enqueueOrder(@RequestBody Order order) {
         order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
-        Long id = redisTemplate.opsForValue().increment("key", 1);
-        order.setCustomerName("A" + (1000 + id));
+        Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
+        order.setCustomerName("A" + (1234 + id));
         redisQueueService.enqueue(order);
         return Result.success(order);
     }
@@ -58,6 +60,16 @@ public class QueueController {
     public String getQueueSize() {
         long size = redisQueueService.getQueueSize();
         return "队列长度: " + size;
+    }
+
+    /**
+     * 查看队列中所有的订单
+     *
+     * @return 所有订单的列表
+     */
+    @GetMapping("/allOrders")
+    public List<Order> getAllOrders() {
+        return redisQueueService.peekQueue();
     }
 
     @GetMapping("/incrementValue")

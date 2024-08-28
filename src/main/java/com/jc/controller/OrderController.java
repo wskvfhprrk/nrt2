@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -60,8 +61,8 @@ public class OrderController {
         log.info("收到订单: " + order);
         // 订单排列中
         order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
-        Long id = redisTemplate.opsForValue().increment("key", 1);
-        order.setCustomerName("A" + (1000 + id));
+        Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
+        order.setCustomerName("A" + (1234 + id));
         queueService.enqueue(order);
         // TODO: 2024/8/28 处理订单需要一个监听事件
 //        taskCoordinator.executeTasks(order);
