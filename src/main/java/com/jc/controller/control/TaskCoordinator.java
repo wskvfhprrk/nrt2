@@ -57,17 +57,14 @@ public class TaskCoordinator {
                     log.info("汤加热至中");
                     steamPreparation.start();
                 }).start();
-                //称重
-//                Result start1 = ingredientPreparation.start1(order).call();
-//                Result start2 = ingredientPreparation.start2(order).call();
-//                Result start3 = ingredientPreparation.start3(order).call();
+                //todo 称重
                 //送到第三个转台
                 log.info("送到第三个转台");
                 turntableService.alignToPosition(3);
                 //下一个粉丝
                 //打开所有称重盒
                 //打开震动哭器下料
-//                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
+                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
                 //阻塞震动器震动时间
                 Thread.sleep((beefConfig.getVibratorTime() + 1) * 1000);
                 //转到碗加蒸汽位置

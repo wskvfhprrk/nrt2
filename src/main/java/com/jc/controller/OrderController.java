@@ -8,15 +8,18 @@ import com.jc.config.PubConfig;
 import com.jc.controller.control.TaskCoordinator;
 import com.jc.entity.Order;
 import com.jc.netty.server.NettyServerHandler;
+import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.Reset;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -41,7 +44,9 @@ public class OrderController {
     @Autowired
     private PubConfig pubConfig;
     @Autowired
-    private Reset reset;
+    private RedisQueueService queueService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 提交订单
@@ -53,9 +58,13 @@ public class OrderController {
     public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
         // 在这里处理订单逻辑，例如保存到数据库或其他操作
         log.info("收到订单: " + order);
-        // 发送订单信息到设备
-        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), order.toString(), false);
-        taskCoordinator.executeTasks(order);
+        // 订单排列中
+        order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
+        Long id = redisTemplate.opsForValue().increment("key", 1);
+        order.setCustomerName("A" + (1000 + id));
+        queueService.enqueue(order);
+        // TODO: 2024/8/28 处理订单需要一个监听事件
+//        taskCoordinator.executeTasks(order);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }
 
