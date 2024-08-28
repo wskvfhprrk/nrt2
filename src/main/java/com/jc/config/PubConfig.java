@@ -19,7 +19,7 @@ public class PubConfig {
     /**
      * 机器人成功执行命令
      */
-    public boolean robotExecutionNaming=false;
+    public Boolean robotExecutionNaming=false;
 
     /**
      * 转台当前工位数

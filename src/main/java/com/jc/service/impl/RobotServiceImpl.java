@@ -35,7 +35,7 @@ public class RobotServiceImpl implements RobotService {
         // TODO: 2024/8/28 如果机器人没有执行命令成功将循环执行此发送指令任务
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
-            while (!pubConfig.getRobotStatus()){
+            if (!pubConfig.getRobotStatus()) {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             }
             log.info("机器人复位自检成功");
@@ -48,9 +48,9 @@ public class RobotServiceImpl implements RobotService {
     @Override
     public Result takeBowl() {
         //如果重试三次不再重试
-        if(takeBowlNumber>3){
+        if (takeBowlNumber > 3) {
             log.error("重试三次无法取到碗，请检查!");
-            return Result.error(500,"重试三次无法取到碗，请人工检查！");
+            return Result.error(500, "重试三次无法取到碗，请人工检查！");
         }
         //如果碗传感器为低电平，则重新发出碗重置命令
         String ioStatus = ioDeviceService.getIoStatus();
@@ -86,7 +86,7 @@ public class RobotServiceImpl implements RobotService {
         }
         if (!bowlSensor) {
             bowlService.bowlReset();
-        }else {
+        } else {
             pubConfig.setAddingBowlCompleted(true);
         }
         //向机器人发送取碗指令
@@ -100,7 +100,7 @@ public class RobotServiceImpl implements RobotService {
         while (!pubConfig.getRobotStatus()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
-                if(pubConfig.getRobotStatus()){
+                if (pubConfig.getRobotStatus()) {
                     continue;
                 }
             } catch (InterruptedException e) {
@@ -109,8 +109,8 @@ public class RobotServiceImpl implements RobotService {
         }
         String status = ioDeviceService.getStatus();
         String[] split1 = status.split(",");
-        if(split1[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.LOW.getValue())){
-            takeBowlNumber+=1;
+        if (split1[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.LOW.getValue())) {
+            takeBowlNumber += 1;
             this.takeBowl();
         }
         return Result.success();

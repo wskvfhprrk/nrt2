@@ -50,7 +50,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private RelayDeviceService relayDeviceService;
     @Autowired
     @Lazy
-    private RobotServiceImpl robotService;
+    private Reset reset;
 
     /**
      * 客户端连接时调用
@@ -84,9 +84,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             clientConfig.setReceive485Singal(flag);
         } else if (ipConfig.getDucuIp().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setDocuOnLine(flag);
-            //机器人复位
-            log.info("机器人复位");
-            new Thread(() -> robotService.reset()).start();
         } else if (ipConfig.getIo().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setIOdevice(flag);
         } else if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
@@ -97,6 +94,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 clientConfig.getRelayDevice();
         if (allDevicesConnected) {
             pubConfig.setAllDevicesConnectedStatus(true);
+            reset.start();
         }
     }
 

@@ -389,6 +389,11 @@ public class RelayDeviceService implements DeviceHandler {
         // 货道通电2秒，让货道自动转一圈
         while (!pubConfig.getPlacingNoodlesCompleted()) {
             openClose(i, Constants.GOODS_AISLE_POWER_ON2_SECONDS);
+            try {
+                Thread.sleep(3000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return Result.success();
     }

@@ -274,7 +274,15 @@ public class Constants {
      */
     public static final int GOODS_AISLE_POWER_ON2_SECONDS=2;
     /**
-     *
+     * 机器人出汤放碗成功
      */
     public static final String SERVING_COMPLETED = "6F70656E";
+    /**
+     * 机器人执行成功命令
+     */
+    public static final String ROBOT_EXECUTE_SUCCESS_COMMAND="run start\n";
+    /**
+     * 机器人执行失败命令
+     */
+    public static final String ROBOT_EXECUTE_FAILURE_COMMAND="run fail\n";
 }
