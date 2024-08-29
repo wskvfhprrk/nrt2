@@ -21,13 +21,15 @@ public class Reset {
     private TurntableService turntableService;
     @Autowired
     private PubConfig pubConfig;
-    @Autowired
-    private BeefConfig beefConfig;
 
     public void start() {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
             return;
         }
+        /**
+         * 打开系统定时任务
+         */
+        pubConfig.setExecuteTask(true);
         log.info("设备自检复位中……");
         //打开蒸汽发生器
         log.info("打开蒸汽发生器");
@@ -44,16 +46,7 @@ public class Reset {
         //出汤口复位
         log.info("出汤口复位");
         relayDeviceService.theFoodOutletIsFacingUpwards();
-
-        Boolean falg = true;
-        while (falg) {
-//                    log.info("汤加热到指定温度才可以");
-//                    Result result = relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());
-//                    if(result.getCode()==200){
-            falg = false;
-
-//                    }
-        }
+        //设备自检完成
         pubConfig.setDeviceSelfCheckComplete(true);
         log.info("自检完成！");
     }

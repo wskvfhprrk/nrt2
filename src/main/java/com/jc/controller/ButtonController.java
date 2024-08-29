@@ -1,6 +1,7 @@
 package com.jc.controller;
 
 import com.jc.config.BeefConfig;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
@@ -28,6 +29,8 @@ public class ButtonController {
     private SeasoningMachineService seasoningMachineService;
     @Autowired
     private BeefConfig beefConfig;
+    @Autowired
+    private Reset reset;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
@@ -190,9 +193,7 @@ public class ButtonController {
 
     @GetMapping("/reset")
     public String reset() throws Exception {
-        robotService.reset();
-        turntableService.turntableReset();
-        bowlService.bowlReset();
+        reset.start();
         return "机器复位成功！";
     }
 }

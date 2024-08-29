@@ -19,7 +19,7 @@ public class PubConfig {
     /**
      * 机器人成功执行命令
      */
-    public Boolean robotExecutionNaming=false;
+    public Boolean robotExecutionNaming = false;
 
     /**
      * 转台当前工位数
@@ -116,16 +116,20 @@ public class PubConfig {
     /**
      * 设备自检完成
      */
-    public boolean deviceSelfCheckComplete =false;
+    public boolean deviceSelfCheckComplete = false;
 
     /**
      * 汤的温度
      */
-    public Double soupTemperatureValue=0.0;
+    public Double soupTemperatureValue = 0.0;
 
     /**
      * 称重传感器
      */
-    public int[] calculateWeight=new int[4];
+    public int[] calculateWeight = new int[4];
+    /**
+     * 是否开启定时任务
+     */
+    public Boolean executeTask = false;
 
 }
