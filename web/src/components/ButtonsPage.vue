@@ -86,7 +86,7 @@ export default {
     },
     openDialog(id, name) {
       // 如果name中有（）则弹窗带number参数，否则不弹窗，不带参数
-      if ([6, 8, 12, 15, 18, 19, 20, 22, 23, 24, 25, 26, 27, 28].includes(id)) {
+      if ([6, 8, 12, 15, 18, 19, 20, 21,  24, 25, 26, 27, 28].includes(id)) {
         this.dialogVisible = true;
       } else {
         this.dialogVisible = false;
@@ -127,20 +127,24 @@ export default {
 }
 
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 100px);
-  padding: 0 20px;
-  box-sizing: border-box;
-  background-color: transparent; /* 设置为透明背景 */
+  display: flex; /* 设置为flex布局 */
+  flex-direction: column; /* 设置容器内元素垂直方向排列 */
+  justify-content: center; /* 垂直方向居中容器内元素 */
+  align-items: center; /* 水平方向居中容器内元素 */
+  height: calc(100vh - 100px); /* 保持原来的高度 */
+  width: 100%; /* 容器占满全宽 */
+  padding: 0 20px; /* 设置容器左右内边距 */
+  box-sizing: border-box; /* 包括内边距和边框在内的大小 */
+  background-color: transparent; /* 透明背景 */
 }
 
+
 .button-columns {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
+  display: flex; /* 使用flex布局 */
+  justify-content: space-between;
+  width: 100%; /* 宽度设为100% */
+  max-width: 1200px; /* 设置最大宽度 */
+  margin: 0 auto; /* 自动左右外边距，用于居中 */
 }
 
 .button-column {

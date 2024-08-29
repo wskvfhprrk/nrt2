@@ -35,7 +35,8 @@
             </el-form-item>
           </el-form>
           <div class="button-container">
-            <el-button type="primary"  :disabled="!isButtonEnabled"  @click="submitOrder" class="center-button">提交订单</el-button>
+            <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
+            </el-button>
           </div>
           <div v-if="orderSubmitted" class="order-details">
             <h2>订单详情</h2>
@@ -50,7 +51,7 @@
     </div>
     <!-- Status message section -->
     <div class="status-message" :style="{ color: serverStatus.color }">
-      {{ serverStatus.message }}
+      {{ serverStatus.message || '默认状态信息显示' }}
     </div>
   </div>
 </template>
@@ -73,7 +74,7 @@ export default {
       prices: [10, 15, 20],
       spices: ['不辣', '微辣', '中辣', '辣'],
       orderSubmitted: false,
-      isButtonEnabled:false,
+      isButtonEnabled: false,
       serverStatus: {
         color: 'black',
         message: ''
@@ -111,9 +112,8 @@ export default {
         // 更新按钮状态
         this.isButtonEnabled = (this.serverStatus.color === 'green');
       } catch (error) {
-        console.error('Error fetching server status:', error);
-        // 更新按钮状态
-        this.isButtonEnabled = false;
+        console.error('获取服务器状态时出错:', error);
+        this.isButtonEnabled = false; // 如果请求失败，也禁用按钮
       }
     }
   },
@@ -205,11 +205,7 @@ html, body {
   color: rgb(72, 8, 25);
   margin-bottom: 10px;
 }
-css
-img
-js
-favicon.ico
-index.html
+
 .status-message {
   width: 100%;
   padding: 20px;
@@ -219,6 +215,5 @@ index.html
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 1000; /* 确保其在最前面 */
 }
 </style>
