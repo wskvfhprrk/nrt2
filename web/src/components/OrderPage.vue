@@ -2,9 +2,7 @@
   <div id="app" class="outer-container">
     <div class="container">
       <el-container>
-        <el-header class="center-content">
-          牛肉汤自助点餐系统
-        </el-header>
+        <!-- <el-header class="center-content"> 牛肉汤自助点餐系统 </el-header> -->
         <el-main>
           <el-form :model="form" label-width="120px">
             <el-form-item label="选择食谱">
@@ -37,7 +35,7 @@
             </el-form-item>
           </el-form>
           <div class="button-container">
-            <el-button type="primary" @click="submitOrder" class="center-button">提交订单</el-button>
+            <el-button type="primary"  :disabled="!isButtonEnabled"  @click="submitOrder" class="center-button">提交订单</el-button>
           </div>
           <div v-if="orderSubmitted" class="order-details">
             <h2>订单详情</h2>
@@ -49,6 +47,10 @@
           </div>
         </el-main>
       </el-container>
+    </div>
+    <!-- Status message section -->
+    <div class="status-message" :style="{ color: serverStatus.color }">
+      {{ serverStatus.message }}
     </div>
   </div>
 </template>
@@ -70,7 +72,12 @@ export default {
       recipes: ['牛肉汤', '牛杂汤'],
       prices: [10, 15, 20],
       spices: ['不辣', '微辣', '中辣', '辣'],
-      orderSubmitted: false
+      orderSubmitted: false,
+      isButtonEnabled:false,
+      serverStatus: {
+        color: 'black',
+        message: ''
+      }
     };
   },
   methods: {
@@ -95,7 +102,24 @@ export default {
       } else {
         this.$message.error('请完整选择所有选项');
       }
+    },
+    async fetchServerStatus() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8080/orders/serverStatus');
+        this.serverStatus.color = response.data.color;
+        this.serverStatus.message = response.data.message;
+        // 更新按钮状态
+        this.isButtonEnabled = (this.serverStatus.color === 'green');
+      } catch (error) {
+        console.error('Error fetching server status:', error);
+        // 更新按钮状态
+        this.isButtonEnabled = false;
+      }
     }
+  },
+  mounted() {
+    this.fetchServerStatus(); // Initial fetch
+    setInterval(this.fetchServerStatus, 1000); // Poll every second
   }
 };
 </script>
@@ -104,7 +128,7 @@ export default {
 html, body {
   height: 100%;
   margin: 0;
-  background-color: #f0f0f0;
+  background-color: transparent; /* 设置为透明背景 */
 }
 
 .outer-container {
@@ -112,14 +136,15 @@ html, body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  flex-direction: column; /* 让提示信息在底部显示 */
 }
 
 .container {
   max-width: 800px;
   width: 100%;
   padding: 20px;
-  background-color: #f0f0f0;
   font-family: 'Arial', sans-serif;
+  background-color: transparent; /* 设置为透明背景 */
 }
 
 .center-content {
@@ -140,7 +165,6 @@ html, body {
 }
 
 .el-header {
-  background-color: #f0f0f0;
   color: rgb(72, 8, 25);
   padding: 10px;
 }
@@ -154,7 +178,7 @@ html, body {
 }
 
 .el-form-item label {
-  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  font-size: calc(8px + 1.5vh); /* 根据屏幕高度调整字体大小 */
   color: rgb(72, 8, 25);
 }
 
@@ -180,5 +204,17 @@ html, body {
 .order-details h2 {
   color: rgb(72, 8, 25);
   margin-bottom: 10px;
+}
+
+.status-message {
+  width: 100%;
+  padding: 30px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000; /* 确保其在最前面 */
 }
 </style>
