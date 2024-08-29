@@ -29,17 +29,21 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // 读取服务端响应
         ByteBuf buf = (ByteBuf) msg;
-        byte[] data = new byte[buf.readableBytes()];
-        buf.readBytes(data);
-        String response = new String(data);
-        log.info("机器人服务器返回信息:{} ", response);
+        try {
+            byte[] data = new byte[buf.readableBytes()];
+            buf.readBytes(data);
+            String response = new String(data);
+            log.info("机器人服务器返回信息:{} ", response);
 //        if (response.equals(Constants.ROBOT_EXECUTE_SUCCESS_COMMAND)) {
 //            pubConfig.setRobotExecutionNaming(true);
 //        }
 //        if (response.equals(Constants.ROBOT_EXECUTE_FAILURE_COMMAND)) {
 //            pubConfig.setRobotExecutionNaming(false);
-//        }
-        ctx.close(); // 关闭连接
+            ctx.close(); // 关闭连接}
+        } finally {
+            buf.release();
+        }
+
     }
 
     @Override

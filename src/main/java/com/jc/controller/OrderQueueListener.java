@@ -31,12 +31,12 @@ public class OrderQueueListener {
 
     // 每秒钟检查一次队列中的订单
     @Scheduled(fixedRate = 1000) // 1秒
-    public void checkAndProcessOrders() throws InterruptedException {
+    public void checkAndProcessOrders()  {
         //取出订单时机——有订单并且在编号为1或4工位时
         if (redisQueueService.getQueueSize() > 0) {
             //todo 当id等于4时也可以 还有一个条件温度达到时才可以
             //如果汤没有烧到最低温度不充许开始订单
-            if (pubConfig.getSoupTemperatureValue() >= Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {
+            if (pubConfig.getSoupTemperatureValue() < Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {
                 log.error("汤在温度不够，加热汤至最小温度");
                 soupHeatingManagement.heatSoupToMinimumTemperature();
             }

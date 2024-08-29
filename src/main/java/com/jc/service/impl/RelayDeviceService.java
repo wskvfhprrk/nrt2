@@ -131,6 +131,7 @@ public class RelayDeviceService implements DeviceHandler {
         log.info("关闭所有继电器");
         // 发送关闭所有继电器的指令
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
+        steamOpen();
         return Result.success();
     }
 

@@ -32,7 +32,6 @@ public class RobotServiceImpl implements RobotService {
 
     @Override
     public Result reset() {
-        // TODO: 2024/8/28 如果机器人没有执行命令成功将循环执行此发送指令任务
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
             if (!pubConfig.getRobotStatus()) {

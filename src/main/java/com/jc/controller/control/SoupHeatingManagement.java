@@ -31,10 +31,10 @@ public class SoupHeatingManagement {
      *
      * @return
      */
-    public Callable<Result> heatSoupToMaximumTemperature() {
+    public Result heatSoupToMaximumTemperature() {
         log.info("汤加热出到汤温度");
-        relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());
-        return (Callable<Result>) Result.success();
+        new Thread(() -> relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature())).start();
+        return Result.success();
     }
 
     /**
@@ -42,10 +42,10 @@ public class SoupHeatingManagement {
      *
      * @return
      */
-    public Callable<Result> heatSoupToMediumTemperature() {
+    public Result heatSoupToMediumTemperature() {
         log.info("汤加热至保湿最高温度");
-        relayDeviceService.soupHeating(Constants.SOUP_MAXIMUM_TEMPERATURE_VALUE);
-        return (Callable<Result>) Result.success();
+        new Thread(()->relayDeviceService.soupHeating(Constants.SOUP_MAXIMUM_TEMPERATURE_VALUE)).start();
+        return Result.success();
     }
 
     /**
@@ -53,16 +53,16 @@ public class SoupHeatingManagement {
      *
      * @return
      */
-    public Callable<Result> heatSoupToMinimumTemperature() {
+    public Result heatSoupToMinimumTemperature() {
         log.info("汤加热至最低温度");
-        relayDeviceService.soupHeating(Constants.SOUP_MINIMUM_TEMPERATURE_VALUE);
-        return (Callable<Result>) Result.success();
+        new Thread(()->relayDeviceService.soupHeating(Constants.SOUP_MINIMUM_TEMPERATURE_VALUE)).start();
+        return Result.success();
     }
 
     /**
      * 汤自动加热——定时任务
      */
-    @Scheduled(fixedRate = 180000) // 每半小时检查一次
+//    @Scheduled(fixedRate = 180000) // 每半小时检查一次
     public void soupAutoHeating() {
         log.info("自动检测汤的温度");
         //如果小于汤的最小温度就加热到保持最大温度即中间温度

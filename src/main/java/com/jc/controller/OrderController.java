@@ -7,6 +7,7 @@ import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.controller.control.TaskCoordinator;
 import com.jc.entity.Order;
+import com.jc.enums.OrderStatus;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.Reset;
@@ -56,6 +57,7 @@ public class OrderController {
         Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
         //id生成规则
         order.setCustomerName("A" + (1234 + id));
+        order.setStatus(OrderStatus.PENDING);
         log.info("接收到订单：{}", order);
         queueService.enqueue(order);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
