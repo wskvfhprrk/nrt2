@@ -284,4 +284,12 @@ public class Constants {
      * 机器人执行失败命令
      */
     public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
+    /**
+     * 汤最小温度值
+     */
+    public static final Double SOUP_MINIMUM_TEMPERATURE_VALUE = 90.0;
+    /**
+     * 汤最大温度值(保温时的最大)
+     */
+    public static final Double SOUP_MAXIMUM_TEMPERATURE_VALUE = 100.0;
 }

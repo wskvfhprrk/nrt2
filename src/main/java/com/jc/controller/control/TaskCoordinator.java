@@ -11,9 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-
 /**
  * 任务中心管理器
  */
@@ -31,7 +28,7 @@ public class TaskCoordinator {
     @Autowired
     private IngredientPreparation ingredientPreparation;
     @Autowired
-    private SteamPreparation steamPreparation;
+    private SoupHeatingManagement soupHeatingManagement;
     @Autowired
     private TurntableService turntableService;
     @Autowired
@@ -41,8 +38,10 @@ public class TaskCoordinator {
 
     public void executeTasks(Order order) throws Exception {
         log.info("开始处理订单");
-        //判断转台是否在1和4两个工位才能够放置空碗
+        //todo 判断转台是否在1和4两个工位才能够放置空碗
         if (pubConfig.getTurntableNumber() % 6 == 1 || pubConfig.getTurntableNumber() % 6 == 4) {
+            //汤加热
+            soupHeatingManagement.heatSoupToMaximumTemperature();
             //初始化加碗完成
             pubConfig.setAddingBowlCompleted(false);
             pubConfig.setServingCompleted(false);
@@ -51,12 +50,6 @@ public class TaskCoordinator {
             Result result1 = robotPlaceEmptyBowl.takeBowl();
             //只要机器人把碗放到台上复位即可
             if (result1.getCode() == 200) {
-                //汤加热
-                log.info("汤加热");
-                new Thread(() -> {
-                    log.info("汤加热至中");
-                    steamPreparation.start();
-                }).start();
                 //todo 称重
                 //送到第三个转台
                 log.info("送到第三个转台");

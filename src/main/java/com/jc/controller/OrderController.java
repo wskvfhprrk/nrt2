@@ -33,15 +33,9 @@ import java.util.concurrent.ExecutionException;
 public class OrderController {
 
     @Autowired
-    private NettyServerHandler nettyServerHandler;
-    @Autowired
-    private IpConfig ipConfig;
-    @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private ClientConfig clientConfig;
-    @Autowired
-    private TaskCoordinator taskCoordinator;
     @Autowired
     private PubConfig pubConfig;
     @Autowired

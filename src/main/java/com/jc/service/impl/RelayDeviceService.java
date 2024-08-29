@@ -334,7 +334,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result soupHeating(Integer number) {
+    public Result soupHeating(Double number) {
         //关闭汤开关
         soupSwitchOff();
         //初始化温度

@@ -133,10 +133,10 @@ public class ButtonController {
                 break;
             case 21:
                 if (number == null) {
-                    number = beefConfig.getSoupHeatingTemperature();
+                    number = Integer.parseInt(beefConfig.getSoupHeatingTemperature().toString());
                 }
                 actionResult = "汤加热温度";
-                relayDeviceService.soupHeating(number);
+                relayDeviceService.soupHeating(Double.valueOf(number));
                 break;
             case 22:
                 if (number != null) {
