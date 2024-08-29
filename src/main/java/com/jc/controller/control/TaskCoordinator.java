@@ -75,9 +75,9 @@ public class TaskCoordinator {
                 //加完蒸转到第5个工位放汤
                 turntableService.alignToPosition(5);
                 //出汤
-//                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
+                relayDeviceService.soupPump(beefConfig.getSoupExtractionTime());
                 //停留加汤时间
-//                Thread.sleep((beefConfig.getSoupExtractionTime() + 5) * 1000);
+                Thread.sleep((beefConfig.getSoupExtractionTime() + 5) * 1000);
                 //转到第6工位出汤
                 turntableService.alignToPosition(0);
                 robotPlaceEmptyBowl.putBowl();

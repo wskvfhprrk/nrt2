@@ -57,15 +57,13 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
-        // 在这里处理订单逻辑，例如保存到数据库或其他操作
-        log.info("收到订单: " + order);
         // 订单排列中
         order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
         Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
+        //id生成规则
         order.setCustomerName("A" + (1234 + id));
+        log.info("接收到订单：{}", order);
         queueService.enqueue(order);
-        // TODO: 2024/8/28 处理订单需要一个监听事件
-//        taskCoordinator.executeTasks(order);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }
 
@@ -90,10 +88,11 @@ public class OrderController {
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
                 clientConfig.getRelayDevice();
 
-        if (allDevicesConnected && pubConfig.getAllDevicesConnectedStatus()) {
+        if (false) { //todo 如果有订单制作时
+            //todo 轮播待制作，正在制作和已经做好的订单
+        } else if (allDevicesConnected && pubConfig.getAllDevicesConnectedStatus()) {
             statusMap.put("color", "green");
-            statusMap.put("message", "设备正常可以正常使用");
-
+            statusMap.put("message", "请您点餐！");
         } else if (allDevicesConnected) {
             statusMap.put("color", "orange");
             statusMap.put("message", "设备自检中，请稍后……");

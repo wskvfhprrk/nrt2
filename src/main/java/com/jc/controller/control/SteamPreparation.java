@@ -22,13 +22,10 @@ public class SteamPreparation {
     @Autowired
     private BeefConfig beefConfig;
 
-    public Callable<Result> start() {
-        log.info("汤加热准备");
-        return () -> {
-            relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());
-            // TODO: 2024/8/26 汤加热不到温度阻塞进程
-            return Result.success();
-        };
+    public Result start() {
+        relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature());
+        // TODO: 2024/8/26 汤加热不到温度阻塞进程
+        return Result.success();
     }
 
 }

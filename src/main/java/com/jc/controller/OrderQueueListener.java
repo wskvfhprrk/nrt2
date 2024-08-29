@@ -28,20 +28,20 @@ public class OrderQueueListener {
 
 
     // 每秒钟检查一次队列中的订单
-    @Scheduled(fixedRate = 100000) // 1秒
+    @Scheduled(fixedRate = 1000) // 1秒
     public void checkAndProcessOrders() {
         //取出订单时机——有订单并且在编号为1或4工位时
         if (redisQueueService.getQueueSize() > 0) {
             //todo 当id等于4时也可以
-//            if (pubConfig.getTurntableNumber() % 6 == 1) {
+            if (pubConfig.getTurntableNumber() % 6 == 1) {
                 Order order = redisQueueService.dequeue();
-                log.info("正在处理订单：{}",String.valueOf(order));
-//                try {
-//                    taskCoordinator.executeTasks(order);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
+                log.info("正在处理订单：{}",order.toString());
+                try {
+                    taskCoordinator.executeTasks(order);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

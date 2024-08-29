@@ -3,6 +3,7 @@ package com.jc.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.entity.Order;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  * Redis队列服务，用于实现FIFO队列操作
  */
 @Service
+@Slf4j
 public class RedisQueueService {
 
     @Autowired
@@ -27,6 +29,7 @@ public class RedisQueueService {
         try {
             String orderJson = objectMapper.writeValueAsString(order);
             redisTemplate.opsForList().rightPush(QUEUE_NAME, orderJson);
+            log.info("订单存放在redis队列：{} 中",QUEUE_NAME);
         } catch (JsonProcessingException e) {
             e.printStackTrace(); // 打印序列化错误
         }

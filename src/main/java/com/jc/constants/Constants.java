@@ -24,7 +24,7 @@ public class Constants {
     /**
      * 转台行进速度
      */
-    public static final int TURNTABLE_SPEED = 30;
+    public static final int TURNTABLE_SPEED = 20;
 
 
     /** 传感器的值 */
@@ -76,7 +76,6 @@ public class Constants {
      * 货道对射传感器X13
      */
     public static final int GOODS_AISLE_PHOTOELECTRIC_SENSOR = 17;
-
 
 
     /** 32位继电器 */
@@ -230,11 +229,11 @@ public class Constants {
     /**
      * 汤温度传感器
      */
-    public static final int SOUP_TEMPERATURE_SENSOR=1;
+    public static final int SOUP_TEMPERATURE_SENSOR = 1;
     /**
      * 重量传感器一托四
      */
-    public static final int WEIGHT_SENSOR_ONE_TO_FOUR=2;
+    public static final int WEIGHT_SENSOR_ONE_TO_FOUR = 2;
 
 
     /**
@@ -256,23 +255,23 @@ public class Constants {
     /**
      * 读取汤温度指令
      */
-    public static final String READ_SOUP_TEMPERATURE_COMMAND="01 03 00 04 00 01 C5 CB";
+    public static final String READ_SOUP_TEMPERATURE_COMMAND = "01 03 00 04 00 01 C5 CB";
     /**
      * 读取所有重量的值
      */
-    public static final String READ_WEIGHT_VALUE="02 03 00 00 00 08 44 3F";
+    public static final String READ_WEIGHT_VALUE = "02 03 00 00 00 08 44 3F";
     /**
      * 称重置零
      */
-    public static final String TARE_WEIGHT="03 06 00 26 00 01 A8 23";
+    public static final String TARE_WEIGHT = "03 06 00 26 00 01 A8 23";
     /**
      * 置零校准
      */
-    public static final String ZEROING_CALIBRATION="02 06 00 26 00 01 A9 F2";
+    public static final String ZEROING_CALIBRATION = "02 06 00 26 00 01 A9 F2";
     /**
      * 货道通电2秒
      */
-    public static final int GOODS_AISLE_POWER_ON2_SECONDS=2;
+    public static final int GOODS_AISLE_POWER_ON2_SECONDS = 2;
     /**
      * 机器人出汤放碗成功
      */
@@ -280,9 +279,9 @@ public class Constants {
     /**
      * 机器人执行成功命令
      */
-    public static final String ROBOT_EXECUTE_SUCCESS_COMMAND="run start\n";
+    public static final String ROBOT_EXECUTE_SUCCESS_COMMAND = "run start\n";
     /**
      * 机器人执行失败命令
      */
-    public static final String ROBOT_EXECUTE_FAILURE_COMMAND="run fail\n";
+    public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
 }
