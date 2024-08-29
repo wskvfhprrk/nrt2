@@ -292,4 +292,16 @@ public class Constants {
      * 汤最大温度值(保温时的最大)
      */
     public static final Double SOUP_MAXIMUM_TEMPERATURE_VALUE = 100.0;
+    /**
+     * 正在做订单redis主键
+     */
+    public static final String ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS = "orderRedisPrimaryKeyInProgress";
+    /**
+     * 已完成订单redis主键
+     */
+    public static final String COMPLETED_ORDER_REDIS_PRIMARY_KEY = "completedOrderRedisPrimaryKey";
+    /**
+     * 待制作订单redis主键
+     */
+    public static final String PENDING_ORDER_REDIS_PRIMARY_KEY = "pendingOrderRedisPrimaryKey";
 }

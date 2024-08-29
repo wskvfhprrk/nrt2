@@ -1,14 +1,19 @@
 package com.jc.controller.control;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
+import com.jc.enums.OrderStatus;
 import com.jc.service.impl.RelayDeviceService;
 import com.jc.service.impl.TurntableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,6 +40,10 @@ public class TaskCoordinator {
     private BeefConfig beefConfig;
     @Autowired
     private RelayDeviceService relayDeviceService;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public void executeTasks(Order order) throws Exception {
         log.info("开始处理订单");
@@ -65,6 +74,16 @@ public class TaskCoordinator {
                 //加蒸汽
                 relayDeviceService.bowlSteam(beefConfig.getBowlSteamTime());
                 Thread.sleep(1000L);
+                //从正在做的队列中取出放到已经完成的
+                order.setStatus(OrderStatus.PROCESSING);
+                redisTemplate.opsForList().leftPop(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
+                order.setStatus(OrderStatus.COMPLETED);
+                try {
+                    String orderJson = objectMapper.writeValueAsString(order);
+                    redisTemplate.opsForList().rightPushIfPresent(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY,orderJson);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
                 //加完蒸转到第5个工位放汤
                 turntableService.alignToPosition(5);
                 //出汤
@@ -84,6 +103,8 @@ public class TaskCoordinator {
                 relayDeviceService.theFoodOutletIsFacingDownwards();
                 Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime() * 1000);
                 relayDeviceService.theFoodOutletIsFacingUpwards();
+                //从已经完成队列中移除
+                redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
             } else {
                 log.error(result1.getMessage());
             }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.Callable;
 
 
 /**
@@ -62,7 +61,7 @@ public class SoupHeatingManagement {
     /**
      * 汤自动加热——定时任务
      */
-//    @Scheduled(fixedRate = 180000) // 每半小时检查一次
+    @Scheduled(fixedRate = 180000) // 每半小时检查一次
     public void soupAutoHeating() {
         log.info("自动检测汤的温度");
         //如果小于汤的最小温度就加热到保持最大温度即中间温度

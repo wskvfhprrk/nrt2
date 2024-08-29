@@ -2,6 +2,7 @@ package com.jc.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,14 @@ public class RedisQueueService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    private static final String QUEUE_NAME = "orderQueue";  // 队列名称
     private final ObjectMapper objectMapper = new ObjectMapper();  // 用于JSON序列化和反序列化的对象
 
     // 将Order对象添加到队列末尾
     public void enqueue(Order order) {
         try {
             String orderJson = objectMapper.writeValueAsString(order);
-            redisTemplate.opsForList().rightPush(QUEUE_NAME, orderJson);
-            log.info("订单存放在redis队列：{} 中",QUEUE_NAME);
+            redisTemplate.opsForList().rightPush(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, orderJson);
+            log.info("订单存放在redis队列：{} 中",Constants.PENDING_ORDER_REDIS_PRIMARY_KEY);
         } catch (JsonProcessingException e) {
             e.printStackTrace(); // 打印序列化错误
         }
@@ -37,7 +37,7 @@ public class RedisQueueService {
 
     // 从队列中取出Order对象
     public Order dequeue() {
-        String orderJson = redisTemplate.opsForList().leftPop(QUEUE_NAME);
+        String orderJson = redisTemplate.opsForList().leftPop(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY);
         if (orderJson != null) {
             try {
                 return objectMapper.readValue(orderJson, Order.class);
@@ -50,13 +50,13 @@ public class RedisQueueService {
 
     // 获取队列长度
     public long getQueueSize() {
-        return redisTemplate.opsForList().size(QUEUE_NAME);
+        return redisTemplate.opsForList().size(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY);
     }
 
     // 查看队列中的内容（不取出元素）
     public List<Order> peekQueue() {
         // 获取Redis队列中的元素范围
-        List<String> orderJsonList = redisTemplate.opsForList().range(QUEUE_NAME, 0, -1);
+        List<String> orderJsonList = redisTemplate.opsForList().range(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, 0, -1);
         if (orderJsonList != null) {
             // 将JSON字符串转换为Order对象列表
             return orderJsonList.stream().map(orderJson -> {
