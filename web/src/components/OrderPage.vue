@@ -140,7 +140,7 @@ html, body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 600px;
   width: 100%;
   padding: 20px;
   font-family: 'Arial', sans-serif;
@@ -205,10 +205,14 @@ html, body {
   color: rgb(72, 8, 25);
   margin-bottom: 10px;
 }
-
+css
+img
+js
+favicon.ico
+index.html
 .status-message {
   width: 100%;
-  padding: 30px;
+  padding: 20px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
   font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
