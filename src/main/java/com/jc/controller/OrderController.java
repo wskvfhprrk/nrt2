@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * 订单控制器
@@ -132,12 +133,36 @@ public class OrderController {
     public Result<OrderStatusResponse> getOrderStatus() {
         try {
             // 读取Redis队列中的内容
-            List<Object> pendingOrders = redisTemplate.opsForList().range(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, 0, -1);
-            List<Object> inProgressOrders = redisTemplate.opsForList().range(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, 0, -1);
-            List<Object> completedOrders = redisTemplate.opsForList().range(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY, 0, -1);
+            List<String> pendingOrders = redisTemplate.opsForList().range(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, 0, -1);
+            List<String> inProgressOrders = redisTemplate.opsForList().range(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, 0, -1);
+            List<String> completedOrders = redisTemplate.opsForList().range(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY, 0, -1);
 
+            List<Order> pendingOrdersList = pendingOrders.stream().map(s -> {
+                try {
+                    return objectMapper.readValue(s, Order.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }).collect(Collectors.toList());
+            List<Order> inProgressOrdersList = inProgressOrders.stream().map(s -> {
+                try {
+                    return objectMapper.readValue(s, Order.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }).collect(Collectors.toList());
+            List<Order> completedOrdersList = completedOrders.stream().map(s -> {
+                try {
+                    return objectMapper.readValue(s, Order.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }).collect(Collectors.toList());
             // 创建OrderStatusResponse对象
-            OrderStatusResponse orderStatusResponse = new OrderStatusResponse(pendingOrders, inProgressOrders, completedOrders);
+            OrderStatusResponse orderStatusResponse = new OrderStatusResponse(pendingOrdersList, inProgressOrdersList, completedOrdersList);
 
             // 使用Result.success()方法返回结果
             return Result.success(orderStatusResponse);
@@ -149,37 +174,37 @@ public class OrderController {
     }
 
     public static class OrderStatusResponse {
-        private List<Object> pendingOrders;
-        private List<Object> inProgressOrders;
-        private List<Object> completedOrders;
+        private List<Order> pendingOrders;
+        private List<Order> inProgressOrders;
+        private List<Order> completedOrders;
 
-        public OrderStatusResponse(List<Object> pendingOrders, List<Object> inProgressOrders, List<Object> completedOrders) {
+        public OrderStatusResponse(List<Order> pendingOrders, List<Order> inProgressOrders, List<Order> completedOrders) {
             this.pendingOrders = pendingOrders;
             this.inProgressOrders = inProgressOrders;
             this.completedOrders = completedOrders;
         }
 
-        public List<Object> getPendingOrders() {
+        public List<Order> getPendingOrders() {
             return pendingOrders;
         }
 
-        public void setPendingOrders(List<Object> pendingOrders) {
+        public void setPendingOrders(List<Order> pendingOrders) {
             this.pendingOrders = pendingOrders;
         }
 
-        public List<Object> getInProgressOrders() {
+        public List<Order> getInProgressOrders() {
             return inProgressOrders;
         }
 
-        public void setInProgressOrders(List<Object> inProgressOrders) {
+        public void setInProgressOrders(List<Order> inProgressOrders) {
             this.inProgressOrders = inProgressOrders;
         }
 
-        public List<Object> getCompletedOrders() {
+        public List<Order> getCompletedOrders() {
             return completedOrders;
         }
 
-        public void setCompletedOrders(List<Object> completedOrders) {
+        public void setCompletedOrders(List<Order> completedOrders) {
             this.completedOrders = completedOrders;
         }
     }

@@ -38,7 +38,7 @@ public class OrderQueueListener {
 
 
     // 每秒钟检查一次队列中的订单
-    @Scheduled(fixedRate = 1000) // 1秒
+//    @Scheduled(fixedRate = 1000) // 1秒
     public void checkAndProcessOrders()  {
         //取出订单时机——有订单并且在编号为1或4工位时
         if (redisQueueService.getQueueSize() > 0) {
