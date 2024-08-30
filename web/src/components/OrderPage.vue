@@ -1,5 +1,27 @@
 <template>
   <div id="app" class="outer-container">
+    <!-- Order status display -->
+    <div v-if="hasOrders" class="order-status-display">
+      <div v-if="pendingOrders.length" class="order-status pending">
+        待做订单: <span>{{ pendingOrders.length }}</span>
+        <div class="order-list">
+          <div v-for="order in pendingOrders" :key="order.orderId" class="customer-name">{{ order.customerName }}</div>
+        </div>
+      </div>
+      <div v-if="inProgressOrders.length" class="order-status in-progress">
+        在做订单: <span>{{ inProgressOrders.length }}</span>
+        <div class="order-list">
+          <div v-for="order in inProgressOrders" :key="order.orderId" class="customer-name">{{ order.customerName }}</div>
+        </div>
+      </div>
+      <div v-if="completedOrders.length" class="order-status completed">
+        做完订单: <span>{{ completedOrders.length }}</span>
+        <div class="order-list">
+          <div v-for="order in completedOrders" :key="order.orderId" class="customer-name">{{ order.customerName }}</div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <el-container>
         <!-- <el-header class="center-content"> 牛肉汤自助点餐系统 </el-header> -->
@@ -78,7 +100,11 @@ export default {
       serverStatus: {
         color: 'black',
         message: ''
-      }
+      },
+      pendingOrders: [],       // 待做订单队列
+      inProgressOrders: [],    // 在做订单队列
+      completedOrders: [],     // 做完订单队列
+      hasOrders: false         // 是否有订单
     };
   },
   methods: {
@@ -115,20 +141,40 @@ export default {
         console.error('获取服务器状态时出错:', error);
         this.isButtonEnabled = false; // 如果请求失败，也禁用按钮
       }
+    },
+    async fetchOrderData() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8080/orders/status');
+        if (response.data.code === 200) {
+          this.pendingOrders = response.data.data.pendingOrders || [];
+          this.inProgressOrders = response.data.data.inProgressOrders || [];
+          this.completedOrders = response.data.data.completedOrders || [];
+
+          // 更新 hasOrders 状态
+          this.hasOrders = this.pendingOrders.length > 0 || this.inProgressOrders.length > 0 || this.completedOrders.length > 0;
+        } else {
+          console.error(response.data.message);
+        }
+      } catch (error) {
+        console.error('获取订单数据时出错:', error);
+      }
     }
   },
   mounted() {
     this.fetchServerStatus(); // Initial fetch
     setInterval(this.fetchServerStatus, 1000); // Poll every second
+    this.fetchOrderData(); // 获取订单数据
+    setInterval(this.fetchOrderData, 1000); // 每5秒轮询一次订单数据
   }
 };
 </script>
+
 
 <style>
 html, body {
   height: 100%;
   margin: 0;
-  background-color: transparent; /* 设置为透明背景 */
+  background-color: transparent;
 }
 
 .outer-container {
@@ -136,7 +182,7 @@ html, body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  flex-direction: column; /* 让提示信息在底部显示 */
+  flex-direction: column;
 }
 
 .container {
@@ -144,13 +190,7 @@ html, body {
   width: 100%;
   padding: 20px;
   font-family: 'Arial', sans-serif;
-  background-color: transparent; /* 设置为透明背景 */
-}
-
-.center-content {
-  font-size: calc(16px + 2vh); /* 根据屏幕高度调整字体大小 */
-  text-align: center;
-  color: rgb(72, 8, 25);
+  background-color: transparent;
 }
 
 .button-container {
@@ -164,56 +204,87 @@ html, body {
   color: #fff;
 }
 
-.el-header {
-  color: rgb(72, 8, 25);
-  padding: 10px;
-}
-
 .el-main {
   padding: 20px;
 }
 
 .el-form-item {
-  margin-bottom: 40px; /* 原来的两倍 */
+  margin-bottom: 40px;
 }
 
 .el-form-item label {
-  font-size: calc(8px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  font-size: calc(8px + 1.5vh);
   color: rgb(72, 8, 25);
 }
 
 .el-radio-group {
-  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
-}
-
-.el-radio {
-  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  font-size: calc(12px + 1.5vh);
 }
 
 .el-button {
   height: 40px;
-  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  font-size: calc(12px + 1.5vh);
 }
 
 .order-details {
   margin-top: 20px;
-  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  font-size: calc(12px + 1.5vh);
   color: rgb(72, 8, 25);
-}
-
-.order-details h2 {
-  color: rgb(72, 8, 25);
-  margin-bottom: 10px;
 }
 
 .status-message {
   width: 100%;
   padding: 20px;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
-  font-size: calc(12px + 1.5vh); /* 根据屏幕高度调整字体大小 */
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: calc(12px + 1.5vh);
   position: fixed;
   bottom: 0;
   left: 0;
+}
+
+.order-status-display {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px 0;
+}
+
+.order-status {
+  font-size: calc(12px + 1.5vh);
+  margin: 5px 0;
+}
+
+.order-status span {
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.order-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 5px;
+  justify-content: center;
+  max-width: 1000px; /* Set a max width to control the layout */
+  margin: 0 auto;
+}
+
+.order-list .customer-name {
+  text-align: center;
+  font-size: calc(12px + 1.5vh);
+}
+
+.pending .customer-name {
+  color: orange;
+}
+
+.in-progress .customer-name {
+  color: blue;
+}
+
+.completed .customer-name {
+  color: green;
 }
 </style>

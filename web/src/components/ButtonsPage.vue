@@ -33,34 +33,33 @@ export default {
   data() {
     return {
       buttons: [
-        { id: 1, name: "机器人重置" },
-        { id: 2, name: "机器人取碗" },
-        { id: 3, name: "机器人出汤" },
-        { id: 4, name: "取餐口复位" },
-        { id: 5, name: "取餐口出餐" },
-        { id: 6, name: "调料机测试（配方）" },
-        { id: 7, name: "转台复位" },
-        { id: 8, name: "转台工位（数字）" },
-        { id: 9, name: "碗复位" },
-        { id: 10, name: "碗向上" },
-        { id: 11, name: "碗向下" },
-        { id: 12, name: "抽汤泵（秒）" },
-        { id: 13, name: "后箱风扇开" },
-        { id: 14, name: "后箱风扇关" },
-        { id: 15, name: "震动器测试（秒）" },
-        { id: 16, name: "蒸汽打开" },
-        { id: 17, name: "蒸汽关闭" },
-        { id: 18, name: "碗蒸汽杆向上" },
-        { id: 19, name: "碗蒸汽杆向下" },
-        { id: 20, name: "汤加热至（度）" },
-        { id: 21, name: "弹簧货道（编号）" },
-        { id: 22, name: "称重测试打开" },
-        { id: 23, name: "称重测试关闭" },
-        { id: 24, name: "配菜称重盒打开（编号）" },
-        { id: 25, name: "配菜称重盒关闭（编号）" },
-        { id: 26, name: "1号配菜电机（g）" },
-        { id: 27, name: "2号配菜电机（g）" },
-        { id: 28, name: "3号配菜电机（g）" }
+        {id: 1, name: "机器人重置"},
+        {id: 2, name: "机器人取碗"},
+        {id: 3, name: "机器人出汤"},
+        {id: 4, name: "取餐口复位"},
+        {id: 5, name: "取餐口出餐"},
+        {id: 6, name: "调料机测试（配方）"},       // 需要参数
+        {id: 7, name: "转台复位"},
+        {id: 8, name: "转台工位（数字）"},         // 需要参数
+        {id: 9, name: "碗复位"},
+        {id: 10, name: "碗向上"},
+        {id: 11, name: "碗向下"},
+        {id: 12, name: "抽汤泵（秒）"},           // 需要参数
+        {id: 13, name: "汤开关开"},
+        {id: 14, name: "汤开关关"},
+        {id: 15, name: "后箱风扇开"},
+        {id: 16, name: "后箱风扇关"},
+        {id: 17, name: "震动器测试（秒）"},       // 需要参数
+        {id: 18, name: "蒸汽打开"},
+        {id: 19, name: "蒸汽关闭"},
+        {id: 20, name: "碗加蒸汽（秒）"},         // 需要参数
+        {id: 21, name: "汤加热温度"},             // 需要参数
+        {id: 22, name: "弹簧货道（编号）"},       // 需要参数
+        {id: 23, name: "配菜称重盒打开（编号）"}, // 需要参数
+        {id: 24, name: "配菜称重盒关闭（编号）"}, // 需要参数
+        {id: 25, name: "1号配菜电机（g）"},      // 需要参数
+        {id: 26, name: "2号配菜电机（g）"},      // 需要参数
+        {id: 27, name: "3号配菜电机（g）"}       // 需要参数
       ],
       buttonsPerColumn: 14,
       buttonColumns: [],
@@ -86,7 +85,7 @@ export default {
     },
     openDialog(id, name) {
       // 如果name中有（）则弹窗带number参数，否则不弹窗，不带参数
-      if ([6, 8, 12, 15, 18, 19, 20, 21,  24, 25, 26, 27, 28].includes(id)) {
+      if ([6, 8, 12, 17, 20, 21, 22, 23, 24, 25, 26, 27].includes(id)) {
         this.dialogVisible = true;
       } else {
         this.dialogVisible = false;
@@ -111,7 +110,7 @@ export default {
       this.sendRequest(`${baseURL}/reset`);
     },
     chunkArray(arr, size) {
-      return Array.from({ length: Math.ceil(arr.length / size) }, (_, index) =>
+      return Array.from({length: Math.ceil(arr.length / size)}, (_, index) =>
           arr.slice(index * size, index * size + size)
       );
     }

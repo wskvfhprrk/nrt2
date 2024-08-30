@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.ClientConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
+import com.jc.constants.Constants;
 import com.jc.controller.control.TaskCoordinator;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.Reset;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -122,5 +126,61 @@ public class OrderController {
             sb.append("、");
         }
         sb.append(message);
+    }
+
+    @GetMapping("/status")
+    public Result<OrderStatusResponse> getOrderStatus() {
+        try {
+            // 读取Redis队列中的内容
+            List<Object> pendingOrders = redisTemplate.opsForList().range(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, 0, -1);
+            List<Object> inProgressOrders = redisTemplate.opsForList().range(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, 0, -1);
+            List<Object> completedOrders = redisTemplate.opsForList().range(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY, 0, -1);
+
+            // 创建OrderStatusResponse对象
+            OrderStatusResponse orderStatusResponse = new OrderStatusResponse(pendingOrders, inProgressOrders, completedOrders);
+
+            // 使用Result.success()方法返回结果
+            return Result.success(orderStatusResponse);
+
+        } catch (Exception e) {
+            // 如果发生异常，返回错误信息
+            return Result.error(500, "获取订单数据失败");
+        }
+    }
+
+    public static class OrderStatusResponse {
+        private List<Object> pendingOrders;
+        private List<Object> inProgressOrders;
+        private List<Object> completedOrders;
+
+        public OrderStatusResponse(List<Object> pendingOrders, List<Object> inProgressOrders, List<Object> completedOrders) {
+            this.pendingOrders = pendingOrders;
+            this.inProgressOrders = inProgressOrders;
+            this.completedOrders = completedOrders;
+        }
+
+        public List<Object> getPendingOrders() {
+            return pendingOrders;
+        }
+
+        public void setPendingOrders(List<Object> pendingOrders) {
+            this.pendingOrders = pendingOrders;
+        }
+
+        public List<Object> getInProgressOrders() {
+            return inProgressOrders;
+        }
+
+        public void setInProgressOrders(List<Object> inProgressOrders) {
+            this.inProgressOrders = inProgressOrders;
+        }
+
+        public List<Object> getCompletedOrders() {
+            return completedOrders;
+        }
+
+        public void setCompletedOrders(List<Object> completedOrders) {
+            this.completedOrders = completedOrders;
+        }
     }
 }

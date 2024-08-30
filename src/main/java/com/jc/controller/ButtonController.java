@@ -5,6 +5,7 @@ import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/buttonAction")
+@Slf4j
 public class ButtonController {
 
     @Autowired
@@ -34,6 +36,7 @@ public class ButtonController {
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
+        log.info("id=={}",id);
         String actionResult = "";
         switch (id) {
             case 1:
