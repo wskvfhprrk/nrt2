@@ -2,7 +2,6 @@ package com.jc.service;
 
 import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
-import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,11 +32,11 @@ public class DocuService implements DeviceHandler {
 
     private void isHome(String message) {
         if (message.replaceAll(" ","").equals(Constants.ROBOT_HOME)) {
-            pubConfig.setRobotStatus(true);
+            pubConfig.setIsRobotStatus(true);
         }
         //出餐完成
         if (message.replaceAll(" ","").equals(Constants.SERVING_COMPLETED)) {
-            pubConfig.setServingCompleted(true);
+            pubConfig.setIsServingCompleted(true);
         }
     }
 }

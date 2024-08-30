@@ -1,9 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
-import com.jc.config.Result;
-import com.jc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,7 @@ public class Reset {
         /**
          * 打开系统定时任务
          */
-        pubConfig.setExecuteTask(true);
+        pubConfig.setIsExecuteTask(true);
         log.info("设备自检复位中……");
         //打开蒸汽发生器
         log.info("打开蒸汽发生器");

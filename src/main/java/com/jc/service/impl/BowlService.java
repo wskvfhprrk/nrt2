@@ -96,7 +96,7 @@ public class BowlService implements DeviceHandler {
                 }
             }
             //碗重置状态更改
-            pubConfig.setResetBowl(true);
+            pubConfig.setIsResetBowl(true);
             log.info("碗已经升到位！");
             return;
         }

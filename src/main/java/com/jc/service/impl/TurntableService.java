@@ -46,7 +46,7 @@ public class TurntableService {
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("转盘已经在原点位置！");
             pubConfig.setTurntableNumber(1);
-            pubConfig.setTurntableReset(true);
+            pubConfig.setIsTurntableReset(true);
             return "ok";
         }
         //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
@@ -68,7 +68,7 @@ public class TurntableService {
                     flag = false;
                     //工位为0
                     pubConfig.setTurntableNumber(1);
-                    pubConfig.setTurntableReset(true);
+                    pubConfig.setIsTurntableReset(true);
                 }
             }
         }
@@ -120,7 +120,7 @@ public class TurntableService {
     public void alignToPosition(int number) {
         //如果没有初始化要多转一圈第一圈让重置
         //除以6求余为工位
-        if (pubConfig.getTurntableReset() && pubConfig.getTurntableNumber() % Constants.WORKSTATION_NUMBER == number) {
+        if (pubConfig.getIsTurntableReset() && pubConfig.getTurntableNumber() % Constants.WORKSTATION_NUMBER == number) {
             log.info("已经在{}位上", number);
             return;
         }

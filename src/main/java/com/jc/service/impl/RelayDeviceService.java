@@ -24,6 +24,8 @@ public class RelayDeviceService implements DeviceHandler {
     private PubConfig pubConfig;
     @Autowired
     private IpConfig ipConfig;
+    @Autowired
+    private BeefConfig beefConfig;
 
     /**
      * 处理消息
@@ -345,11 +347,13 @@ public class RelayDeviceService implements DeviceHandler {
         while (flag) {
             //发送温度
             nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
-            if (pubConfig.getSoupTemperatureValue() >= number) {
+            Double soupTemperatureValue = pubConfig.getSoupTemperatureValue();
+            if(soupTemperatureValue>=beefConfig.getSoupHeatingTemperature()){
+                pubConfig.setIsSoupHeatingComplete(true);
+            }
+            if ( soupTemperatureValue>= number) {
                 flag = false;
                 relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
-                //汤准备好了
-                pubConfig.setSoupHeatingComplete(true);
             } else {
                 relayOpening(Constants.SOUP_STEAM_SOLENOID_VALVE);
             }
@@ -366,7 +370,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result springChannel(Integer number) {
         //先把粉丝为false
-        pubConfig.setPlacingNoodlesCompleted(false);
+        pubConfig.setIsPlacingNoodlesCompleted(false);
         int i = 0;
         switch (number) {
             case 1:
@@ -388,7 +392,7 @@ public class RelayDeviceService implements DeviceHandler {
 
         }
         // 货道通电2秒，让货道自动转一圈
-        while (!pubConfig.getPlacingNoodlesCompleted()) {
+        while (!pubConfig.getIsPlacingNoodlesCompleted()) {
             openClose(i, Constants.GOODS_AISLE_POWER_ON2_SECONDS);
             try {
                 Thread.sleep(3000L);
@@ -574,7 +578,7 @@ public class RelayDeviceService implements DeviceHandler {
         }
         relayClosing(Constants.STEAM_COVER_1);
         //碗蒸汽加完状态赋值
-        pubConfig.setAddingSteamCompleted(true);
+        pubConfig.setIsAddingSteamCompleted(true);
         return Result.success();
     }
 

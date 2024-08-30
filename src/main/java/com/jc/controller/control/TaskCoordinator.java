@@ -12,7 +12,6 @@ import com.jc.service.impl.RelayDeviceService;
 import com.jc.service.impl.TurntableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -52,8 +51,8 @@ public class TaskCoordinator {
             //汤加热
             soupHeatingManagement.heatSoupToMaximumTemperature();
             //初始化加碗完成
-            pubConfig.setAddingBowlCompleted(false);
-            pubConfig.setServingCompleted(false);
+            pubConfig.setIsAddingBowlCompleted(false);
+            pubConfig.setIsServingCompleted(false);
             //机器人取碗
             log.info("机器人取碗");
             Result result1 = robotPlaceEmptyBowl.takeBowl();
@@ -93,7 +92,7 @@ public class TaskCoordinator {
                 //转到第6工位出汤
                 turntableService.alignToPosition(0);
                 robotPlaceEmptyBowl.putBowl();
-                while (!pubConfig.getServingCompleted()) {
+                while (!pubConfig.getIsServingCompleted()) {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     continue;
                 }

@@ -4,7 +4,6 @@ import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
-import com.jc.enums.SteamGeneratorState;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -156,7 +155,7 @@ public class IODeviceService implements DeviceHandler {
     private void fancheck(String[] split) {
         if (split[Constants.GOODS_AISLE_PHOTOELECTRIC_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("检测粉丝掉下来");
-            pubConfig.setPlacingNoodlesCompleted(true);
+            pubConfig.setIsPlacingNoodlesCompleted(true);
         }
     }
 
@@ -168,9 +167,9 @@ public class IODeviceService implements DeviceHandler {
     private void soupLevelAnalysis(String[] split) {
         if (split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             log.info("加汤完成！");
-            pubConfig.setAddingSoupCompleted(true);
+            pubConfig.setIsAddingSoupCompleted(true);
         } else {
-            pubConfig.setAddingSoupCompleted(false);
+            pubConfig.setIsAddingSoupCompleted(false);
         }
     }
 
@@ -185,7 +184,7 @@ public class IODeviceService implements DeviceHandler {
         if (split[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
             // 将转台的工位数设为0
             pubConfig.setTurntableNumber(1);
-            pubConfig.setTurntableReset(true);
+            pubConfig.setIsTurntableReset(true);
         }
 
         // 如果转台状态为空（首次调用时可能为空）

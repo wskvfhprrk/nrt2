@@ -63,7 +63,7 @@ public class SoupHeatingManagement {
      */
     @Scheduled(fixedRate = 180000) // 每半小时检查一次
     public void soupAutoHeating() {
-        if(!pubConfig.getExecuteTask())return;
+        if(!pubConfig.getIsExecuteTask())return;
         log.info("自动检测汤的温度");
         //如果小于汤的最小温度就加热到保持最大温度即中间温度
         if (pubConfig.getSoupTemperatureValue() < Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {

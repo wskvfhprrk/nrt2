@@ -34,7 +34,7 @@ public class RobotServiceImpl implements RobotService {
     public Result reset() {
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
-            if (!pubConfig.getRobotStatus()) {
+            if (!pubConfig.getIsRobotStatus()) {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             }
             log.info("机器人复位自检成功");
@@ -79,27 +79,27 @@ public class RobotServiceImpl implements RobotService {
             return Result.error(500, "检测放碗位置到有东西！");
         }
         //检测机器人是否加home点
-        if (!pubConfig.getRobotStatus()) {
+        if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
         if (!bowlSensor) {
             bowlService.bowlReset();
         } else {
-            pubConfig.setAddingBowlCompleted(true);
+            pubConfig.setIsAddingBowlCompleted(true);
         }
         //向机器人发送取碗指令
         try {
             nettyClientConfig.connectAndSendData("run(takeABowl.jspf)");
-            pubConfig.setRobotStatus(false);
+            pubConfig.setIsRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         //等待到机器人发出HOME指令才算完成
-        while (!pubConfig.getRobotStatus()) {
+        while (!pubConfig.getIsRobotStatus()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
-                if (pubConfig.getRobotStatus()) {
+                if (pubConfig.getIsRobotStatus()) {
                     continue;
                 }
             } catch (InterruptedException e) {
@@ -118,13 +118,13 @@ public class RobotServiceImpl implements RobotService {
     @Override
     public Result putBowl() {
         //检测机器人是否加home点
-        if (!pubConfig.getRobotStatus()) {
+        if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
         try {
             nettyClientConfig.connectAndSendData("run(putABowl.jspf)");
-            pubConfig.setRobotStatus(false);
+            pubConfig.setIsRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

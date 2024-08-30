@@ -15,11 +15,11 @@ public class PubConfig {
     /**
      * 机器人在待机状态
      */
-    private Boolean robotStatus = false;
+    private Boolean isRobotStatus = false;
     /**
      * 机器人成功执行命令
      */
-    public Boolean robotExecutionNaming = false;
+    public Boolean isRobotExecutionNaming = false;
 
     /**
      * 转台当前工位数
@@ -32,67 +32,67 @@ public class PubConfig {
     /**
      * 转台复位
      */
-    private Boolean turntableReset = false;
+    private Boolean isTurntableReset = false;
     /**
      * 蒸汽机中是有水
      */
-    private Boolean hasWaterInSteamEngine = false;
+    private Boolean isWaterInSteamEngine = false;
     /**
      * 碗复位
      */
-    private Boolean resetBowl = false;
+    private Boolean isResetBowl = false;
     /**
      * 配料1完成
      */
-    private Boolean ingredient1Completed = false;
+    private Boolean isIngredient1Completed = false;
     /**
      * 配料2完成
      */
-    private Boolean ingredient2Completed = false;
+    private Boolean isIngredient2Completed = false;
     /**
      * 配料3完成
      */
-    private Boolean ingredient3Completed = false;
+    private Boolean isIngredient3Completed = false;
     /**
      * 配料4完成
      */
-    private Boolean ingredient4Completed = false;
+    private Boolean isIngredient4Completed = false;
     /**
      * 放置碗完成
      */
-    private Boolean placingBowlCompleted = false;
+    private Boolean isPlacingBowlCompleted = false;
     /**
      * 放置粉丝完成
      */
-    private Boolean placingNoodlesCompleted = false;
+    private Boolean isPlacingNoodlesCompleted = false;
     /**
      * 放置配料完成
      */
-    private Boolean placingIngredientsCompleted = false;
+    private Boolean isPlacingIngredientsCompleted = false;
     /**
      * 加蒸汽完成
      */
-    private Boolean addingSteamCompleted = false;
+    private Boolean isAddingSteamCompleted = false;
     /**
      * 加调料完成
      */
-    private Boolean addingSeasoningCompleted = false;
+    private Boolean isAddingSeasoningCompleted = false;
     /**
      * 加碗完成
      */
-    private Boolean addingBowlCompleted = false;
+    private Boolean isAddingBowlCompleted = false;
     /**
      * 汤加热完成
      */
-    private Boolean soupHeatingComplete = false;
+    private Boolean isSoupHeatingComplete = false;
     /**
      * 加汤完成
      */
-    private Boolean addingSoupCompleted = false;
+    private Boolean isAddingSoupCompleted = false;
     /**
      * 出餐完成
      */
-    private Boolean servingCompleted = false;
+    private Boolean isServingCompleted = false;
     /**
      * 有碗工位号
      */
@@ -130,6 +130,6 @@ public class PubConfig {
     /**
      * 是否开启定时任务
      */
-    public Boolean executeTask = false;
+    public Boolean isExecuteTask = false;
 
 }
