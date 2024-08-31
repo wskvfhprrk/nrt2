@@ -176,7 +176,7 @@ public class RelayDeviceService implements DeviceHandler {
         //先打开盖板
         this.coverOpen();
         try {
-            Thread.sleep(3000L);
+            Thread.sleep(5000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
