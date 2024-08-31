@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.BeefConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
@@ -20,6 +21,8 @@ public class TurntableService {
     private final IpConfig ipConfig;
     private final StepperMotorService stepperMotorService;
     private final PubConfig pubConfig;
+    @Autowired
+    private BeefConfig beefConfig;
 
 
     @Autowired
@@ -50,7 +53,7 @@ public class TurntableService {
             return "ok";
         }
         //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
-        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, Constants.TURNTABLE_SPEED);
+        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, beefConfig.getTurntableSpeed());
         //如果不在原点，转动
         if (ioStatus.split(",")[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.LOW.getValue())) {
             try {
@@ -82,7 +85,7 @@ public class TurntableService {
         log.info("移动到下一个工位");
         int oldNumber = pubConfig.getTurntableNumber();
         //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
-        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, Constants.TURNTABLE_SPEED);
+        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, beefConfig.getTurntableSpeed());
         try {
             Thread.sleep(Constants.SLEEP_TIME_MS);
         } catch (InterruptedException e) {
@@ -126,7 +129,7 @@ public class TurntableService {
         }
         //发送转盘的转速为最大值,太大IO感应不到，会超过原点位置
         //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
-        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, Constants.TURNTABLE_SPEED);
+        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, beefConfig.getTurntableSpeed());
         try {
             Thread.sleep(Constants.SLEEP_TIME_MS);
         } catch (InterruptedException e) {

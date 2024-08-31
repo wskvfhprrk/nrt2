@@ -23,10 +23,6 @@ public class Reset {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
             return;
         }
-        /**
-         * 打开系统定时任务
-         */
-        pubConfig.setIsExecuteTask(true);
         log.info("设备自检复位中……");
         //打开蒸汽发生器
         log.info("打开蒸汽发生器");
@@ -46,6 +42,11 @@ public class Reset {
         //设备自检完成
         pubConfig.setDeviceSelfCheckComplete(true);
         log.info("自检完成！");
+        /**
+         * 打开系统定时任务
+         */
+        pubConfig.setIsExecuteTask(true);
+        log.info("定时任务打开！");
     }
 
 }

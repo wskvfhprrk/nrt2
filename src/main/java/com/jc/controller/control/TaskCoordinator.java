@@ -65,7 +65,7 @@ public class TaskCoordinator {
                 //下一个粉丝
                 //打开所有称重盒
                 //打开震动哭器下料
-                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
+//                relayDeviceService.vibratorTest(beefConfig.getVibratorTime());
                 //阻塞震动器震动时间
                 Thread.sleep((beefConfig.getVibratorTime() + 1) * 1000);
                 //转到碗加蒸汽位置
@@ -81,6 +81,7 @@ public class TaskCoordinator {
                     String orderJson = objectMapper.writeValueAsString(order);
                     redisTemplate.opsForList().rightPushIfPresent(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY,orderJson);
                 } catch (JsonProcessingException e) {
+
                     e.printStackTrace();
                 }
                 //加完蒸转到第5个工位放汤
@@ -99,9 +100,8 @@ public class TaskCoordinator {
                 //归位
                 turntableService.alignToPosition(1);
                 //出汤
-                relayDeviceService.theFoodOutletIsFacingDownwards();
-                Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime() * 1000);
-                relayDeviceService.theFoodOutletIsFacingUpwards();
+                soupServingLogic();
+
                 //从已经完成队列中移除
                 redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
             } else {
@@ -127,5 +127,20 @@ public class TaskCoordinator {
             //放汤
 
         }
+    }
+
+    /**
+     * 出汤逻辑
+     */
+    private void soupServingLogic() {
+        new Thread(()->{
+            relayDeviceService.theFoodOutletIsFacingDownwards();
+            try {
+                Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime() * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            relayDeviceService.theFoodOutletIsFacingUpwards();
+        }).start();
     }
 }

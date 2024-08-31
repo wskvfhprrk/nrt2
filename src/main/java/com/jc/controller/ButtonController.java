@@ -33,6 +33,8 @@ public class ButtonController {
     private BeefConfig beefConfig;
     @Autowired
     private Reset reset;
+    @Autowired
+    private PubConfig pubConfig;
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
@@ -191,6 +193,7 @@ public class ButtonController {
     public String emergencyStop() {
         relayDeviceService.closeAll();
         stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
+        pubConfig.setIsExecuteTask(false);
         return "急停操作完成";
     }
 

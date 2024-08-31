@@ -60,14 +60,14 @@
             <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
             </el-button>
           </div>
-          <div v-if="orderSubmitted" class="order-details">
+<!--          <div v-if="orderSubmitted" class="order-details">
             <h2>订单详情</h2>
             <p>食谱: {{ form.selectedRecipe }}</p>
             <p>类别: {{ form.selectedPrice }}元</p>
             <p>口味: {{ form.selectedSpice }}</p>
             <p>加香菜: {{ form.addCilantro ? '是' : '否' }}</p>
             <p>加葱: {{ form.addOnion ? '是' : '否' }}</p>
-          </div>
+          </div>-->
         </el-main>
       </el-container>
     </div>
@@ -264,7 +264,7 @@ html, body {
 
 .order-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(6, 1fr); /* 每行显不6个订单号 */
   gap: 5px;
   justify-content: center;
   max-width: 1000px; /* Set a max width to control the layout */

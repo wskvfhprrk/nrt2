@@ -39,7 +39,9 @@ public class OrderQueueListener {
 
     // 每秒钟检查一次队列中的订单
     @Scheduled(fixedRate = 1000) // 1秒
-    public void checkAndProcessOrders()  {
+    public void checkAndProcessOrders() {
+        //如果定时任务没有打开就不要进行
+        if (!pubConfig.getIsExecuteTask()) return;
         //取出订单时机——有订单并且在编号为1或4工位时
         if (redisQueueService.getQueueSize() > 0) {
             //todo 当id等于4时也可以 还有一个条件温度达到时才可以
@@ -49,17 +51,17 @@ public class OrderQueueListener {
                 soupHeatingManagement.heatSoupToMaximumTemperature();
             }
             if (pubConfig.getTurntableNumber() % 6 == 1) {
+                //从待做订单队列中取出一个订单
                 Order order = redisQueueService.dequeue();
-                log.info("正在处理订单：{}",order.toString());
-                //加入当前正在做的订单redis中
+                log.info("正在处理订单：{}", order.toString());
+                //加入正在做的订单redis队列中
                 order.setStatus(OrderStatus.PROCESSING);
-                String orderJson = null;
                 try {
-                    orderJson = objectMapper.writeValueAsString(order);
+                    String orderJson = objectMapper.writeValueAsString(order);
+                    redisTemplate.opsForList().rightPushIfPresent(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-                redisTemplate.opsForList().rightPushIfPresent(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS,orderJson);
                 try {
                     taskCoordinator.executeTasks(order);
                 } catch (Exception e) {

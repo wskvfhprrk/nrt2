@@ -51,4 +51,8 @@ public class BeefConfig {
      * 出汤时间
      */
     private int theFoodOutletIsFacingDownwardsTime;
+    /**
+     * 转台速度
+     */
+    private int turntableSpeed;
 }

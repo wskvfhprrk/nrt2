@@ -128,7 +128,7 @@ public class PubConfig {
      */
     public int[] calculateWeight = new int[4];
     /**
-     * 是否开启定时任务
+     * 是否开启定时任务——初始化时给开启，急停关闭
      */
     public Boolean isExecuteTask = false;
 
