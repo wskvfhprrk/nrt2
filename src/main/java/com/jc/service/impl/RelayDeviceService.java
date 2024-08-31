@@ -156,12 +156,6 @@ public class RelayDeviceService implements DeviceHandler {
         log.info("出餐口向下");
         relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH);
         openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH, 15);
-        //出完后盖板盖上
-//        try {
-//            Thread.sleep(100L);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         this.coverClosed();
         return Result.success();
     }
