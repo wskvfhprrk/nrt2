@@ -28,9 +28,9 @@ public class Reset {
             return;
         }
         log.info("设备自检复位中……");
-        //打开蒸汽发生器
-        log.info("打开蒸汽发生器");
-        relayDeviceService.openSteamGenerator();
+//        //打开蒸汽发生器
+//        log.info("打开蒸汽发生器");
+//        relayDeviceService.openSteamGenerator();
         log.info("抽汤排气");
         new Thread(() -> relayDeviceService.soupExhaust(beefConfig.soupExhaustTime)).start();
         //机器人复位
