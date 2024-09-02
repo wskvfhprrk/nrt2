@@ -145,7 +145,8 @@ public class ButtonController {
                 break;
             case 21: // 汤加热温度（度）
                 if (number == null) {
-                    number = Integer.parseInt(beefConfig.getSoupHeatingTemperature().toString());
+                    double temperature = beefConfig.getSoupHeatingTemperature();
+                    number =  (int)temperature;
                 }
                 relayDeviceService.soupHeating(Double.valueOf(number));
                 actionResult = "汤加热温度";
