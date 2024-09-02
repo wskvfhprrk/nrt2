@@ -2,7 +2,7 @@
 <configuration debug="false">
 
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径+名称-->
-    <property name="LOG_HOME" value="/home/logs/nrt"/>
+    <property name="LOG_HOME" value="/java项目/logs/nrt"/>
 
     <!--spring boot控制台输出配置-->
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
