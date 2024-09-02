@@ -137,13 +137,13 @@ public class Constants {
      */
     public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_2 = 14;
     /**
-     * 配菜称重盒开关4-1
+     * 待用
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_1 = 15;
+    public static final int TO_BE_USED = 15;
     /**
-     * 配菜称重盒开关4-2
+     * 循环开关
      */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH4_2 = 16;
+    public static final int LOOP_SWITCH = 16;
     /**
      * 抽汤泵
      */

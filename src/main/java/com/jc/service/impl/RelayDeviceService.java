@@ -214,18 +214,6 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 蒸汽测试,打开5秒后关闭
-     *
-     * @param number
-     */
-    public void steam(int number) {
-        log.info("蒸汽测试,打开{}}秒后关闭", number);
-        //继电器7打开15秒关闭
-        this.openClose(Constants.STEAM_SWITCH, number);
-    }
-
-
-    /**
      * 停止碗开关
      */
     public void stopBowl() {
@@ -576,13 +564,6 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    /**
-     * @return
-     */
-    public Result soupSwitchOn() {
-        relayOpening(Constants.SOUP_SWITCH);
-        return Result.success();
-    }
 
     /**
      * 汤开关关
@@ -600,11 +581,15 @@ public class RelayDeviceService implements DeviceHandler {
         relayOpening(Constants.STEAM_SWITCH);
         return Result.success();
     }
+
     /**
-     * 关闭蒸汽发生器
+     * 抽汤排气
+     * @param second 时间
      */
-    public Result closeSteamGenerator(){
-        relayClosing(Constants.STEAM_SWITCH);
-        return Result.success();
+    public void soupExhaust(Integer second) {
+        //碗开关关闭
+        relayClosing(Constants.SOUP_SWITCH);
+        //循环开关打开
+        openClose(Constants.LOOP_SWITCH,second);
     }
 }

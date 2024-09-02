@@ -38,30 +38,32 @@ public class ButtonController {
 
     @GetMapping("/{id}")
     public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
-        log.info("id=={}",id);
+        log.info("Button action triggered with id=={}", id);
         String actionResult = "";
+
+        // Handling button actions based on ID
         switch (id) {
-            case 1:
+            case 1:  // 机器人重置
                 actionResult = "机器人重置";
                 robotService.reset();
                 break;
-            case 2:
+            case 2:  // 机器人取碗
                 actionResult = "机器人取碗";
                 robotService.takeBowl();
                 break;
-            case 3:
+            case 3:  // 机器人出汤
                 actionResult = "机器人出汤";
                 robotService.putBowl();
                 break;
-            case 4:
+            case 4:  // 取餐口复位
                 actionResult = "取餐口复位";
                 relayDeviceService.theFoodOutletIsFacingUpwards();
                 break;
-            case 5:
+            case 5:  // 取餐口出餐
                 actionResult = "取餐口出餐";
                 relayDeviceService.theFoodOutletIsFacingDownwards();
                 break;
-            case 6:
+            case 6:  // 调料机测试（配方）
                 if (number != null) {
                     seasoningMachineService.dischargeAccordingToFormula(number);
                     actionResult = "调料机测试（配方）完成";
@@ -69,121 +71,131 @@ public class ButtonController {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 7:
+            case 7:  // 转台复位
                 actionResult = "转台复位";
                 turntableService.turntableReset();
                 break;
-            case 8:
+            case 8:  // 转台工位（数字）
                 if (number != null) {
-                    actionResult = "转台工位（数字）";
                     turntableService.alignToPosition(number);
+                    actionResult = "转台工位（数字）";
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 9:
+            case 9:  // 碗复位
                 actionResult = "碗复位";
                 bowlService.bowlReset();
                 break;
-            case 10:
+            case 10: // 碗向上
                 actionResult = "碗向上";
                 bowlService.bowlRising();
                 break;
-            case 11:
+            case 11: // 碗向下
                 actionResult = "碗向下";
                 bowlService.bowlDown();
                 break;
-            case 12:
+            case 12: // 关闭汤蒸汽阀
+                actionResult = "关闭汤蒸汽阀";
+                relayDeviceService.soupSwitchOff();
+                break;
+            case 13: // 抽汤（秒）
                 if (number == null) {
                     number = beefConfig.getSoupExtractionTime();
                 }
-                actionResult = "抽汤泵";
                 relayDeviceService.soupPump(number);
-
+                actionResult = "抽汤";
                 break;
-            case 13:
-                actionResult = "汤开关开";
-                relayDeviceService.soupSwitchOn();
+            case 14: // 抽汤排气（秒）
+                if (number == null) {
+                    number = beefConfig.getSoupExhaustTime();
+                }
+                relayDeviceService.soupExhaust(number);
+                actionResult = "抽汤排气";
                 break;
-            case 14:
-                actionResult = "汤开关关";
-                relayDeviceService.soupSwitchOff();
-                break;
-            case 15:
+            case 15: // 后箱风扇开
                 actionResult = "后箱风扇开";
                 relayDeviceService.rearFanOpen();
                 break;
-            case 16:
+            case 16: // 后箱风扇关
                 actionResult = "后箱风扇关";
                 relayDeviceService.rearFanClose();
                 break;
-            case 17:
+            case 17: // 震动器测试（秒）
                 if (number == null) {
                     number = beefConfig.getVibratorTime();
                 }
-                actionResult = "震动器测试";
                 relayDeviceService.vibratorTest(number);
+                actionResult = "震动器测试";
                 break;
-            case 18:
+            case 18: // 蒸汽打开
                 actionResult = "蒸汽打开";
                 relayDeviceService.steamOpen();
                 break;
-            case 19:
+            case 19: // 蒸汽关闭
                 actionResult = "蒸汽关闭";
                 relayDeviceService.steamClose();
                 break;
-            case 20:
-                actionResult = "碗加蒸汽蒸汽（秒）";
+            case 20: // 碗加蒸汽（秒）
                 if (number == null) {
                     number = beefConfig.getBowlSteamTime();
                 }
                 relayDeviceService.bowlSteam(number);
+                actionResult = "碗加蒸汽";
                 break;
-            case 21:
+            case 21: // 汤加热温度（度）
                 if (number == null) {
                     number = Integer.parseInt(beefConfig.getSoupHeatingTemperature().toString());
                 }
-                actionResult = "汤加热温度";
                 relayDeviceService.soupHeating(Double.valueOf(number));
+                actionResult = "汤加热温度";
                 break;
-            case 22:
+            case 22: // 弹簧货道（编号）
                 if (number != null) {
-                    actionResult = "弹簧货道（编号）";
                     relayDeviceService.springChannel(number);
+                    actionResult = "弹簧货道（编号）";
                 } else {
                     actionResult = "缺少必要参数";
                 }
                 break;
-            case 23:
-                actionResult = "配菜称重盒打开（编号）";
-                relayDeviceService.openWeighingBox(number);
+            case 23: // 配菜称重盒打开（编号）
+                if (number != null) {
+                    relayDeviceService.openWeighingBox(number);
+                    actionResult = "配菜称重盒打开（编号）";
+                } else {
+                    actionResult = "缺少必要参数";
+                }
                 break;
-            case 24:
-                actionResult = "配菜称重盒关闭（编号）";
-                relayDeviceService.closeWeighingBox(number);
+            case 24: // 配菜称重盒关闭（编号）
+                if (number != null) {
+                    relayDeviceService.closeWeighingBox(number);
+                    actionResult = "配菜称重盒关闭（编号）";
+                } else {
+                    actionResult = "缺少必要参数";
+                }
                 break;
-            case 25:
+            case 25: // 一号配菜电机（g）
                 if (number == null) {
                     number = beefConfig.getBeef10();
                 }
-                actionResult = "1号配菜电机";
                 relayDeviceService.vegetableMotorInKg(1, number);
+                actionResult = "一号配菜电机";
                 break;
-            case 26:
+            case 26: // 二号配菜电机（g）
                 if (number == null) {
                     number = beefConfig.getCilantro();
                 }
-                actionResult = "2号配菜电机（g）";
                 relayDeviceService.vegetableMotorInKg(2, number);
+                actionResult = "二号配菜电机（g）";
                 break;
-            case 27:
+            case 27: // 三号配菜电机（g）
                 if (number == null) {
-                    number=beefConfig.getChoppedGreenOnion();
+                    number = beefConfig.getChoppedGreenOnion();
                 }
-                actionResult = "3号配菜电机（g）";
                 relayDeviceService.vegetableMotorInKg(3, number);
+                actionResult = "三号配菜电机（g）";
                 break;
-            default:
+            default: // Unknown Operation
                 actionResult = "未知操作";
         }
         return actionResult;
@@ -191,6 +203,7 @@ public class ButtonController {
 
     @GetMapping("/emergencyStop")
     public String emergencyStop() {
+        log.info("Emergency stop triggered");
         relayDeviceService.closeAll();
         stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
         pubConfig.setIsExecuteTask(false);
@@ -199,6 +212,7 @@ public class ButtonController {
 
     @GetMapping("/reset")
     public String reset() throws Exception {
+        log.info("Resetting machine");
         reset.start();
         return "机器复位成功！";
     }

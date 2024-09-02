@@ -55,4 +55,8 @@ public class BeefConfig {
      * 转台速度
      */
     private int turntableSpeed;
+    /**
+     * 抽汤排气时间
+     */
+    public int soupExhaustTime;
 }
