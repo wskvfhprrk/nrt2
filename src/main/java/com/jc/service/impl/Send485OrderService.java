@@ -37,7 +37,7 @@ public class Send485OrderService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("发送485指令返回的HEX消息: {}", message);
+//            log.info("发送485指令返回的HEX消息: {}", message);
             try {
                 theDischargeMachineIsCompletedToJudge(message);
             } catch (Exception e) {

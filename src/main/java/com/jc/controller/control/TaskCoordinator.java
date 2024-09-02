@@ -8,6 +8,9 @@ import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
+import com.jc.enums.SignalLevel;
+import com.jc.service.impl.IODeviceService;
+import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.RelayDeviceService;
 import com.jc.service.impl.TurntableService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +46,12 @@ public class TaskCoordinator {
     private RedisTemplate redisTemplate;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private RedisQueueService redisQueueService;
+    @Autowired
+    private IODeviceService iODeviceService;
 
-    public void executeTasks(Order order) throws Exception {
+    public void executeTasks() throws Exception {
         log.info("开始处理订单");
         //todo 判断转台是否在1和4两个工位才能够放置空碗
         if (pubConfig.getTurntableNumber() % 6 == 1 || pubConfig.getTurntableNumber() % 6 == 4) {
@@ -57,7 +64,23 @@ public class TaskCoordinator {
             log.info("机器人取碗");
             Result result1 = robotPlaceEmptyBowl.takeBowl();
             //只要机器人把碗放到台上复位即可
-            if (result1.getCode() == 200) {
+            String status = iODeviceService.getStatus();
+            String[] split = status.split(",");
+            //只有当传感器感到碗放到转台上才接下来动作
+            boolean flag = split[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
+            if (result1.getCode() == 200 || flag) {
+                log.info("碗已经放到转台上，开始执行其它动作！");
+                //从待做订单队列中取出一个订单
+                Order order = redisQueueService.dequeue();
+                log.info("正在处理订单：{}", order.toString());
+                //加入正在做的订单redis队列中
+                order.setStatus(OrderStatus.PROCESSING);
+                try {
+                    String orderJson = objectMapper.writeValueAsString(order);
+                    redisTemplate.opsForList().rightPush(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
                 //todo 称重
                 //送到第三个转台
                 log.info("送到第三个转台");
@@ -79,7 +102,7 @@ public class TaskCoordinator {
                 order.setStatus(OrderStatus.COMPLETED);
                 try {
                     String orderJson = objectMapper.writeValueAsString(order);
-                    redisTemplate.opsForList().rightPushIfPresent(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY,orderJson);
+                    redisTemplate.opsForList().rightPush(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY,orderJson);
                 } catch (JsonProcessingException e) {
 
                     e.printStackTrace();
