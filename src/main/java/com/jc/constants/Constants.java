@@ -50,17 +50,17 @@ public class Constants {
      */
     public static final int ROBOT_EMPTY_BOWL_SENSOR = 5;
     /**
-     * 水桶报警位传感器X7
+     * 出餐口复位感器X7
      */
-    public static final int BUCKET_ALARM_POSITION_SENSOR = 6;
+    public static final int SERVING_WINDOW_RESET_SENSOR = 6;
     /**
-     * 水桶最低传感器X8
+     * 出餐口感器X8
      */
-    public static final int BUCKET_LOWEST_SENSOR = 7;
+    public static final int SERVING_WINDOW_SENSOR = 7;
     /**
-     * 汤桶报警传感器X9
+     * 取餐完成传感器X9
      */
-    public static final int SOUP_BUCKET_ALARM_SENSOR = 8;
+    public static final int PICKUP_COMPLETION_SENSOR = 8;
     /**
      * 汤桶最低传感器X10
      */

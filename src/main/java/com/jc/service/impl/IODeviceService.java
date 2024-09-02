@@ -150,6 +150,39 @@ public class IODeviceService implements DeviceHandler {
         soupLevelAnalysis(split);
         //粉丝监测
         fancheck(split);
+        //出餐传感器逻辑
+        servingSensorLogic(split);
+    }
+
+    /**
+     * 出餐传感器逻辑
+     * @param split
+     */
+    private void servingSensorLogic(String[] split) {
+        //出餐口复位传感器
+        String resetServingWindow=split[Constants.SERVING_WINDOW_RESET_SENSOR];
+        //出餐口感器
+        String servingWindowSensor=split[Constants.SERVING_WINDOW_SENSOR];
+        //取餐完成传感器
+        String pickupCompletionSensor=split[Constants.PICKUP_COMPLETION_SENSOR];
+        //出口复位传感器高电平时为没有复位
+        if(resetServingWindow.equals(SignalLevel.HIGH.getValue())){
+            pubConfig.setServingWindowResetSensor(false);
+        }else {
+            pubConfig.setServingWindowResetSensor(true);
+        }
+        //出餐口感器高电平时
+        if(servingWindowSensor.equals(SignalLevel.HIGH.getValue())){
+            pubConfig.setThereIsABowlAtTheServingWindow(true);
+        }else {
+            pubConfig.setThereIsABowlAtTheServingWindow(false);
+        }
+        //取餐完成传感器
+        if(pickupCompletionSensor.equals(SignalLevel.HIGH.getValue())){
+            pubConfig.setTheBowlWasNotTakenFromTheServingWindow(true);
+        }else {
+            pubConfig.setTheBowlWasNotTakenFromTheServingWindow(false);
+        }
     }
 
     private void fancheck(String[] split) {

@@ -13,6 +13,18 @@ import org.springframework.stereotype.Component;
 @Data
 public class PubConfig {
     /**
+     * 出餐口有碗
+     */
+    public Boolean thereIsABowlAtTheServingWindow;
+    /**
+     * 出餐口没有升起
+     */
+    public Boolean servingWindowResetSensor;
+    /**
+     * 出餐口上一碗汤没有取走
+     */
+    public Boolean theBowlWasNotTakenFromTheServingWindow;
+    /**
      * 机器人在待机状态
      */
     private Boolean isRobotStatus = false;

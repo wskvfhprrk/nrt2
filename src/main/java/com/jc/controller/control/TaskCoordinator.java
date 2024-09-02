@@ -62,7 +62,7 @@ public class TaskCoordinator {
             log.info("机器人未初始化，不能开始订单");
             return;
         }
-        if(!pubConfig.getIsResetBowl()){
+        if (!pubConfig.getIsResetBowl()) {
             log.info("碗未复位，不能开始订单");
             return;
         }
@@ -130,6 +130,19 @@ public class TaskCoordinator {
             Thread.sleep((beefConfig.getSoupExtractionTime() + 5) * 1000);
             //转到第6工位出汤
             turntableService.alignToPosition(0);
+            //如果出餐口没有升起，并且出餐口有碗，出餐口碗没有取走，则开始下面操作。
+            while (!pubConfig.getServingWindowResetSensor() || !pubConfig.getThereIsABowlAtTheServingWindow() || !pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                if (!pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
+                    log.info("出餐口还有上一碗汤没有取走");
+                }
+                if (!pubConfig.getServingWindowResetSensor()) {
+                    log.info("出餐口没有复位");
+                }
+                if (!pubConfig.getThereIsABowlAtTheServingWindow()) {
+                    log.info("出餐口有碗，请取走");
+                }
+            }
             robotPlaceEmptyBowl.putBowl();
             while (!pubConfig.getIsServingCompleted()) {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
@@ -139,28 +152,8 @@ public class TaskCoordinator {
             turntableService.alignToPosition(1);
             //出汤
             soupServingLogic();
-
             //从已经完成队列中移除
             redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
-        }
-        if (pubConfig.getTurntableNumber() == 3) {
-            // TODO: 2024/7/27 打开称重传感器料仓
-            // TODO: 2024/7/27 粉丝货道掉下来
-            // TODO: 2024/7/27 震动器打开后自动关闭
-            Thread.sleep(5000L);//模拟下配料
-            //旋转到第四个工位
-            turntableService.alignToPosition(4);
-        }
-        if (pubConfig.getTurntableNumber() == 4) {
-            // TODO: 2024/7/27 盖板盖到碗上
-            // TODO: 2024/7/27 打开蒸汽
-            Thread.sleep(5000L);//模拟下配料
-            //旋转到第起始工位
-            turntableService.alignToPosition(5);
-        }
-        if (pubConfig.getTurntableNumber() == 5) {
-            //放汤
-
         }
     }
 
@@ -170,10 +163,14 @@ public class TaskCoordinator {
     private void soupServingLogic() {
         new Thread(() -> {
             relayDeviceService.theFoodOutletIsFacingDownwards();
-            try {
-                Thread.sleep(beefConfig.getTheFoodOutletIsFacingDownwardsTime() * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            //等待汤出完后才能升起
+            while (pubConfig.getTheBowlWasNotTakenFromTheServingWindow()){
+                log.info("上一碗汤没有取走！");
+                try {
+                    Thread.sleep(Constants.SLEEP_TIME_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             relayDeviceService.theFoodOutletIsFacingUpwards();
         }).start();
