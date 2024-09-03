@@ -76,6 +76,7 @@ public class BowlService implements DeviceHandler {
                 }
             }
             log.info("碗已经降到位！");
+            pubConfig.setIsResetBowl(true);
             return;
         }
         // 如果2、4传感器都为低电平，直接升碗

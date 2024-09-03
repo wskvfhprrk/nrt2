@@ -65,6 +65,8 @@ public class SoupHeatingManagement {
     public void soupAutoHeating() {
         if(!pubConfig.getIsExecuteTask())return;
         log.info("自动检测汤的温度");
+        //读取温度
+        relayDeviceService.readTemperature();
         //如果小于汤的最小温度就加热到保持最大温度即中间温度
         if (pubConfig.getSoupTemperatureValue() < Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {
             heatSoupToMediumTemperature();

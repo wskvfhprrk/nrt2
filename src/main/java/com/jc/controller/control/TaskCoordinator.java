@@ -67,6 +67,7 @@ public class TaskCoordinator {
         }
         //如果汤没有烧到最低温度不充许开始订单
         //先读取温度
+        relayDeviceService.readTemperature();
         if (pubConfig.getSoupTemperatureValue() < Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {
             log.info("汤温度不够，不能开始订单");
             soupHeatingManagement.heatSoupToMinimumTemperature();

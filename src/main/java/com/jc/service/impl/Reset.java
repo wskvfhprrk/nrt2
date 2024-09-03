@@ -51,6 +51,6 @@ public class Reset {
          * 打开系统定时任务
          */
         pubConfig.setIsExecuteTask(true);
-        log.info("定时任务打开！");
+//        log.info("定时任务打开！");
     }
 }

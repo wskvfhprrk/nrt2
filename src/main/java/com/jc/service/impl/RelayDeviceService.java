@@ -328,12 +328,12 @@ public class RelayDeviceService implements DeviceHandler {
         Boolean flag = true;
         while (flag) {
             //发送温度
-            nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
+            readTemperature();
             Double soupTemperatureValue = pubConfig.getSoupTemperatureValue();
-            if(soupTemperatureValue>=beefConfig.getSoupHeatingTemperature()){
+            if (soupTemperatureValue >= beefConfig.getSoupHeatingTemperature()) {
                 pubConfig.setIsSoupHeatingComplete(true);
             }
-            if ( soupTemperatureValue>= number) {
+            if (soupTemperatureValue >= number) {
                 flag = false;
                 relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
             } else {
@@ -342,6 +342,21 @@ public class RelayDeviceService implements DeviceHandler {
 
         }
         return Result.success();
+    }
+
+    /**
+     * 读取汤的温度值
+     *
+     * @return
+     */
+    public Result readTemperature() {
+        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Result.success(pubConfig.getSoupTemperatureValue());
     }
 
     /**
@@ -574,22 +589,24 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.SOUP_SWITCH);
         return Result.success();
     }
+
     /**
      * 打开蒸汽发生器
      */
-    public Result openSteamGenerator(){
+    public Result openSteamGenerator() {
         relayOpening(Constants.STEAM_SWITCH);
         return Result.success();
     }
 
     /**
      * 抽汤排气
+     *
      * @param second 时间
      */
     public void soupExhaust(Integer second) {
         //碗开关关闭
         relayClosing(Constants.SOUP_SWITCH);
         //循环开关打开
-        openClose(Constants.LOOP_SWITCH,second);
+        openClose(Constants.LOOP_SWITCH, second);
     }
 }
