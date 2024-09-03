@@ -1,17 +1,10 @@
 package com.jc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.PubConfig;
-import com.jc.constants.Constants;
-import com.jc.controller.control.SoupHeatingManagement;
 import com.jc.controller.control.TaskCoordinator;
-import com.jc.entity.Order;
-import com.jc.enums.OrderStatus;
 import com.jc.service.impl.RedisQueueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,16 +22,10 @@ public class OrderQueueListener {
     private PubConfig pubConfig;
     @Autowired
     private TaskCoordinator taskCoordinator;
-    @Autowired
-    private SoupHeatingManagement soupHeatingManagement;
-    @Autowired
-    private RedisTemplate redisTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
 
 
     // 每秒钟检查一次队列中的订单
-    @Scheduled(fixedRate = 1000) // 1秒
+    @Scheduled(fixedRate = 2000) // 1秒
     public void checkAndProcessOrders() {
         //如果定时任务没有打开就不要进行
         if (!pubConfig.getIsExecuteTask()){

@@ -9,6 +9,7 @@ import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
 import com.jc.enums.SignalLevel;
+import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.impl.IODeviceService;
 import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.RelayDeviceService;
@@ -32,8 +33,6 @@ public class TaskCoordinator {
 
     @Autowired
     private RobotPlaceEmptyBowl robotPlaceEmptyBowl;
-    @Autowired
-    private IngredientPreparation ingredientPreparation;
     @Autowired
     private SoupHeatingManagement soupHeatingManagement;
     @Autowired
@@ -67,6 +66,7 @@ public class TaskCoordinator {
             return;
         }
         //如果汤没有烧到最低温度不充许开始订单
+        //先读取温度
         if (pubConfig.getSoupTemperatureValue() < Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {
             log.info("汤温度不够，不能开始订单");
             soupHeatingManagement.heatSoupToMinimumTemperature();
@@ -131,18 +131,18 @@ public class TaskCoordinator {
             //转到第6工位出汤
             turntableService.alignToPosition(0);
             //如果出餐口没有升起，并且出餐口有碗，出餐口碗没有取走，则开始下面操作。
-            while (!pubConfig.getServingWindowResetSensor() || !pubConfig.getThereIsABowlAtTheServingWindow() || !pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                if (!pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
-                    log.info("出餐口还有上一碗汤没有取走");
-                }
-                if (!pubConfig.getServingWindowResetSensor()) {
-                    log.info("出餐口没有复位");
-                }
-                if (!pubConfig.getThereIsABowlAtTheServingWindow()) {
-                    log.info("出餐口有碗，请取走");
-                }
-            }
+//            while (!pubConfig.getServingWindowResetSensor() || !pubConfig.getThereIsABowlAtTheServingWindow() || !pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
+//                Thread.sleep(Constants.SLEEP_TIME_MS);
+//                if (!pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
+//                    log.info("出餐口还有上一碗汤没有取走");
+//                }
+//                if (!pubConfig.getServingWindowResetSensor()) {
+//                    log.info("出餐口没有复位");
+//                }
+//                if (!pubConfig.getThereIsABowlAtTheServingWindow()) {
+//                    log.info("出餐口有碗，请取走");
+//                }
+//            }
             robotPlaceEmptyBowl.putBowl();
             while (!pubConfig.getIsServingCompleted()) {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
