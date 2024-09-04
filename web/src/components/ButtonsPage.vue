@@ -1,18 +1,84 @@
 <template>
-  <div>
-    <div class="container">
+  <div class="container">
+    <!-- Robot and Machine Operations -->
+    <div class="button-group">
+      <h3 class="section-title">机器人和取餐</h3>
       <div class="button-columns">
-        <div v-for="(column, index) in buttonColumns" :key="index" class="button-column">
-          <el-button v-for="btn in column" :key="btn.id" type="primary" @click="openDialog(btn.id, btn.name)">
+        <div v-for="(btn, index) in buttonsGroup1" :key="`btn1-${index}`" class="button-column">
+          <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
             {{ btn.name }}
           </el-button>
         </div>
       </div>
     </div>
+
+    <!-- Turntable and Bowl Operations -->
+    <div class="button-group">
+      <h3 class="section-title">转台和碗</h3>
+      <div class="button-columns">
+        <div v-for="(btn, index) in buttonsGroup2" :key="`btn2-${index}`" class="button-column">
+          <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
+            {{ btn.name }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steam and Temperature Control -->
+    <div class="button-group">
+      <h3 class="section-title">蒸汽和温度</h3>
+      <div class="button-columns">
+        <div v-for="(btn, index) in buttonsGroup3" :key="`btn3-${index}`" class="button-column">
+          <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
+            {{ btn.name }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fan and Vibration Testing -->
+    <div class="button-group">
+      <h3 class="section-title">风扇和振动</h3>
+      <div class="button-columns">
+        <div v-for="(btn, index) in buttonsGroup4" :key="`btn4-${index}`" class="button-column">
+          <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
+            {{ btn.name }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testing and Weighing Operations -->
+    <div class="button-group">
+      <h3 class="section-title">称重</h3>
+      <div class="button-columns">
+        <div v-for="(btn, index) in buttonsGroup5" :key="`btn5-${index}`" class="button-column">
+          <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
+            {{ btn.name }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingredient Dispensing -->
+    <div class="button-group">
+      <h3 class="section-title">配料分发</h3>
+      <div class="button-columns">
+        <div v-for="(btn, index) in buttonsGroup6" :key="`btn6-${index}`" class="button-column">
+          <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
+            {{ btn.name }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fixed Buttons -->
     <div class="fixed-buttons">
       <el-button type="success" class="reset-button" @click="resetSystem">复位</el-button>
       <el-button type="danger" class="emergency-button" @click="emergencyStop">急停</el-button>
     </div>
+
+    <!-- Dialog for Input Parameters -->
     <el-dialog title="输入参数" v-model="dialogVisible" :before-close="handleClose">
       <el-input v-model="parameter" placeholder="请输入参数"></el-input>
       <template #footer>
@@ -32,45 +98,57 @@ export default {
   name: 'ButtonsPage',
   data() {
     return {
-      buttons: [
-        { id: 1, name: "机器人重置" },
-        { id: 2, name: "机器人取碗" },
-        { id: 3, name: "机器人出汤" },
-        { id: 4, name: "取餐口复位" },
-        { id: 5, name: "取餐口出餐" },
-        { id: 6, name: "调料机测试（配方）" },       // 需要参数
-        { id: 7, name: "转台复位" },
-        { id: 8, name: "转台工位（数字）" },         // 需要参数
-        { id: 9, name: "碗复位" },
-        { id: 10, name: "碗向上" },
-        { id: 11, name: "碗向下" },
-        { id: 12, name: "关闭汤蒸汽阀" },
-        { id: 13, name: "抽汤（秒）" },           // 需要参数
-        { id: 14, name: "抽汤排气（秒）" },       // 需要参数
-        { id: 15, name: "后箱风扇开" },
-        { id: 16, name: "后箱风扇关" },
-        { id: 17, name: "震动器测试（秒）" },       // 需要参数
-        { id: 18, name: "蒸汽打开" },
-        { id: 19, name: "蒸汽关闭" },
-        { id: 20, name: "碗加蒸汽（秒）" },         // 需要参数
-        { id: 21, name: "汤加热温度（度）" },      // 需要参数
-        { id: 22, name: "弹簧货道（编号）" },       // 需要参数
-        { id: 23, name: "配菜称重盒打开（编号）" }, // 需要参数
-        { id: 24, name: "配菜称重盒关闭（编号）" }, // 需要参数
-        { id: 25, name: "一号配菜电机（g）" },      // 需要参数
-        { id: 26, name: "二号配菜电机（g）" },      // 需要参数
-        { id: 27, name: "三号配菜电机（g）" }       // 需要参数
+      buttonsGroup1: [
+        {id: 1, name: "机器人重置"},
+        {id: 2, name: "机器人取碗"},
+        {id: 3, name: "机器人出汤"},
+        {id: 4, name: "取餐口复位"},
+        {id: 5, name: "取餐口出餐"}
       ],
-      buttonsPerColumn: 14,
-      buttonColumns: [],
+      buttonsGroup2: [
+        {id: 6, name: "转台复位"},
+        {id: 7, name: "工位（数）"},
+        {id: 8, name: "碗复位"},
+        {id: 9, name: "碗向上"},
+        {id: 10, name: "碗向下"}
+      ],
+      buttonsGroup3: [
+        {id: 11, name: "蒸汽打开"},
+        {id: 12, name: "蒸汽关闭"},
+        {id: 13, name: "关汤蒸汽阀"},
+        {id: 14, name: "抽汤（秒）"},
+        {id: 15, name: "汤管排气（秒）"},
+        {id: 16, name: "汤加热至（度）"},
+        {id: 17, name: "碗加蒸汽（秒）"}
+      ],
+      buttonsGroup4: [
+        {id: 18, name: "后箱风扇开"},
+        {id: 19, name: "后箱风扇关"},
+        {id: 20, name: "震动器（秒）"}
+      ],
+      buttonsGroup5: [
+        {id: 21, name: "一号配菜（g）"},
+        {id: 22, name: "二号配菜（g）"},
+        {id: 23, name: "三号配菜（g）"}
+      ],
+      buttonsGroup6: [
+        {id: 24, name: "调料机（配方）"},
+        {id: 25, name: "弹簧货道（编号）"},
+        {id: 26, name: "称重盒开（编号）"},
+        {id: 27, name: "称重盒关（编号）"}
+      ],
       dialogVisible: false,
       parameter: '',
       currentButtonId: null,
       currentButtonName: ''
     };
   },
-  created() {
-    this.buttonColumns = this.chunkArray(this.buttons, this.buttonsPerColumn);
+  computed: {
+    buttonStyle() {
+      return {
+        width: '200px',  // 所有按钮宽度设置为200px
+      };
+    }
   },
   methods: {
     async sendRequest(url) {
@@ -84,7 +162,6 @@ export default {
       }
     },
     openDialog(id, name) {
-      // 检查名称中是否包含括号，以确定是否需要参数。
       if (name.includes('（') && name.includes('）')) {
         this.dialogVisible = true;
       } else {
@@ -108,49 +185,46 @@ export default {
     },
     resetSystem() {
       this.sendRequest(`${baseURL}/reset`);
-    },
-    chunkArray(arr, size) {
-      return Array.from({length: Math.ceil(arr.length / size)}, (_, index) =>
-          arr.slice(index * size, index * size + size)
-      );
     }
   }
 };
 </script>
 
 <style scoped>
-.title {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 24px;
-}
-
 .container {
-  display: flex; /* 设置为flex布局 */
-  flex-direction: column; /* 设置容器内元素垂直方向排列 */
-  justify-content: center; /* 垂直方向居中容器内元素 */
-  align-items: center; /* 水平方向居中容器内元素 */
-  height: calc(100vh - 100px); /* 保持原来的高度 */
-  width: 100%; /* 容器占满全宽 */
-  padding: 0 20px; /* 设置容器左右内边距 */
-  box-sizing: border-box; /* 包括内边距和边框在内的大小 */
-  background-color: transparent; /* 透明背景 */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  padding: 20px;
+  height: 100vh;
+  box-sizing: border-box;
 }
 
-
-.button-columns {
-  display: flex; /* 使用flex布局 */
-  justify-content: space-between;
-  width: 100%; /* 宽度设为100% */
-  max-width: 1200px; /* 设置最大宽度 */
-  margin: 0 auto; /* 自动左右外边距，用于居中 */
-}
-
-.button-column {
+.button-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 12px; /* 圆角设置 */
+  overflow: hidden;    /* 防止子元素溢出父容器的圆角 */
+}
+
+.button-columns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-title {
+  color: red;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .el-button {
