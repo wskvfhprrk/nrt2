@@ -52,7 +52,7 @@ public class RobotServiceImpl implements RobotService {
             return Result.error(500, "重试三次无法取到碗，请人工检查！");
         }
         //如果碗传感器为低电平，则重新发出碗重置命令
-        String ioStatus = ioDeviceService.getIoStatus();
+        String ioStatus = ioDeviceService.getStatus();
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
@@ -64,7 +64,7 @@ public class RobotServiceImpl implements RobotService {
                 e.printStackTrace();
             }
             // 重新获取传感器状态
-            ioStatus = ioDeviceService.getIoStatus();
+            ioStatus = ioDeviceService.getStatus();
             if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
                 log.error("没有发现传感器的值！");
             }

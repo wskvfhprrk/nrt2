@@ -22,8 +22,6 @@ public class IODeviceService implements DeviceHandler {
     @Autowired
     @Lazy
     private RelayDeviceService relayDeviceService;
-
-    private String ioStatus;
     @Autowired
     private NettyServerHandler nettyServerHandler;
     @Autowired
@@ -37,13 +35,6 @@ public class IODeviceService implements DeviceHandler {
     @Lazy
     private StepperMotorService stepperMotorService;
 
-    public IODeviceService() {
-        this.ioStatus = Constants.NOT_INITIALIZED;
-    }
-
-    public String getIoStatus() {
-        return ioStatus;
-    }
 
     /**
      * 处理消息
@@ -66,8 +57,6 @@ public class IODeviceService implements DeviceHandler {
                 }
             }
             log.info("传感器的高低电平：{}", sb);
-            // ioStatus赋值，以便其它类看到
-            this.ioStatus = sb.toString();
             try {
                 sensorInstructionProcessing(sb);
             } catch (Exception e) {
@@ -85,7 +74,7 @@ public class IODeviceService implements DeviceHandler {
      */
     public String getStatus() {
         // TODO: 2024/9/4 凡是无法获取传感器的都停止，不运行，只有获取到了才可以
-        String ioStatus = this.ioStatus;
+        String ioStatus = this.getStatus();
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
             relayDeviceService.closeAll();
@@ -99,10 +88,7 @@ public class IODeviceService implements DeviceHandler {
                 e.printStackTrace();
             }
             // 重新获取传感器状态
-            ioStatus = this.ioStatus;
-            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
-                log.error("没有发现传感器的值！");
-            }
+            ioStatus = this.getStatus();
         }
         return ioStatus;
     }

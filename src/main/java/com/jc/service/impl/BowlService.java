@@ -65,7 +65,7 @@ public class BowlService implements DeviceHandler {
             while (bowlSensor) {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
-                    ioStatus = ioDeviceService.getIoStatus();
+                    ioStatus = ioDeviceService.getStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (!bowlSensor) {
@@ -86,7 +86,7 @@ public class BowlService implements DeviceHandler {
             while (!bowlSensor) {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
-                    ioStatus = ioDeviceService.getIoStatus();
+                    ioStatus = ioDeviceService.getStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
@@ -129,7 +129,7 @@ public class BowlService implements DeviceHandler {
                 try {
                     Thread.sleep(Constants.SLEEP_TIME_MS);
                     count++;
-                    ioStatus = ioDeviceService.getIoStatus();
+                    ioStatus = ioDeviceService.getStatus();
                     split = ioStatus.split(",");
                     bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue());
                     if (bowlSensor) {
