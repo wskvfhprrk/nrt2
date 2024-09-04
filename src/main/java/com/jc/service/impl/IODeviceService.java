@@ -94,7 +94,7 @@ public class IODeviceService implements DeviceHandler {
             nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.SLEEP_TIME_MS * 10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
