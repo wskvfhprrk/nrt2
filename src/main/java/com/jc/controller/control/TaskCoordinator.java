@@ -166,8 +166,7 @@ public class TaskCoordinator {
             relayDeviceService.theFoodOutletIsFacingDownwards();
             //由于传感器中间检测到碗不存在，所以要等其完全停好再检查
             try {
-                Thread.sleep(10
-            000L);
+                Thread.sleep(10000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
