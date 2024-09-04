@@ -49,6 +49,7 @@ public class Receive485SignalService implements DeviceHandler {
     private void ParseCommand(String message) {
         //先modbus验证，如果验证不过就不管
         try {
+            if(message==null)return;
             boolean b = CRC16.validateCRC(message);
             if (!b) {
                 return;
@@ -76,9 +77,6 @@ public class Receive485SignalService implements DeviceHandler {
      * @return
      */
     private int[] calculateWeight(String message) {
-        //02 03 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 04 A1 DE
-        //01 03 10 00 00 03 E8 00 00 07 D0 00 00 0B B8 00 00 0F A0 A8 23
-        //02 03 10 00 00 00 32 00 00 00 00 00 00 00 00 00 00 00 0E 67 6B
         if (Constants.ZEROING_CALIBRATION.replaceAll(" ", "").equals(message.replaceAll(" ", ""))) {
             log.info("所有秤已置零！");
             return new int[4];

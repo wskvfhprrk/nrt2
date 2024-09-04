@@ -141,7 +141,6 @@ public class BowlService implements DeviceHandler {
             }
             log.info("碗已经升到位！");
         }
-        log.info("碗已经升到位！");
     }
 
     public Result bowlRising() {

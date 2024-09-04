@@ -63,7 +63,7 @@ public class OrderController {
         //id生成规则
         order.setCustomerName("A" + (1234 + id));
         order.setStatus(OrderStatus.PENDING);
-        log.info("接收到订单：{}", order);
+//        log.info("接收到订单：{}", order);
         queueService.enqueue(order);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }

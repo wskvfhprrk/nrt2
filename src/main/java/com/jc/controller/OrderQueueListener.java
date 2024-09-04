@@ -29,7 +29,7 @@ public class OrderQueueListener {
     public void checkAndProcessOrders() {
         //如果定时任务没有打开就不要进行
         if (!pubConfig.getIsExecuteTask()){
-            log.info("自检未完成，不能开始订单");
+//            log.info("自检未完成，不能开始订单");
             return;}
         //取出订单时机——有订单并且在编号为1或4工位时 并且机器人复位情况下才可以
         if (redisQueueService.getQueueSize() > 0 ) {

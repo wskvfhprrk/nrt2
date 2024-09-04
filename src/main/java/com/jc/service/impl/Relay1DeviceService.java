@@ -164,46 +164,6 @@ public class Relay1DeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    /**
-     * 出餐口向上
-     *
-     * @return
-     */
-    public Result theFoodOutletIsFacingUpwards() {
-        log.info("出餐口向上");
-        //先打开盖板
-        this.coverOpen();
-        try {
-            Thread.sleep(5000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH);
-        try {
-            Thread.sleep(50L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
-        return Result.success();
-    }
-
-    /**
-     * 出料开仓出料
-     *
-     * @return
-     */
-    public String coverOpen() {
-        log.info("出料开仓出料");
-        relayClosing(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH);
-        try {
-            Thread.sleep(50L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        openClose(Constants.DISCHARGING_FROM_WAREHOUSE_SWITCH, 15);
-        return "ok";
-    }
 
     /**
      * 出料关仓禁止出料

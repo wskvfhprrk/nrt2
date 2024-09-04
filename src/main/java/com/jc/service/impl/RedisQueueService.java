@@ -29,7 +29,6 @@ public class RedisQueueService {
         try {
             String orderJson = objectMapper.writeValueAsString(order);
             redisTemplate.opsForList().rightPush(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, orderJson);
-            log.info("订单存放在redis队列：{} 中",Constants.PENDING_ORDER_REDIS_PRIMARY_KEY);
         } catch (JsonProcessingException e) {
             e.printStackTrace(); // 打印序列化错误
         }

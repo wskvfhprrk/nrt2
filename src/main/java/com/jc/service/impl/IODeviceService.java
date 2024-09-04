@@ -81,6 +81,7 @@ public class IODeviceService implements DeviceHandler {
      * @return
      */
     public String getStatus() {
+        // TODO: 2024/9/4 凡是无法获取传感器的都停止，不运行，只有获取到了才可以
         String ioStatus = this.ioStatus;
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
@@ -168,20 +169,26 @@ public class IODeviceService implements DeviceHandler {
         //出口复位传感器高电平时为没有复位
         if(resetServingWindow.equals(SignalLevel.HIGH.getValue())){
             pubConfig.setServingWindowResetSensor(false);
+            log.info("出餐口未复位");
         }else {
             pubConfig.setServingWindowResetSensor(true);
+            log.info("出餐口已经复位");
         }
         //出餐口感器高电平时
         if(servingWindowSensor.equals(SignalLevel.HIGH.getValue())){
             pubConfig.setThereIsABowlAtTheServingWindow(true);
+            log.info("出餐口有碗");
         }else {
             pubConfig.setThereIsABowlAtTheServingWindow(false);
+            log.info("出餐口没有碗");
         }
         //取餐完成传感器
         if(pickupCompletionSensor.equals(SignalLevel.HIGH.getValue())){
             pubConfig.setTheBowlWasNotTakenFromTheServingWindow(true);
+            log.info("取餐完成");
         }else {
             pubConfig.setTheBowlWasNotTakenFromTheServingWindow(false);
+            log.info("取餐未完成");
         }
     }
 

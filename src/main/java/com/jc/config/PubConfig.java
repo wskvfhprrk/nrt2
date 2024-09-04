@@ -102,7 +102,7 @@ public class PubConfig {
      */
     private Boolean isAddingSoupCompleted = false;
     /**
-     * 出餐完成
+     * 机器人出餐完成——松开夹手
      */
     private Boolean isServingCompleted = false;
     /**

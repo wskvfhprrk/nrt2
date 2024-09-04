@@ -70,7 +70,7 @@ public class TaskCoordinator {
         relayDeviceService.readTemperature();
         if (pubConfig.getSoupTemperatureValue() < Constants.SOUP_MINIMUM_TEMPERATURE_VALUE) {
             log.info("汤温度不够，不能开始订单");
-            soupHeatingManagement.heatSoupToMinimumTemperature();
+            soupHeatingManagement.heatSoupToMaximumTemperature();
             return;
         }
         //汤加热到出汤温度
@@ -132,18 +132,18 @@ public class TaskCoordinator {
             //转到第6工位出汤
             turntableService.alignToPosition(0);
             //如果出餐口没有升起，并且出餐口有碗，出餐口碗没有取走，则开始下面操作。
-//            while (!pubConfig.getServingWindowResetSensor() || !pubConfig.getThereIsABowlAtTheServingWindow() || !pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
-//                Thread.sleep(Constants.SLEEP_TIME_MS);
-//                if (!pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
-//                    log.info("出餐口还有上一碗汤没有取走");
-//                }
-//                if (!pubConfig.getServingWindowResetSensor()) {
-//                    log.info("出餐口没有复位");
-//                }
-//                if (!pubConfig.getThereIsABowlAtTheServingWindow()) {
-//                    log.info("出餐口有碗，请取走");
-//                }
-//            }
+            while (!pubConfig.getServingWindowResetSensor() || pubConfig.getThereIsABowlAtTheServingWindow() || !pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+                if (!pubConfig.getTheBowlWasNotTakenFromTheServingWindow()) {
+                    log.info("出餐口还有上一碗汤没有取走");
+                }
+                if (!pubConfig.getServingWindowResetSensor()) {
+                    log.info("出餐口没有复位");
+                }
+                if (pubConfig.getThereIsABowlAtTheServingWindow()) {
+                    log.info("出餐口有碗，请取走");
+                }
+            }
             robotPlaceEmptyBowl.putBowl();
             while (!pubConfig.getIsServingCompleted()) {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
@@ -164,11 +164,18 @@ public class TaskCoordinator {
     private void soupServingLogic() {
         new Thread(() -> {
             relayDeviceService.theFoodOutletIsFacingDownwards();
+            //由于传感器中间检测到碗不存在，所以要等其完全停好再检查
+            try {
+                Thread.sleep(10
+            000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //等待汤出完后才能升起
-            while (pubConfig.getTheBowlWasNotTakenFromTheServingWindow()){
+            while (!pubConfig.getTheBowlWasNotTakenFromTheServingWindow()){
                 log.info("上一碗汤没有取走！");
                 try {
-                    Thread.sleep(Constants.SLEEP_TIME_MS);
+                    Thread.sleep(100L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
