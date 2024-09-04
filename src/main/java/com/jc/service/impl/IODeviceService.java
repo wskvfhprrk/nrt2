@@ -33,6 +33,9 @@ public class IODeviceService implements DeviceHandler {
     private PubConfig pubConfig;
     //当前转台的工位状态
     private String turntableStatus;
+    @Autowired
+    @Lazy
+    private StepperMotorService stepperMotorService;
 
     public IODeviceService() {
         this.ioStatus = Constants.NOT_INITIALIZED;
@@ -85,6 +88,8 @@ public class IODeviceService implements DeviceHandler {
         String ioStatus = this.ioStatus;
         while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
             log.error("无法获取传感器的值！");
+            relayDeviceService.closeAll();
+            stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
             // 先重置传感器
             nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
@@ -157,36 +162,37 @@ public class IODeviceService implements DeviceHandler {
 
     /**
      * 出餐传感器逻辑
+     *
      * @param split
      */
     private void servingSensorLogic(String[] split) {
         //出餐口复位传感器
-        String resetServingWindow=split[Constants.SERVING_WINDOW_RESET_SENSOR];
+        String resetServingWindow = split[Constants.SERVING_WINDOW_RESET_SENSOR];
         //出餐口感器
-        String servingWindowSensor=split[Constants.SERVING_WINDOW_SENSOR];
+        String servingWindowSensor = split[Constants.SERVING_WINDOW_SENSOR];
         //取餐完成传感器
-        String pickupCompletionSensor=split[Constants.PICKUP_COMPLETION_SENSOR];
+        String pickupCompletionSensor = split[Constants.PICKUP_COMPLETION_SENSOR];
         //出口复位传感器高电平时为没有复位
-        if(resetServingWindow.equals(SignalLevel.HIGH.getValue())){
+        if (resetServingWindow.equals(SignalLevel.HIGH.getValue())) {
             pubConfig.setServingWindowResetSensor(false);
             log.info("出餐口未复位");
-        }else {
+        } else {
             pubConfig.setServingWindowResetSensor(true);
             log.info("出餐口已经复位");
         }
         //出餐口感器高电平时
-        if(servingWindowSensor.equals(SignalLevel.HIGH.getValue())){
+        if (servingWindowSensor.equals(SignalLevel.HIGH.getValue())) {
             pubConfig.setThereIsABowlAtTheServingWindow(true);
             log.info("出餐口有碗");
-        }else {
+        } else {
             pubConfig.setThereIsABowlAtTheServingWindow(false);
             log.info("出餐口没有碗");
         }
         //取餐完成传感器
-        if(pickupCompletionSensor.equals(SignalLevel.HIGH.getValue())){
+        if (pickupCompletionSensor.equals(SignalLevel.HIGH.getValue())) {
             pubConfig.setTheBowlWasNotTakenFromTheServingWindow(true);
             log.info("取餐完成");
-        }else {
+        } else {
             pubConfig.setTheBowlWasNotTakenFromTheServingWindow(false);
             log.info("取餐未完成");
         }
