@@ -65,7 +65,7 @@ public class TurntableService {
             stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
             Boolean flag = true;
             while (flag) {
-                String newIoStatus = ioDeviceService.getIoStatus().split(",")[Constants.ROTARY_TABLE_RESET_SENSOR];
+                String newIoStatus = ioDeviceService.getStatus().split(",")[Constants.ROTARY_TABLE_RESET_SENSOR];
                 if (newIoStatus.equals(SignalLevel.HIGH.getValue())) {
                     stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                     flag = false;
