@@ -153,8 +153,6 @@ public class TaskCoordinator {
             turntableService.alignToPosition(1);
             //出汤
             soupServingLogic();
-            //从已经完成队列中移除
-            redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
         }
     }
 
@@ -180,6 +178,8 @@ public class TaskCoordinator {
                 }
             }
             relayDeviceService.theFoodOutletIsFacingUpwards();
+            //从已经完成队列中移除
+            redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
         }).start();
     }
 }

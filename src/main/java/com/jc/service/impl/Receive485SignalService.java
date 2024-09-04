@@ -32,7 +32,7 @@ public class Receive485SignalService implements DeviceHandler {
             try {
                 //解析指令
                 ParseCommand(message);
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error(e.getMessage());
             }
         } else {
@@ -49,7 +49,7 @@ public class Receive485SignalService implements DeviceHandler {
     private void ParseCommand(String message) {
         //先modbus验证，如果验证不过就不管
         try {
-            if(message==null)return;
+            if (message == null) return;
             boolean b = CRC16.validateCRC(message);
             if (!b) {
                 return;

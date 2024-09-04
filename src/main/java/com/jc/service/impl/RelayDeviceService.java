@@ -608,5 +608,8 @@ public class RelayDeviceService implements DeviceHandler {
         relayClosing(Constants.SOUP_SWITCH);
         //循环开关打开
         openClose(Constants.LOOP_SWITCH, second);
+        //抽汤泵打开+2秒
+        openClose(Constants.SOUP_PUMP_SWITCH,second+2);
+
     }
 }
