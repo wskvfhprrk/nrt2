@@ -1,4 +1,4 @@
-package com.jc.controller.control;
+package com.jc.controller;
 
 import com.jc.config.PubConfig;
 import com.jc.config.Result;

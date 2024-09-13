@@ -1,4 +1,4 @@
-package com.jc.controller.control;
+package com.jc.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +9,6 @@ import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
 import com.jc.enums.SignalLevel;
-import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.impl.IODeviceService;
 import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.RelayDeviceService;
@@ -28,8 +27,6 @@ public class TaskCoordinator {
 
     @Autowired
     private PubConfig pubConfig;
-    private Order order1;
-    private Order order4;
 
     @Autowired
     private RobotPlaceEmptyBowl robotPlaceEmptyBowl;

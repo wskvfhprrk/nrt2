@@ -1,7 +1,6 @@
 package com.jc.controller;
 
 import com.jc.config.PubConfig;
-import com.jc.controller.control.TaskCoordinator;
 import com.jc.service.impl.RedisQueueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

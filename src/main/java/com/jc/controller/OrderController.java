@@ -3,17 +3,12 @@ package com.jc.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.ClientConfig;
-import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
-import com.jc.controller.control.TaskCoordinator;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
-import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.impl.RedisQueueService;
-import com.jc.service.impl.Reset;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**

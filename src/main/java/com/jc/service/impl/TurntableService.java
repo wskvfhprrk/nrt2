@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TurntableService {
-    private final NettyServerHandler nettyServerHandler;
     private final IODeviceService ioDeviceService;
-    private final IpConfig ipConfig;
     private final StepperMotorService stepperMotorService;
     private final PubConfig pubConfig;
     @Autowired
@@ -26,13 +24,11 @@ public class TurntableService {
 
 
     @Autowired
-    public TurntableService(NettyServerHandler nettyServerHandler,
+    public TurntableService(
                             IODeviceService ioDeviceService,
-                            StepperMotorService stepperMotorService, IpConfig ipConfig, PubConfig pubConfig) {
-        this.nettyServerHandler = nettyServerHandler;
+                            StepperMotorService stepperMotorService, PubConfig pubConfig) {
         this.ioDeviceService = ioDeviceService;
         this.stepperMotorService = stepperMotorService;
-        this.ipConfig = ipConfig;
         this.pubConfig = pubConfig;
     }
 
@@ -110,6 +106,7 @@ public class TurntableService {
                 stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
                 flag = false;
             }
+
         }
         log.info("工位数值：{}", pubConfig.getTurntableNumber());
 

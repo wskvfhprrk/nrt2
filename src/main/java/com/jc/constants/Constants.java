@@ -284,7 +284,7 @@ public class Constants {
     /**
      * 汤最小温度值
      */
-    public static final Double SOUP_MINIMUM_TEMPERATURE_VALUE = 90.0;
+    public static final Double SOUP_MINIMUM_TEMPERATURE_VALUE = 80.0;
     /**
      * 汤最大温度值(保温时的最大)
      */
