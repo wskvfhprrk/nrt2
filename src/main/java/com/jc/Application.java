@@ -1,5 +1,7 @@
 package com.jc;
 
+import com.jc.mqtt.MqttConsumerConfig;
+import com.jc.mqtt.MqttProviderConfig;
 import com.jc.service.impl.Reset;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +26,9 @@ public class Application {
     @Autowired
     private ApplicationContext ctx;
     @Autowired
-    private Reset  reset;
+    private MqttProviderConfig mqttProviderConfig;
+    @Autowired
+    private MqttConsumerConfig mqttConsumerConfig;
 
 
     public static void main(String[] args) {
@@ -33,6 +37,8 @@ public class Application {
 
     @PostConstruct
     public void openBrowser() {
+        mqttProviderConfig.connect();
+        mqttConsumerConfig.connect();
         try {
             String scriptPath = "C:\\scripts\\open_browser.ps1";
             String command = "powershell.exe -ExecutionPolicy Bypass -File \"" + scriptPath + "\"";
