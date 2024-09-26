@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkvue"]=self["webpackChunkvue"]||[]).push([[104],{4104:(e,n,u)=>{u.r(n),u.d(n,{default:()=>f});var r=u(641),t=(0,r.Lk)("h1",null,"价格设置",-1);function a(e,n,u,a,l,c){var s=(0,r.g2)("el-main");return(0,r.uX)(),(0,r.Wv)(s,null,{default:(0,r.k6)((function(){return[t]})),_:1})}const l={name:"PriceSettings"};var c=u(6262);const s=(0,c.A)(l,[["render",a]]),f=s}}]);
-//# sourceMappingURL=104.516367ab.js.map
