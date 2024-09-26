@@ -75,6 +75,10 @@
     <div class="status-message" :style="{ color: serverStatus.color }">
       {{ serverStatus.message || '默认状态信息显示' }}
     </div>
+
+    <div class="go-to-backend">
+      <el-button type="primary" @click="goToBackend">后台登录</el-button>
+    </div>
   </div>
 </template>
 
@@ -108,6 +112,14 @@ export default {
     };
   },
   methods: {
+    /*userToken*/
+    cleanSession(){
+      localStorage.removeItem('userToken');
+    },
+    /*去登陆页面*/
+    goToBackend() {
+      this.$router.push('/login'); // 没有权限就返回到登陆页
+    },
     async submitOrder() {
       if (this.form.selectedRecipe && this.form.selectedPrice && this.form.selectedSpice) {
         try {
@@ -161,6 +173,8 @@ export default {
     }
   },
   mounted() {
+    /*清空登陆session*/
+    this.cleanSession();
     this.fetchServerStatus(); // Initial fetch
     setInterval(this.fetchServerStatus, 1000); // Poll every second
     this.fetchOrderData(); // 获取订单数据
@@ -286,5 +300,17 @@ html, body {
 
 .completed .customer-name {
   color: green;
+}
+/*后管管理按钮*/
+.go-to-backend {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.go-to-backend .el-button {
+  background-color: blue;
+  color: #fff;
+  margin-bottom: 20px;
 }
 </style>

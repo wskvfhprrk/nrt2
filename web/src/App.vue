@@ -12,7 +12,7 @@ export default {
 
 <style scoped>
 #app {
-  background-image: url('@/assets/img/background.jpg');
+  /*background-image: url('@/assets/img/background.jpg');*/
   background-size: cover;
   background-position: center;
   min-height: 100vh;
