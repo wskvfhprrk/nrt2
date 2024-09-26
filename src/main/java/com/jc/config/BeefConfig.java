@@ -2,12 +2,13 @@ package com.jc.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 参数配置
  */
-@Component
+
+@Configuration
 @ConfigurationProperties(prefix = "data")
 @Data
 public class BeefConfig {

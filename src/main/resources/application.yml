@@ -1,0 +1,114 @@
+server:
+  port: 8080
+
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/
+  application:
+    name: junchuang
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  redis:
+    host: localhost
+    port: 6379
+
+mqtt:
+  url: tcp://47.120.41.36:1884
+  username: admin
+  password: 123
+  send_id: "send_${machineCode}"
+  listen_id: "listen_${machineCode}"
+
+# 日志配置（仅在 Windows 有效）
+logging:
+  config: classpath:logbak.xml
+
+# 机器码
+machineCode: A00001
+
+# 本机 IP 配置
+ip:
+  local: 192.168.1.2
+  nettyPort: 5555
+  io: 192.168.1.3
+  relay: 192.168.1.4
+  relay1: 192.168.1.7
+  send485Order: 192.168.1.5
+  receive485Signal: 192.168.1.6
+  ducuIp: 192.168.1.10
+  ducuPort: 2000
+
+# 机器人状态配置
+robot:
+  reset: false
+  bowlPickupSuccess: false
+  soupOutSuccess: false
+  beefReady: false
+  beefStorageAdded: false
+  steamReady: false
+  steamAdded: false
+  seasoningAdded: false
+  soupAdded: false
+
+# 出餐完成状态
+ejectionIsComplete: false
+
+# 各设备在线状态
+client:
+  docuOnLine: false
+  send485Order: false
+  receive485Singal: false
+  iOdevice: false
+  relayDevice: false
+
+# 公共变量参数
+pub:
+  robotStatus: false
+  turntableNumber: 0
+  orderNumber: 0
+  turntableReset: false
+  hasWaterInSteamEngine: false
+  resetBowl: false
+  ingredient1Completed: false
+  ingredient2Completed: false
+  ingredient3Completed: false
+  ingredient4Completed: false
+  placingBowlCompleted: false
+  placingNoodlesCompleted: false
+  placingIngredientsCompleted: false
+  addingSteamCompleted: false
+  addingSeasoningCompleted: false
+  soupHeatingComplete: false
+  addingSoupCompleted: false
+  servingCompleted: false
+  bowlStationNumber: null
+  orderCompletedStatus: false
+  steamGeneratorCurrentState: 1
+  steamGeneratorWaterStatus: false
+  allDevicesConnectedStatus: false
+  deviceSelfCheckComplete: false
+  robotExecutionNaming: false
+  soupTemperatureValue: 0.0
+  calculateWeight: ~
+  executeTask: false
+  thereIsABowlAtTheServingWindow: ~
+  theServingWindowDidNotRise: ~
+  theBowlWasNotTakenFromTheServingWindow: ~
+
+# 数据配置
+data:
+  beef10: 10
+  beef15: 15
+  beef20: 20
+  cilantro: 10
+  choppedGreenOnion: 10
+  soupExtractionTime: 8
+  vibratorTime: 5
+  soupHeatingTemperature: 120.0
+  bowlSteamTime: 12
+  shakerSwitchTime: 5
+  theFoodOutletIsFacingDownwardsTime: 18
+  turntableSpeed: 25
+  soupExhaustTime: 10

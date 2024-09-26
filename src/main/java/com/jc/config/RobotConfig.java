@@ -2,10 +2,11 @@ package com.jc.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 // @Component注解用于将此类注册为Spring容器中的bean
-@Component
+
+@Configuration
 // @ConfigurationProperties注解用于将属性文件中的配置注入到此类中
 @ConfigurationProperties(prefix = "robot")
 @Data

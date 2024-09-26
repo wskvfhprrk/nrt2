@@ -3,12 +3,13 @@ package com.jc.config;
 import com.jc.enums.SteamGeneratorState;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 共公参数
  */
-@Component
+
+@Configuration
 @ConfigurationProperties(prefix = "pub")
 @Data
 public class PubConfig {
