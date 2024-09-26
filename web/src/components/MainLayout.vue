@@ -33,5 +33,7 @@ export default {
 </script>
 
 <style scoped>
-/* 可根据需要自定义布局 */
+el-container{
+  background-color: var(--beige);
+}
 </style>

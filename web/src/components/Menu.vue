@@ -55,10 +55,17 @@ export default {
   data() {
     return {
       activeIndex: this.getActiveIndex(), // 根据路由初始化选中项
-      menuBackgroundColor: '#eeeeee',
-      menuTextColor: '#333333',
-      menuActiveTextColor: '#ffffff',
+      menuBackgroundColor: '#eeeeee',  // 默认颜色，之后会被替换
+      menuTextColor: '#333333',        // 默认颜色，之后会被替换
+      menuActiveTextColor: '#ffffff',  // 默认颜色，之后会被替换
     };
+  },
+  mounted() {
+    // 获取 CSS 变量的值
+    const rootStyles = getComputedStyle(document.documentElement);
+    this.menuBackgroundColor = rootStyles.getPropertyValue('--gray').trim();
+    this.menuTextColor = rootStyles.getPropertyValue('--gray').trim();
+    this.menuActiveTextColor = rootStyles.getPropertyValue('--silver').trim();
   },
   methods: {
     handleSelect(key) {
@@ -150,7 +157,7 @@ export default {
 }
 
 .custom-menu .el-menu-item.is-active {
-  background-color: #409EFF !important;
-  color: #ffffff !important;
+  background-color: var(--deep-blue) !important;
+  color: var(--silver) !important;
 }
 </style>

@@ -60,14 +60,6 @@
             <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
             </el-button>
           </div>
-<!--          <div v-if="orderSubmitted" class="order-details">
-            <h2>订单详情</h2>
-            <p>食谱: {{ form.selectedRecipe }}</p>
-            <p>类别: {{ form.selectedPrice }}元</p>
-            <p>口味: {{ form.selectedSpice }}</p>
-            <p>加香菜: {{ form.addCilantro ? '是' : '否' }}</p>
-            <p>加葱: {{ form.addOnion ? '是' : '否' }}</p>
-          </div>-->
         </el-main>
       </el-container>
     </div>
@@ -188,7 +180,7 @@ export default {
 html, body {
   height: 100%;
   margin: 0;
-  background-color: transparent;
+  background-color: var(--beige);
 }
 
 .outer-container {
@@ -204,7 +196,6 @@ html, body {
   width: 100%;
   padding: 20px;
   font-family: 'Arial', sans-serif;
-  background-color: transparent;
 }
 
 .button-container {
@@ -214,7 +205,7 @@ html, body {
 
 .center-button {
   width: 50%;
-  background-color: rgb(72, 8, 25);
+  background-color: var(--deep-blue);
   color: #fff;
 }
 
@@ -250,7 +241,7 @@ html, body {
   width: 100%;
   padding: 20px;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--gray);
   font-size: calc(12px + 1.5vh);
   position: fixed;
   bottom: 0;
@@ -262,8 +253,8 @@ html, body {
   top: 0;
   width: 100%;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.8);
   padding: 10px 0;
+  background-color: var(--gray);
 }
 
 .order-status {
@@ -295,7 +286,7 @@ html, body {
 }
 
 .in-progress .customer-name {
-  color: blue;
+  color: var(--deep-blue);
 }
 
 .completed .customer-name {
@@ -309,8 +300,9 @@ html, body {
 }
 
 .go-to-backend .el-button {
-  background-color: blue;
-  color: #fff;
-  margin-bottom: 20px;
+  background-color: var(--deep-blue);
+  color: var(--silver);
+  margin-bottom: 50px;
+
 }
 </style>
