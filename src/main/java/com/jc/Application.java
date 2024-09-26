@@ -37,7 +37,9 @@ public class Application {
 
     @PostConstruct
     public void openBrowser() {
+        //启动mqtt发送端连接
         mqttProviderConfig.connect();
+        //启动mqtt接收端连接
         mqttConsumerConfig.connect();
         try {
             String scriptPath = "C:\\scripts\\open_browser.ps1";
