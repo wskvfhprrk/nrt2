@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkvue"]=self["webpackChunkvue"]||[]).push([[680],{5299:(e,n,u)=>{u.r(n),u.d(n,{default:()=>f});var t=u(641),r=(0,t.Lk)("h1",null,"账户设置",-1);function a(e,n,u,a,c,l){var s=(0,t.g2)("el-main");return(0,t.uX)(),(0,t.Wv)(s,null,{default:(0,t.k6)((function(){return[r]})),_:1})}const c={name:"SetAccount"};var l=u(6262);const s=(0,l.A)(c,[["render",a]]),f=s}}]);
+//# sourceMappingURL=680.e41ea537.js.map

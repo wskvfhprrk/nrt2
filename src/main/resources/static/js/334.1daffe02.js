@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkvue"]=self["webpackChunkvue"]||[]).push([[334],{8334:(e,n,u)=>{u.r(n),u.d(n,{default:()=>f});var t=u(641),a=(0,t.Lk)("h1",null,"销售统计",-1);function r(e,n,u,r,l,s){var c=(0,t.g2)("el-main");return(0,t.uX)(),(0,t.Wv)(c,null,{default:(0,t.k6)((function(){return[a]})),_:1})}const l={name:"SalesStatistics"};var s=u(6262);const c=(0,s.A)(l,[["render",r]]),f=c}}]);
+//# sourceMappingURL=334.1daffe02.js.map

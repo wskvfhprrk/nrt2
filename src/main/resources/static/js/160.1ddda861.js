@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkvue"]=self["webpackChunkvue"]||[]).push([[160],{3160:(e,n,u)=>{u.r(n),u.d(n,{default:()=>f});var r=u(641),t=(0,r.Lk)("h1",null,"点餐设置",-1);function a(e,n,u,a,l,s){var c=(0,r.g2)("el-main");return(0,r.uX)(),(0,r.Wv)(c,null,{default:(0,r.k6)((function(){return[t]})),_:1})}const l={name:"OrderingSettings"};var s=u(6262);const c=(0,s.A)(l,[["render",a]]),f=c}}]);
+//# sourceMappingURL=160.1ddda861.js.map
