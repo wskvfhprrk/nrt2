@@ -2,6 +2,7 @@ package com.jc.mqtt;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,18 +29,10 @@ public class SendController {
             return "发送失败";
         }
     }
-
-//    @PostConstruct
+    @Scheduled(cron = "0 0/1 * * * ? ")
     public void init(){
-        while (true){
-            try {
-                Thread.sleep(30000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             sendMessage(1,true,"topic5", "{\n" +
                     "  \"date\":" +LocalDateTime.now()+
                     "\n}");
-        }
     }
 }
