@@ -72,6 +72,7 @@ Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" "--start-f
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 打开一个 Pull Request
 
-## 许可证
+## 架构
 
-本项目遵循 [MIT 许可证](LICENSE)。
+### mqtt心跳机制
+
