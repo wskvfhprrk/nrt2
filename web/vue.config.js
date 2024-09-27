@@ -6,6 +6,10 @@ module.exports = {
                 target: `${baseUrl}/orders/`,
                 changeOrigin: true
             },
+            '/qrcode': {
+                target: `${baseUrl}/qrcode/`,
+                changeOrigin: true
+            },
             '/login': {
                 target: `${baseUrl}/login/`,
                 changeOrigin: true

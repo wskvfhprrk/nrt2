@@ -11,13 +11,19 @@
       <div v-if="inProgressOrders.length" class="order-status in-progress">
         在做订单: <span>{{ inProgressOrders.length }}</span>
         <div class="order-list">
-          <div v-for="order in inProgressOrders" :key="order.orderId" class="customer-name">{{ order.customerName }}</div>
+          <div v-for="order in inProgressOrders" :key="order.orderId" class="customer-name">{{
+              order.customerName
+            }}
+          </div>
         </div>
       </div>
       <div v-if="completedOrders.length" class="order-status completed">
         做完订单: <span>{{ completedOrders.length }}</span>
         <div class="order-list">
-          <div v-for="order in completedOrders" :key="order.orderId" class="customer-name">{{ order.customerName }}</div>
+          <div v-for="order in completedOrders" :key="order.orderId" class="customer-name">{{
+              order.customerName
+            }}
+          </div>
         </div>
       </div>
     </div>
@@ -69,9 +75,14 @@
     </div>
 
     <div class="go-to-backend">
-      <el-button type="primary" @click="goToBackend">后台登录</el-button>
+      <el-button type="primary" @click="openQrCodeDialog">后台登录</el-button>
     </div>
   </div>
+
+  <!-- 二维码弹窗 -->
+  <el-dialog :title="qrCodeDialogTitle" v-model="qrCodeDialogVisible" width="30%">
+    <img :src="qrCodeImage" alt="二维码" style="width: 100%; height: auto;"/>
+  </el-dialog>
 </template>
 
 <script>
@@ -100,12 +111,42 @@ export default {
       pendingOrders: [],       // 待做订单队列
       inProgressOrders: [],    // 在做订单队列
       completedOrders: [],     // 做完订单队列
-      hasOrders: false         // 是否有订单
+      hasOrders: false,         // 是否有订单
+      qrCodeDialogVisible: false, // 控制二维码弹窗的显示与隐藏
+      qrCodeImage: '',            // 用于存储二维码图片的Base64字符串
+      qrCodeDialogTitle: "微信支付",
+      paymentMethod: "wechat"   //支付宝——alipay
     };
   },
   methods: {
+    // 打开二维码弹窗并获取二维码图片
+    async openQrCodeDialog() {
+      try {
+        // 发送请求获取二维码图片
+        const response = await axios.get('http://localhost:8080/qrcode', {
+          params: {
+            text: 'wechatPayTest', // 替换为你想要生成二维码的文本
+            paymentMethod: this.paymentMethod //支付方式
+          },
+          responseType: 'blob' // 将响应类型设为 blob，表示我们获取的是图片数据
+        });
+
+        // 将 blob 数据转换为 Base64 格式
+        const blob = response.data;
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          this.qrCodeImage = reader.result; // 将 Base64 格式的图片数据存储
+          this.qrCodeDialogVisible = true;  // 显示弹窗
+        };
+
+      } catch (error) {
+        console.error('获取二维码失败:', error);
+        this.$message.error('二维码加载失败');
+      }
+    },
     /*userToken*/
-    cleanSession(){
+    cleanSession() {
       localStorage.removeItem('userToken');
     },
     /*去登陆页面*/
@@ -292,6 +333,7 @@ html, body {
 .completed .customer-name {
   color: green;
 }
+
 /*后管管理按钮*/
 .go-to-backend {
   position: fixed;
@@ -303,6 +345,15 @@ html, body {
   background-color: var(--deep-blue);
   color: var(--silver);
   margin-bottom: 50px;
-
 }
+.el-dialog__header{
+  text-align: center;
+}
+.el-dialog__body img {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+}
+
 </style>
