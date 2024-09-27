@@ -3,6 +3,7 @@ package com.jc.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jc.sign.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +30,7 @@ public class SendController {
 
     @RequestMapping("/sendMessage")
     @ResponseBody
-    public String sendMessage(int qos,boolean retained,String topic,String message){
+    public String sendMessage(int qos, boolean retained, String topic, String message) {
         try {
             providerClient.publish(qos, retained, topic, message);
             return "发送成功";
@@ -43,13 +44,16 @@ public class SendController {
      * 心跳——每分钟向服务器发送信息指令
      */
     @Scheduled(cron = "0 0/1 * * * ? ")
-    public void heartbeat(){
-            Map map=new HashMap();
+    public void heartbeat() {
+        Map map = new HashMap();
 //            map.put("heartbeat",LocalDateTime.now());
-            map.put("machineCode",machineCode);
+        map.put("machineCode", machineCode);
+        map.put("time",LocalDateTime.now());
+        //加密
+        map = SignUtil.buildRequestPara(map);
         try {
             String value = objectMapper.writeValueAsString(map);
-            sendMessage(0,false,"heartbeat/"+machineCode,value);
+            sendMessage(0, false, "heartbeat/" + machineCode, value);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,8 @@
 package com.jc.mqtt;
- 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jc.sign.MqttSignUtil;
+import com.jc.sign.SignUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -8,9 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 @Slf4j
-public class MqttConsumerCallBack implements MqttCallback{
+public class MqttConsumerCallBack implements MqttCallback {
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     @Lazy
@@ -20,7 +32,7 @@ public class MqttConsumerCallBack implements MqttCallback{
     private static final int RETRY_INTERVAL_MS = 3000; // 每次重试间隔，单位为毫秒
     private int retryCount = 0; // 当前重试次数
 
-   /**
+    /**
      * 客户端断开连接的回调
      */
     @Override
@@ -61,18 +73,24 @@ public class MqttConsumerCallBack implements MqttCallback{
      */
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        log.info(String.format("接收消息主题 : %s",topic));
-        log.info(String.format("接收消息Qos : %d",message.getQos()));
-        log.info(String.format("接收消息内容 : %s",new String(message.getPayload())));
-        log.info(String.format("接收消息retained : %b",message.isRetained()));
+//        log.info(String.format("接收消息主题 : %s", topic));
+//        log.info(String.format("接收消息Qos : %d", message.getQos()));
+//        log.info(String.format("接收消息内容 : %s", new String(message.getPayload())));
+//        log.info(String.format("接收消息retained : %b", message.isRetained()));
+        Map map = objectMapper.readValue(new String(message.getPayload()), HashMap.class);
+        Boolean flag = MqttSignUtil.verifySign(map);
+        if(!flag){
+            return;
+        }
+//        log.info("通过签名验证");
     }
- 
+
     /**
      * 消息发布成功的回调
      */
     @Override
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
- 
+
     }
-    
+
 }

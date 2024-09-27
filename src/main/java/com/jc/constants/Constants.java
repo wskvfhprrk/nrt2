@@ -301,4 +301,8 @@ public class Constants {
      * 待制作订单redis主键
      */
     public static final String PENDING_ORDER_REDIS_PRIMARY_KEY = "pendingOrderRedisPrimaryKey";
+    /**
+     * sign密钥
+     */
+    public static final String APP_SECRET_REDIS_KEY = "appSecret";
 }
