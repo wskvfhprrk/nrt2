@@ -45,7 +45,7 @@ public class SendController {
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void heartbeat(){
             Map map=new HashMap();
-            map.put("heartbeat",LocalDateTime.now());
+//            map.put("heartbeat",LocalDateTime.now());
             map.put("machineCode",machineCode);
         try {
             String value = objectMapper.writeValueAsString(map);

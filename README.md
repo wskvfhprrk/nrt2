@@ -75,4 +75,4 @@ Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" "--start-f
 ## 架构
 
 ### mqtt心跳机制
-
+mqtt每分钟向服务器发送一次心跳，服务器监听记录，每分钟检测一次，对于大于2分钟记录的视为断线
