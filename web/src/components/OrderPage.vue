@@ -35,31 +35,39 @@
           <el-form :model="form" label-width="120px">
             <el-form-item label="选择食谱">
               <el-radio-group v-model="form.selectedRecipe">
-                <el-radio :label="'牛肉汤'">牛肉汤</el-radio>
-                <el-radio :label="'牛杂汤'">牛杂汤</el-radio>
+                <el-radio-button :label="'牛肉汤'">牛肉汤</el-radio-button>
+                <el-radio-button :label="'牛杂汤'">牛杂汤</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="选择类别">
               <el-radio-group v-model="form.selectedPrice">
-                <el-radio v-for="price in prices" :key="price" :label="price">{{ price }}元</el-radio>
+                <el-radio-button v-for="price in prices" :key="price" :label="price">{{ price }}元</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="选择口味">
               <el-radio-group v-model="form.selectedSpice">
-                <el-radio v-for="spice in spices" :key="spice" :label="spice">{{ spice }}</el-radio>
+                <el-radio-button v-for="spice in spices" :key="spice" :label="spice">{{ spice }}</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="添加香菜">
               <el-radio-group v-model="form.addCilantro">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
+                <el-radio-button :label="true">是</el-radio-button>
+                <el-radio-button :label="false">否</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="添加葱花">
               <el-radio-group v-model="form.addOnion">
-                <el-radio :label="true">是</el-radio>
-                <el-radio :label="false">否</el-radio>
+                <el-radio-button :label="true">是</el-radio-button>
+                <el-radio-button :label="false">否</el-radio-button>
               </el-radio-group>
+            </el-form-item>
+            <el-form-item label="支付方式">
+              <el-radio-group v-model="form.paymentMethod">
+                <el-radio-button v-for="method in paymentMethods" :key="method.key" :label="method.key">
+                  {{ method.label }}
+                </el-radio-button>
+              </el-radio-group>
+
             </el-form-item>
           </el-form>
           <div class="button-container">
@@ -97,13 +105,18 @@ export default {
         selectedPrice: 20,
         selectedSpice: '微辣',
         addCilantro: true,
-        addOnion: true
+        addOnion: true,
+        paymentMethod: 'wechat'   // 默认选择微信支付
       },
       recipes: ['牛肉汤', '牛杂汤'],
       prices: [10, 15, 20],
       spices: ['不辣', '微辣', '中辣', '辣'],
       orderSubmitted: false,
       isButtonEnabled: false,
+      paymentMethods: [
+        { key: 'wechat', label: '微信支付' },
+        { key: 'alipay', label: '支付宝支付' }
+      ],
       serverStatus: {
         color: 'black',
         message: ''
@@ -112,10 +125,11 @@ export default {
       inProgressOrders: [],    // 在做订单队列
       completedOrders: [],     // 做完订单队列
       hasOrders: false,         // 是否有订单
-      qrCodeDialogVisible: false, // 控制二维码弹窗的显示与隐藏
-      qrCodeImage: '',            // 用于存储二维码图片的Base64字符串
-      qrCodeDialogTitle: "微信支付",
-      paymentMethod: "wechat"   //支付宝——alipay
+
+      qrCodeDialogTitle: "微信支付", // 默认微信支付
+      qrCodeDialogVisible: false,    // 控制二维码弹窗的显示与隐藏
+      qrCodeImage: ''               // 用于存储二维码图片的Base64字符串
+
     };
   },
   methods: {
@@ -126,7 +140,7 @@ export default {
         const response = await axios.get('http://localhost:8080/qrcode', {
           params: {
             text: 'wechatPayTest', // 替换为你想要生成二维码的文本
-            paymentMethod: this.paymentMethod //支付方式
+            paymentMethod: this.form.paymentMethod //支付方式
           },
           responseType: 'blob' // 将响应类型设为 blob，表示我们获取的是图片数据
         });
@@ -346,9 +360,11 @@ html, body {
   color: var(--silver);
   margin-bottom: 50px;
 }
-.el-dialog__header{
+
+.el-dialog__header {
   text-align: center;
 }
+
 .el-dialog__body img {
   display: block;
   margin: 0 auto;
