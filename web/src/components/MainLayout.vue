@@ -36,4 +36,7 @@ export default {
 el-container{
   background-color: var(--beige);
 }
+.el-header{
+  --el-header-padding: 0 0;
+}
 </style>

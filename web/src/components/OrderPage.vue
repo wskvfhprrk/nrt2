@@ -27,7 +27,15 @@
         </div>
       </div>
     </div>
-
+    <!-- 二维码方框 -->
+    <div class="qr-code-container" v-show="qrCodeVisible">
+      <div class="qr-title">
+        <el-avatar :size="25" src="https://empty" @error="errorHandler">
+          <img src='../assets/img/wechat-logo.png'/>
+        </el-avatar>
+        微信支付</div>
+      <div id="qrcode" style="width: 120px; height: 120px;"></div>
+    </div>
     <div class="container">
       <el-container>
         <!-- <el-header class="center-content"> 牛肉汤自助点餐系统 </el-header> -->
@@ -78,24 +86,21 @@
       </el-container>
     </div>
     <!-- Status message section -->
-    <div class="status-message" :style="{ color: serverStatus.color }">
+    <div class="status-message"  :style="{ color: serverStatus.color }">
       {{ serverStatus.message || '默认状态信息显示' }}
     </div>
 
     <div class="go-to-backend">
-      <el-button type="primary" @click="openQrCodeDialog">后台登录</el-button>
+      <el-button type="primary" @click="goToBackend">后台登录</el-button>
     </div>
   </div>
-
-  <!-- 二维码弹窗 -->
-  <el-dialog :title="qrCodeDialogTitle" v-model="qrCodeDialogVisible" width="30%">
-    <img :src="qrCodeImage" alt="二维码" style="width: 100%; height: auto;"/>
-  </el-dialog>
 </template>
 
 <script>
 import axios from 'axios';
+import QRCode from 'qrcodejs2';
 
+const baseUrl='http://127.0.0.1:8080/orders';
 export default {
   name: 'App',
   data() {
@@ -114,8 +119,8 @@ export default {
       orderSubmitted: false,
       isButtonEnabled: false,
       paymentMethods: [
-        { key: 'wechat', label: '微信支付' },
-        { key: 'alipay', label: '支付宝支付' }
+        { key: 'wechat', label: '微信支付',colorDark: "#000000", colorLight: "#07C160"},
+        { key: 'alipay', label: '支付宝支付（开发中）' ,colorDark: "#FFFFFF", colorLight: "#10AEFF"}
       ],
       serverStatus: {
         color: 'black',
@@ -127,36 +132,27 @@ export default {
       hasOrders: false,         // 是否有订单
 
       qrCodeDialogTitle: "微信支付", // 默认微信支付
-      qrCodeDialogVisible: false,    // 控制二维码弹窗的显示与隐藏
-      qrCodeImage: ''               // 用于存储二维码图片的Base64字符串
+      qrCodeVisible: false,    // 控制二维码弹窗的显示与隐藏
+      qrCodeText: ''               // 用于生成二维码的url
 
     };
   },
   methods: {
-    // 打开二维码弹窗并获取二维码图片
-    async openQrCodeDialog() {
-      try {
-        // 发送请求获取二维码图片
-        const response = await axios.get('http://localhost:8080/qrcode', {
-          params: {
-            text: 'wechatPayTest', // 替换为你想要生成二维码的文本
-            paymentMethod: this.form.paymentMethod //支付方式
-          },
-          responseType: 'blob' // 将响应类型设为 blob，表示我们获取的是图片数据
+    // 生成二维码的方法
+    generateQrCode() {
+      // 清空之前的二维码（避免多次生成重叠）
+      const qrcodeElement = document.getElementById('qrcode');
+      if (qrcodeElement) {
+        qrcodeElement.innerHTML = ''; // 清除已有二维码
+        // 生成新的二维码
+        new QRCode(qrcodeElement, {
+          text: this.qrCodeText,
+          width: 120, // QR码宽度
+          height: 120, // QR码高度
+          colorDark: "#000000", // QR码颜色
+          colorLight: "#ffffff", // 背景色
+          correctLevel: QRCode.CorrectLevel.H // 纠错级别（L, M, Q, H）
         });
-
-        // 将 blob 数据转换为 Base64 格式
-        const blob = response.data;
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          this.qrCodeImage = reader.result; // 将 Base64 格式的图片数据存储
-          this.qrCodeDialogVisible = true;  // 显示弹窗
-        };
-
-      } catch (error) {
-        console.error('获取二维码失败:', error);
-        this.$message.error('二维码加载失败');
       }
     },
     /*userToken*/
@@ -167,10 +163,11 @@ export default {
     goToBackend() {
       this.$router.push('/login'); // 没有权限就返回到登陆页
     },
+
     async submitOrder() {
       if (this.form.selectedRecipe && this.form.selectedPrice && this.form.selectedSpice) {
         try {
-          const response = await axios.post('http://127.0.0.1:8080/orders', this.form, {
+          const response = await axios.post(baseUrl, this.form, {
             headers: {
               'Content-Type': 'application/json'
             }
@@ -191,7 +188,7 @@ export default {
     },
     async fetchServerStatus() {
       try {
-        const response = await axios.get('http://127.0.0.1:8080/orders/serverStatus');
+        const response = await axios.get(baseUrl+'/serverStatus');
         this.serverStatus.color = response.data.color;
         this.serverStatus.message = response.data.message;
         // 更新按钮状态
@@ -203,7 +200,7 @@ export default {
     },
     async fetchOrderData() {
       try {
-        const response = await axios.get('http://127.0.0.1:8080/orders/status');
+        const response = await axios.get(baseUrl+'/status');
         if (response.data.code === 200) {
           this.pendingOrders = response.data.data.pendingOrders || [];
           this.inProgressOrders = response.data.data.inProgressOrders || [];
@@ -217,15 +214,35 @@ export default {
       } catch (error) {
         console.error('获取订单数据时出错:', error);
       }
+    },
+    //查询二给码信息
+    async fetchQrData() {
+      try {
+        const response = await axios.get(baseUrl+'/qrcode');
+        if (response.data.code === 200) {
+          this.qrCodeText = response.data.data.qrCodeText;
+          this.qrCodeVisible = response.data.data.qrCodeVisible;
+          console.log("qrCodeVisible=="+this.qrCodeVisible)
+          this.generateQrCode();
+        } else {
+          console.error(response.data.message);
+        }
+      } catch (error) {
+        console.error('获取订单数据时出错:', error);
+      }
     }
   },
   mounted() {
     /*清空登陆session*/
     this.cleanSession();
-    this.fetchServerStatus(); // Initial fetch
-    setInterval(this.fetchServerStatus, 1000); // Poll every second
-    this.fetchOrderData(); // 获取订单数据
-    setInterval(this.fetchOrderData, 1000); // 每5秒轮询一次订单数据
+    this.fetchServerStatus();
+    this.fetchQrData();
+    setInterval(this.fetchQrData, 1000);
+    setInterval(this.fetchServerStatus, 1000);
+    this.fetchOrderData();
+    setInterval(this.fetchOrderData, 1000);
+
+    this.generateQrCode(); // 页面加载时生成二维码
   }
 };
 </script>
@@ -371,5 +388,32 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
+.qr-code-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 150px;
+  height: 180px;
+  background-color: white;
+  border: 3px solid #07C160;
+  border-radius:10px;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 50px;
+}
+.qr-title{
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  font-size: 20px;
+  height: 25px;
+  color: #07C160;
+  margin-bottom: 5px;
+}
+
 
 </style>

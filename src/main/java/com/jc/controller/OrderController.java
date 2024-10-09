@@ -202,4 +202,12 @@ public class OrderController {
             this.completedOrders = completedOrders;
         }
     }
+
+    @GetMapping("qrcode")
+    private Result qrcode(){
+        Map map=new HashMap();
+        map.put("qrCodeVisible",true);
+        map.put("qrCodeText","qrCodeText");
+        return Result.success(map);
+    }
 }
