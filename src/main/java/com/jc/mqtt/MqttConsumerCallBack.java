@@ -88,25 +88,28 @@ public class MqttConsumerCallBack implements MqttCallback {
 //        log.info(String.format("接收消息retained : %b", message.isRetained()));
         Map map = JSON.parseObject(String.valueOf(message), Map.class);
         Boolean flag = MqttSignUtil.verifySign(map);
-        if(!flag){
+        if (!flag) {
             return;
         }
-        log.info("通过签名验证");
-        //订单消息
-        if(topic.split("/")[0].equals("pay")){
+        log.info("通过签名验证，处理业务");
+        //订单支付消息
+        if (topic.split("/")[0].equals("pay")) {
             OrderPayMessage payMessage = JSON.parseObject(map.get("data").toString(), OrderPayMessage.class);
-            String key=Constants.PAY_DATA+"::"+payMessage.getOrderId();
+            String key = Constants.PAY_DATA + "::" + payMessage.getOrderId();
             //如果支付完成就删除缓存中订单，同时增加已经支付订单
-            if(payMessage.getIsPaymentCompleted()){
+            if (payMessage.getIsPaymentCompleted()) {
                 redisTemplate.delete(key);
-                Order order=new Order();
+                Order order = new Order();
                 order.setCustomerName(payMessage.getOrderId());
                 order.setStatus(OrderStatus.PENDING);
                 queueService.enqueue(order);
                 return;
             }
             //10秒内支付完成，否则二维码不见
-           redisTemplate.opsForValue().set(key,map.get("data"),10000L);
+            redisTemplate.opsForValue().set(key, map.get("data"), 10000L);
+        }
+        if (topic.split("/")[0].equals("message")) {
+            // TODO: 2024/10/10 处理其它消息业务逻辑
         }
     }
 
