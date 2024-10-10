@@ -1,5 +1,6 @@
 package com.jc.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.BeefConfig;
@@ -40,8 +41,6 @@ public class TaskCoordinator {
     private RelayDeviceService relayDeviceService;
     @Autowired
     private RedisTemplate redisTemplate;
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private RedisQueueService redisQueueService;
     @Autowired
@@ -89,12 +88,8 @@ public class TaskCoordinator {
             log.info("正在处理订单：{}", order.toString());
             //加入正在做的订单redis队列中
             order.setStatus(OrderStatus.PROCESSING);
-            try {
-                String orderJson = objectMapper.writeValueAsString(order);
-                redisTemplate.opsForList().rightPush(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            String orderJson = JSON.toJSONString(order);
+            redisTemplate.opsForList().rightPush(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
             //todo 称重
             //送到第三个转台
             log.info("送到第三个转台");
@@ -114,12 +109,8 @@ public class TaskCoordinator {
             order.setStatus(OrderStatus.PROCESSING);
             redisTemplate.opsForList().leftPop(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
             order.setStatus(OrderStatus.COMPLETED);
-            try {
-                String orderJson = objectMapper.writeValueAsString(order);
+                orderJson = JSON.toJSONString(order);
                 redisTemplate.opsForList().rightPush(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY, orderJson);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
             //加完蒸转到第5个工位放汤
             turntableService.alignToPosition(5);
             //出汤

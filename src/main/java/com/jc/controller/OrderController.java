@@ -1,5 +1,6 @@
 package com.jc.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.ClientConfig;
@@ -8,9 +9,11 @@ import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
+import com.jc.mqtt.MqttProviderConfig;
 import com.jc.service.impl.RedisQueueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +36,15 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private ClientConfig clientConfig;
     @Autowired
     private PubConfig pubConfig;
     @Autowired
-    private RedisQueueService queueService;
-    @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private MqttProviderConfig mqttProviderConfig;
+    @Value("${machineCode}")
+    private String machineCode;
 
     /**
      * 提交订单
@@ -51,14 +54,16 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
-        // 订单排列中
-        order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
-        Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
-        //id生成规则
-        order.setCustomerName("A" + (1234 + id));
-        order.setStatus(OrderStatus.PENDING);
-//        log.info("接收到订单：{}", order);
-        queueService.enqueue(order);
+        // 订单由服务器统一管理
+//        order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
+//        Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
+//        //id生成规则
+//        order.setCustomerName("A" + (1234 + id));
+//        order.setStatus(OrderStatus.PENDING);
+//        queueService.enqueue(order);
+        //发送mqtt消息
+        String topic = "order/" + machineCode;
+        mqttProviderConfig.publishSign(0, false, topic, order);
         return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
     }
 
@@ -67,12 +72,7 @@ public class OrderController {
         Map<String, String> statusMap = checkDeviceStatus();
 
         String jsonResponse;
-        try {
-            jsonResponse = objectMapper.writeValueAsString(statusMap);
-        } catch (JsonProcessingException e) {
-            jsonResponse = "{\"color\":\"red\",\"message\":\"服务器状态检查时发生错误。\"}";
-        }
-
+        jsonResponse = JSON.toJSONString(statusMap);
         return jsonResponse;
     }
 
@@ -92,7 +92,8 @@ public class OrderController {
             statusMap.put("color", "orange");
             statusMap.put("message", "设备自检中，请稍后……");
         } else {
-            statusMap.put("color", "red");
+            statusMap.put("color", "green");
+//            statusMap.put("color", "red");
             StringBuilder missingDevicesMessage = new StringBuilder();
 
             if (!clientConfig.getIOdevice()) {
@@ -132,28 +133,13 @@ public class OrderController {
             List<String> completedOrders = redisTemplate.opsForList().range(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY, 0, -1);
 
             List<Order> pendingOrdersList = pendingOrders.stream().map(s -> {
-                try {
-                    return objectMapper.readValue(s, Order.class);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                return null;
+                return JSON.parseObject(s, Order.class);
             }).collect(Collectors.toList());
             List<Order> inProgressOrdersList = inProgressOrders.stream().map(s -> {
-                try {
-                    return objectMapper.readValue(s, Order.class);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                return null;
+                return JSON.parseObject(s, Order.class);
             }).collect(Collectors.toList());
             List<Order> completedOrdersList = completedOrders.stream().map(s -> {
-                try {
-                    return objectMapper.readValue(s, Order.class);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                return null;
+                return JSON.parseObject(s, Order.class);
             }).collect(Collectors.toList());
             // 创建OrderStatusResponse对象
             OrderStatusResponse orderStatusResponse = new OrderStatusResponse(pendingOrdersList, inProgressOrdersList, completedOrdersList);
@@ -204,10 +190,8 @@ public class OrderController {
     }
 
     @GetMapping("qrcode")
-    private Result qrcode(){
-        Map map=new HashMap();
-        map.put("qrCodeVisible",true);
-        map.put("qrCodeText","qrCodeText");
-        return Result.success(map);
+    private Result qrcode() {
+        Object o = redisTemplate.opsForValue().get(Constants.PAY_DATA);
+        return Result.success(o);
     }
 }

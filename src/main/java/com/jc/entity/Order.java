@@ -43,6 +43,10 @@ public class Order implements Serializable {
      * 订单的处理状态
      */
     private OrderStatus status;
+    /**
+     * 支付方式
+     */
+    private String paymentMethod;
 
 }
 

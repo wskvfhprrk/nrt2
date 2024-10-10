@@ -1,6 +1,7 @@
 package com.jc.mqtt;
 
 import com.jc.config.MqttConfig;
+import com.jc.sign.SignUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -50,8 +51,6 @@ public class MqttProviderConfig {
             options.setKeepAliveInterval(20);
             //设置遗嘱消息的话题，若客户端和服务器之间的连接意外断开，服务器将发布客户端的遗嘱信息
             options.setWill("willTopic", (mqttConfig.getSend_id() + "与服务器断开连接").getBytes(), 0, false);
-//            //断开重连
-//            options.setAutomaticReconnect(true);
             //设置回调
             client.setCallback(mqttProviderCallBack);
             client.connect(options);
@@ -83,6 +82,17 @@ public class MqttProviderConfig {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 发送加密信息
+     * @param qos
+     * @param retained
+     * @param topic
+     * @param object
+     */
+    public void publishSign(int qos, boolean retained, String topic, Object object) {
+        this.publish(qos,retained,topic,SignUtil.sendSignStr(object));
     }
 
 }

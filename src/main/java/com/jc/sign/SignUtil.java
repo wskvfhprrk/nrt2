@@ -1,5 +1,6 @@
 package com.jc.sign;
 
+import com.alibaba.fastjson.JSON;
 import com.jc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +37,7 @@ public class SignUtil {
         Map<String, String> sPara = SignCore.paraFilter(sParaTemp);
         String prestr = SignCore.createLinkString(sPara); //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         Object o = stringRedisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
-        if(o==null){
+        if (o == null) {
             log.info("redis中没有签名密钥");
             return null;
         }
@@ -65,14 +67,12 @@ public class SignUtil {
 
         String prestr = SignCore.createLinkString(sPara); //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         Object o = stringRedisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
-        if(o==null){
-            log.info("redis中没有签名密钥");
+        if (o == null) {
+            log.error("redis中没有签名密钥");
             return false;
         }
         //生成签名结果——密钥从redis中获取
         String mysign = SignMD5.sign(prestr, o.toString(), SignConfig.INPUT_CHARSET_TYPE);
-
-//            log.info("签名结果:" + mysign);
         if (mysign.equalsIgnoreCase(sign)) {
             return true;
         } else {
@@ -110,7 +110,7 @@ public class SignUtil {
         //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         String prestr = SignCore.createLinkString(sPara);
         Object o = stringRedisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
-        if(o==null){
+        if (o == null) {
             log.info("redis中没有签名密钥");
             return false;
         }
@@ -135,5 +135,21 @@ public class SignUtil {
 
         }
         return map;
+    }
+
+    /**
+     * 加密对象
+     *
+     * @param o
+     * @return
+     */
+    public static String sendSignStr(Object o) {
+        Map map = new HashMap();
+        map.put("time", LocalDateTime.now());
+        map.put("data", o);
+        //加密
+        map = SignUtil.buildRequestPara(map);
+        String value = JSON.toJSONString(map);
+        return value;
     }
 }

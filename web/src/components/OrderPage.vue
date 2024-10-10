@@ -33,7 +33,9 @@
         <el-avatar :size="25" src="https://empty" @error="errorHandler">
           <img src='../assets/img/wechat-logo.png'/>
         </el-avatar>
-        微信支付</div>
+        微信支付
+      </div>
+      <div class="orderId">订单：<span style="color:red;margin-bottom: 10px;">{{ orderId }}</span></div>
       <div id="qrcode" style="width: 120px; height: 120px;"></div>
     </div>
     <div class="container">
@@ -86,7 +88,7 @@
       </el-container>
     </div>
     <!-- Status message section -->
-    <div class="status-message"  :style="{ color: serverStatus.color }">
+    <div class="status-message" :style="{ color: serverStatus.color }">
       {{ serverStatus.message || '默认状态信息显示' }}
     </div>
 
@@ -100,7 +102,7 @@
 import axios from 'axios';
 import QRCode from 'qrcodejs2';
 
-const baseUrl='http://127.0.0.1:8080/orders';
+const baseUrl = 'http://127.0.0.1:8080/orders';
 export default {
   name: 'App',
   data() {
@@ -119,8 +121,8 @@ export default {
       orderSubmitted: false,
       isButtonEnabled: false,
       paymentMethods: [
-        { key: 'wechat', label: '微信支付',colorDark: "#000000", colorLight: "#07C160"},
-        { key: 'alipay', label: '支付宝支付（开发中）' ,colorDark: "#FFFFFF", colorLight: "#10AEFF"}
+        {key: 'wechat', label: '微信支付', colorDark: "#000000", colorLight: "#07C160"},
+        {key: 'alipay', label: '支付宝支付（开发中）', colorDark: "#FFFFFF", colorLight: "#10AEFF"}
       ],
       serverStatus: {
         color: 'black',
@@ -133,8 +135,9 @@ export default {
 
       qrCodeDialogTitle: "微信支付", // 默认微信支付
       qrCodeVisible: false,    // 控制二维码弹窗的显示与隐藏
-      qrCodeText: ''               // 用于生成二维码的url
-
+      qrCodeText: '',               // 用于生成二维码的url
+      orderId: 'A0000',
+      payMethods:''    //付款方式——正在支付的订单
     };
   },
   methods: {
@@ -188,7 +191,7 @@ export default {
     },
     async fetchServerStatus() {
       try {
-        const response = await axios.get(baseUrl+'/serverStatus');
+        const response = await axios.get(baseUrl + '/serverStatus');
         this.serverStatus.color = response.data.color;
         this.serverStatus.message = response.data.message;
         // 更新按钮状态
@@ -200,7 +203,7 @@ export default {
     },
     async fetchOrderData() {
       try {
-        const response = await axios.get(baseUrl+'/status');
+        const response = await axios.get(baseUrl + '/status');
         if (response.data.code === 200) {
           this.pendingOrders = response.data.data.pendingOrders || [];
           this.inProgressOrders = response.data.data.inProgressOrders || [];
@@ -218,16 +221,19 @@ export default {
     //查询二给码信息
     async fetchQrData() {
       try {
-        const response = await axios.get(baseUrl+'/qrcode');
-        if (response.data.code === 200) {
+        const response = await axios.get(baseUrl + '/qrcode');
+        if (response.data.code === 200 & response.data.data !== null) {
           this.qrCodeText = response.data.data.qrCodeText;
-          this.qrCodeVisible = response.data.data.qrCodeVisible;
-          console.log("qrCodeVisible=="+this.qrCodeVisible)
+          this.orderId = response.data.data.orderId;
+          this.payMethods = response.data.data.payMethods;
           this.generateQrCode();
+          this.qrCodeVisible = true;
         } else {
+          this.qrCodeVisible = false;
           console.error(response.data.message);
         }
       } catch (error) {
+        this.qrCodeVisible = false;
         console.error('获取订单数据时出错:', error);
       }
     }
@@ -394,10 +400,10 @@ html, body {
   bottom: 20px;
   left: 20px;
   width: 150px;
-  height: 180px;
+  height: 200px;
   background-color: white;
   border: 3px solid #07C160;
-  border-radius:10px;
+  border-radius: 10px;
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -405,7 +411,8 @@ html, body {
   flex-direction: column;
   margin-bottom: 50px;
 }
-.qr-title{
+
+.qr-title {
   display: flex;
   align-items: center; /* 垂直居中 */
   justify-content: center; /* 水平居中 */

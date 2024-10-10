@@ -1,6 +1,8 @@
 package com.jc.mqtt;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jc.constants.Constants;
 import com.jc.sign.MqttSignUtil;
 import com.jc.sign.SignUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -22,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public class MqttConsumerCallBack implements MqttCallback {
     @Autowired
-    private ObjectMapper objectMapper;
+    private RedisTemplate redisTemplate;
 
     @Autowired
     @Lazy
@@ -77,12 +80,16 @@ public class MqttConsumerCallBack implements MqttCallback {
 //        log.info(String.format("接收消息Qos : %d", message.getQos()));
 //        log.info(String.format("接收消息内容 : %s", new String(message.getPayload())));
 //        log.info(String.format("接收消息retained : %b", message.isRetained()));
-        Map map = objectMapper.readValue(new String(message.getPayload()), HashMap.class);
+        Map map = JSON.parseObject(String.valueOf(message), Map.class);
         Boolean flag = MqttSignUtil.verifySign(map);
         if(!flag){
             return;
         }
-//        log.info("通过签名验证");
+        log.info("通过签名验证");
+        //订单消息
+        if(topic.split("/")[0].equals("pay")){
+           redisTemplate.opsForValue().set(Constants.PAY_DATA,map.get("data"));
+        }
     }
 
     /**

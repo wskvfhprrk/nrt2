@@ -305,4 +305,8 @@ public class Constants {
      * sign密钥
      */
     public static final String APP_SECRET_REDIS_KEY = "appSecret";
+    /**
+     * 已经支付信息
+     */
+    public static final Object PAY_DATA = "payData";
 }

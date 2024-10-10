@@ -25,8 +25,6 @@ public class SendController {
     private MqttProviderConfig providerClient;
     @Value("${machineCode}")
     private String machineCode;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @RequestMapping("/sendMessage")
     @ResponseBody
@@ -41,21 +39,11 @@ public class SendController {
     }
 
     /**
-     * 心跳——每分钟向服务器发送信息指令
+     * 心跳——每分钟向服务器发送信息
      */
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void heartbeat() {
-        Map map = new HashMap();
-//            map.put("heartbeat",LocalDateTime.now());
-        map.put("machineCode", machineCode);
-        map.put("time",LocalDateTime.now());
-        //加密
-        map = SignUtil.buildRequestPara(map);
-        try {
-            String value = objectMapper.writeValueAsString(map);
-            sendMessage(0, false, "heartbeat/" + machineCode, value);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        String value = SignUtil.sendSignStr("null");
+        sendMessage(0, false, "heartbeat/" + machineCode, value);
     }
 }

@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.constants.Constants;
@@ -22,29 +23,20 @@ public class RedisQueueService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();  // 用于JSON序列化和反序列化的对象
 
     // 将Order对象添加到队列末尾
     public void enqueue(Order order) {
-        try {
-            String orderJson = objectMapper.writeValueAsString(order);
-            redisTemplate.opsForList().rightPush(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, orderJson);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace(); // 打印序列化错误
-        }
+        String orderJson = JSON.toJSONString(order);
+        redisTemplate.opsForList().rightPush(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, orderJson);
     }
 
     // 从队列中取出Order对象
     public Order dequeue() {
         String orderJson = redisTemplate.opsForList().leftPop(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY);
         if (orderJson != null) {
-            try {
-                return objectMapper.readValue(orderJson, Order.class);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace(); // 打印反序列化错误
-            }
+            return JSON.parseObject(orderJson, Order.class);
         }
-        return null; // 如果队列为空或发生错误，返回null
+        return null;
     }
 
     // 获取队列长度
@@ -59,12 +51,7 @@ public class RedisQueueService {
         if (orderJsonList != null) {
             // 将JSON字符串转换为Order对象列表
             return orderJsonList.stream().map(orderJson -> {
-                try {
-                    return objectMapper.readValue(orderJson, Order.class);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                    return null;
-                }
+                return JSON.parseObject(orderJson, Order.class);
             }).collect(Collectors.toList());
         }
         return null;
