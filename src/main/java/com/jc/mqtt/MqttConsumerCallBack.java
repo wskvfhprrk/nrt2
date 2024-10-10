@@ -3,8 +3,12 @@ package com.jc.mqtt;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.constants.Constants;
+import com.jc.entity.Order;
+import com.jc.enums.OrderStatus;
+import com.jc.service.impl.RedisQueueService;
 import com.jc.sign.MqttSignUtil;
 import com.jc.sign.SignUtil;
+import com.jc.vo.OrderPayMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -34,6 +38,8 @@ public class MqttConsumerCallBack implements MqttCallback {
     private static final int MAX_RETRIES = 3; // 最大重试次数
     private static final int RETRY_INTERVAL_MS = 3000; // 每次重试间隔，单位为毫秒
     private int retryCount = 0; // 当前重试次数
+    @Autowired
+    private RedisQueueService queueService;
 
     /**
      * 客户端断开连接的回调
@@ -88,7 +94,19 @@ public class MqttConsumerCallBack implements MqttCallback {
         log.info("通过签名验证");
         //订单消息
         if(topic.split("/")[0].equals("pay")){
-           redisTemplate.opsForValue().set(Constants.PAY_DATA,map.get("data"));
+            OrderPayMessage payMessage = JSON.parseObject(map.get("data").toString(), OrderPayMessage.class);
+            String key=Constants.PAY_DATA+"::"+payMessage.getOrderId();
+            //如果支付完成就删除缓存中订单，同时增加已经支付订单
+            if(payMessage.getIsPaymentCompleted()){
+                redisTemplate.delete(key);
+                Order order=new Order();
+                order.setCustomerName(payMessage.getOrderId());
+                order.setStatus(OrderStatus.PENDING);
+                queueService.enqueue(order);
+                return;
+            }
+            //10秒内支付完成，否则二维码不见
+           redisTemplate.opsForValue().set(key,map.get("data"),10000L);
         }
     }
 

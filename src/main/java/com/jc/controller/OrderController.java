@@ -54,17 +54,10 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
-        // 订单由服务器统一管理
-//        order.setOrderId(UUID.randomUUID().toString().replace("-", ""));
-//        Long id = redisTemplate.opsForValue().increment(LocalDate.now().toString(), 1);
-//        //id生成规则
-//        order.setCustomerName("A" + (1234 + id));
-//        order.setStatus(OrderStatus.PENDING);
-//        queueService.enqueue(order);
         //发送mqtt消息
         String topic = "order/" + machineCode;
         mqttProviderConfig.publishSign(0, false, topic, order);
-        return new ResponseEntity<>("订单提交成功", HttpStatus.OK);
+        return new ResponseEntity<>("订单提交成功,请根据支付订单号取餐", HttpStatus.OK);
     }
 
     @GetMapping("serverStatus")
@@ -191,7 +184,7 @@ public class OrderController {
 
     @GetMapping("qrcode")
     private Result qrcode() {
-        Object o = redisTemplate.opsForValue().get(Constants.PAY_DATA);
+        Object o = redisTemplate.opsForValue().get(Constants.PAY_DATA+":*");
         return Result.success(o);
     }
 }
