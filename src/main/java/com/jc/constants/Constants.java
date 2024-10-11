@@ -310,4 +310,5 @@ public class Constants {
      */
     public static final String PAY_DATA = "payData";
     public static final String PAY_ORDER_ID = "payOrderId";
+    public static final String ORDER_ID = "orderId";
 }

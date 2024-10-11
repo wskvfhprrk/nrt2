@@ -26,4 +26,8 @@ public class OrderPayMessage implements Serializable {
      * 支付交易订单号
      */
     private String outTradeNo;
+    /**
+     * 终端机器号
+     */
+    private String machineCode;
 }

@@ -22,9 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -185,36 +183,37 @@ public class OrderController {
 
     @GetMapping("qrcode")
     public Result qrcode() {
-        Object o = redisTemplate.opsForValue().get(Constants.PAY_DATA);
-        if(o!=null){
-            OrderPayMessage orderPayMessage = JSON.parseObject(o.toString(), OrderPayMessage.class);
-            return Result.success(orderPayMessage);
+        Set<String> keys = redisTemplate.keys(Constants.PAY_DATA + "*"); // 替换 "prefix*" 为你需要匹配的前缀
+        // 将 Set 转换为 List
+        List<String> keyList = new ArrayList<>(keys);
+        // 如果 keyList 为空，直接返回 null
+        if (keyList.isEmpty()) {
+            return null;
         }
-        return Result.success(o);
+        // 遍历 keyList，找到最后一个 OrderPayMessage
+        OrderPayMessage lastOrderPayMessage = null;
+        for (int i = 0; i < keyList.size(); i++) {
+            String key = keyList.get(i);
+            String value = redisTemplate.opsForValue().get(key).toString();
+            lastOrderPayMessage = JSON.parseObject(value, OrderPayMessage.class); // 更新最后一个值
+        }
+
+        // 返回最后一个 OrderPayMessage
+        return Result.success(lastOrderPayMessage);
     }
+
+
 
     @GetMapping("test")
     public Result test(){
         String s="{\"isPaymentCompleted\":false,\"orderId\":\"A0000\",\"payMethod\":\"wechat\",\"qrCodeText\":\"weixin://wxpay/bizpayurl?pr=O8AnTMgz3\"}";
         redisTemplate.opsForValue().set(Constants.PAY_DATA+"::A0000001",s);
-        Map<String, Object> result = new HashMap<>();
+        Set<String> keys = redisTemplate.keys(Constants.PAY_DATA+"*"); // 替换 "prefix*" 为你需要匹配的前缀
 
-        // 构建 ScanOptions 来匹配以指定前缀开头的键
-        ScanOptions scanOptions = ScanOptions.scanOptions().match(Constants.PAY_DATA + "*").count(100).build();
-
-        // 使用 RedisConnection 执行 scan 操作
-        redisTemplate.execute((RedisCallback) connection -> {
-            // 使用 RedisConnection 的 scan 方法获取匹配的键
-            Cursor<byte[]> cursor = connection.scan(scanOptions);
-            while (cursor.hasNext()) {
-                String key = new String(cursor.next());
-                // 使用 RedisTemplate 获取键对应的值
-                Object value = redisTemplate.opsForValue().get(key);
-                result.put(key, value);
-            }
-            return null;
-        });
-
-        return Result.success(result);
+        for (String key : keys) {
+            String value = redisTemplate.opsForValue().get(key).toString();
+            return Result.success(value);
+        }
+        return null;
     }
 }

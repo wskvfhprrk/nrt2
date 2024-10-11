@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * 退款成功——服务端代码
+ */
 @Service
 @Slf4j
 public class PaySucessServiceImpl implements PaySuccessService {

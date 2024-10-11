@@ -113,7 +113,7 @@ data:
   turntableSpeed: 25
   soupExhaustTime: 10
 pay:
-  #微信支付使用到的数据
+  #微信支付使用到的数据——服务器端配置
   wx:
     #商户号
     mchId: 1687404786

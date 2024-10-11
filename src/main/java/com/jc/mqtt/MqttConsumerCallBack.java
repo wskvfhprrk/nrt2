@@ -99,36 +99,37 @@ public class MqttConsumerCallBack implements MqttCallback {
         log.info("通过签名验证，处理业务");
         //订单支付消息
         if (topic.split("/")[0].equals("pay")) {
-            String key = Constants.PAY_DATA;
             String data = map.get("data").toString();
             Map map1 = JSON.parseObject(data, Map.class);
             OrderPayMessage payMessage = JSON.parseObject(map1.get("data").toString(), OrderPayMessage.class);
             //如果支付完成就删除缓存中订单，同时增加已经支付订单
             if (payMessage.getIsPaymentCompleted()) {
-                redisTemplate.delete(key);
+                redisTemplate.delete(Constants.PAY_DATA+"::"+payMessage.getOutTradeNo());
                 Order order = new Order();
                 order.setCustomerName(payMessage.getOrderId());
                 order.setStatus(OrderStatus.PENDING);
                 queueService.enqueue(order);
                 return;
             }
-            //10秒内支付完成，否则二维码不见
-            redisTemplate.opsForValue().set(key, map1.get("data").toString(), Duration.ofSeconds(10));
+            //20秒内支付完成，否则二维码不见
+            redisTemplate.opsForValue().set(Constants.PAY_DATA+"::"+payMessage.getOutTradeNo(), map1.get("data").toString(), Duration.ofSeconds(20));
         }
         if (topic.split("/")[0].equals("message")) {
             // TODO: 2024/10/10 处理其它消息业务逻辑
         }
 
-        //以下是服务器端
+        //以下是——服务端代码
         if (topic.split("/")[0].equals("order")) {
             //todo 制作订单号
-            String orderId = "A0001";
+            Long increment = redisTemplate.opsForValue().increment(Constants.ORDER_ID + "::" + topic.split("/")[1]) + 1000;
+            // 将序列号转换为字符串并取前4位
+            // 若不足4位，可以根据业务需要，决定是否进行补位（例如补0）
+            String id = String.format("%04d", increment);
+            String orderId = "A" + id;
             //交易订单id
             String outTradeNo = UUID.randomUUID().toString().replace("-", "");
-            // TODO: 2024/10/10 描述信息 
-            String description = "A0000";
             // TODO: 2024/10/10 钱根据实际支付测试时都为一分钱
-            String s = wxNativePayTemplate.createOrder(1, outTradeNo, description);
+            String s = wxNativePayTemplate.createOrder(1, outTradeNo, orderId);
             System.out.println(s);
             if (s.split(",")[0].equals("200")) {
                 Map map1 = JSON.parseObject(s.split(",")[1], Map.class);
@@ -140,9 +141,11 @@ public class MqttConsumerCallBack implements MqttCallback {
                 orderPayMessage.setIsPaymentCompleted(false);
                 orderPayMessage.setQrCodeText(codeUrl);
                 orderPayMessage.setOutTradeNo(outTradeNo);
-                mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, SignUtil.sendSignStr(JSON.toJSONString(orderPayMessage)));
-                redisTemplate.opsForValue().set(Constants.PAY_ORDER_ID + "::" + orderPayMessage.getOutTradeNo(),JSON.toJSONString(orderPayMessage));
-//                redisTemplate.opsForValue().set(Constants.PAY_DATA, JSON.toJSONString(orderPayMessage));
+                orderPayMessage.setMachineCode(topic.split("/")[1]);
+                //发送mqtt消息给客户端
+                mqttProviderConfig.publishSign(0, false, "pay/" + topic.split("/")[1], SignUtil.sendSignStr(JSON.toJSONString(orderPayMessage)));
+                //缓存下订单，等成功能后根据订单id再删除
+                redisTemplate.opsForValue().set(Constants.PAY_ORDER_ID + "::" + orderPayMessage.getOutTradeNo(), JSON.toJSONString(orderPayMessage));
             }
         }
     }
