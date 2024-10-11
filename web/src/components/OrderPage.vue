@@ -224,6 +224,7 @@ export default {
         const response = await axios.get(baseUrl + '/qrcode');
         if (response.data.code === 200 & response.data.data !== null) {
           this.qrCodeText = response.data.data.qrCodeText;
+          console.log("response.data.data.qrCodeText==="+response.data.data)
           this.orderId = response.data.data.orderId;
           this.payMethods = response.data.data.payMethods;
           this.generateQrCode();

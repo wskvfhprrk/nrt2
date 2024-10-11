@@ -22,4 +22,8 @@ public class OrderPayMessage implements Serializable {
      * 是否支付完成——当qrCodeText有值时为未支付完居，当没有值时为没有支付完成
      */
     private Boolean isPaymentCompleted;
+    /**
+     * 支付交易订单号
+     */
+    private String outTradeNo;
 }

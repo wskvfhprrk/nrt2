@@ -89,10 +89,13 @@ public class MqttProviderConfig {
      * @param qos
      * @param retained
      * @param topic
-     * @param object
+     * @param s
      */
-    public void publishSign(int qos, boolean retained, String topic, Object object) {
-        this.publish(qos,retained,topic,SignUtil.sendSignStr(object));
+    public void publishSign(int qos, boolean retained, String topic, String s) {
+        this.publish(qos,retained,topic,SignUtil.sendSignStr(s));
     }
+
+
+
 
 }

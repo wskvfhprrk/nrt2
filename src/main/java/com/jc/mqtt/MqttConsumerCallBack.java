@@ -1,7 +1,7 @@
 package com.jc.mqtt;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hejz.pay.wx.WxNativePayTemplate;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
@@ -14,16 +14,14 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -40,6 +38,13 @@ public class MqttConsumerCallBack implements MqttCallback {
     private int retryCount = 0; // 当前重试次数
     @Autowired
     private RedisQueueService queueService;
+
+    @Autowired
+    private WxNativePayTemplate wxNativePayTemplate;
+    @Autowired
+    private MqttProviderConfig mqttProviderConfig;
+    @Value("${machineCode}")
+    private String machineCode;
 
     /**
      * 客户端断开连接的回调
@@ -94,8 +99,10 @@ public class MqttConsumerCallBack implements MqttCallback {
         log.info("通过签名验证，处理业务");
         //订单支付消息
         if (topic.split("/")[0].equals("pay")) {
-            OrderPayMessage payMessage = JSON.parseObject(map.get("data").toString(), OrderPayMessage.class);
-            String key = Constants.PAY_DATA + "::" + payMessage.getOrderId();
+            String key = Constants.PAY_DATA;
+            String data = map.get("data").toString();
+            Map map1 = JSON.parseObject(data, Map.class);
+            OrderPayMessage payMessage = JSON.parseObject(map1.get("data").toString(), OrderPayMessage.class);
             //如果支付完成就删除缓存中订单，同时增加已经支付订单
             if (payMessage.getIsPaymentCompleted()) {
                 redisTemplate.delete(key);
@@ -106,10 +113,37 @@ public class MqttConsumerCallBack implements MqttCallback {
                 return;
             }
             //10秒内支付完成，否则二维码不见
-            redisTemplate.opsForValue().set(key, map.get("data"), 10000L);
+            redisTemplate.opsForValue().set(key, map1.get("data").toString(), Duration.ofSeconds(10));
         }
         if (topic.split("/")[0].equals("message")) {
             // TODO: 2024/10/10 处理其它消息业务逻辑
+        }
+
+        //以下是服务器端
+        if (topic.split("/")[0].equals("order")) {
+            //todo 制作订单号
+            String orderId = "A0001";
+            //交易订单id
+            String outTradeNo = UUID.randomUUID().toString().replace("-", "");
+            // TODO: 2024/10/10 描述信息 
+            String description = "A0000";
+            // TODO: 2024/10/10 钱根据实际支付测试时都为一分钱
+            String s = wxNativePayTemplate.createOrder(1, outTradeNo, description);
+            System.out.println(s);
+            if (s.split(",")[0].equals("200")) {
+                Map map1 = JSON.parseObject(s.split(",")[1], Map.class);
+                String codeUrl = map1.get("code_url").toString();
+                //二维码发进mqtt中
+                OrderPayMessage orderPayMessage = new OrderPayMessage();
+                orderPayMessage.setPayMethod("wechat");
+                orderPayMessage.setOrderId(orderId);
+                orderPayMessage.setIsPaymentCompleted(false);
+                orderPayMessage.setQrCodeText(codeUrl);
+                orderPayMessage.setOutTradeNo(outTradeNo);
+                mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, SignUtil.sendSignStr(JSON.toJSONString(orderPayMessage)));
+                redisTemplate.opsForValue().set(Constants.PAY_ORDER_ID + "::" + orderPayMessage.getOutTradeNo(),JSON.toJSONString(orderPayMessage));
+//                redisTemplate.opsForValue().set(Constants.PAY_DATA, JSON.toJSONString(orderPayMessage));
+            }
         }
     }
 

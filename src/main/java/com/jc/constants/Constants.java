@@ -309,4 +309,5 @@ public class Constants {
      * 已经支付信息
      */
     public static final String PAY_DATA = "payData";
+    public static final String PAY_ORDER_ID = "payOrderId";
 }

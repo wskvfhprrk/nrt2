@@ -140,13 +140,13 @@ public class SignUtil {
     /**
      * 加密对象
      *
-     * @param o
+     * @param s
      * @return
      */
-    public static String sendSignStr(Object o) {
+    public static String sendSignStr(String s) {
         Map map = new HashMap();
         map.put("time", LocalDateTime.now());
-        map.put("data", o);
+        map.put("data", s);
         //加密
         map = SignUtil.buildRequestPara(map);
         String value = JSON.toJSONString(map);
