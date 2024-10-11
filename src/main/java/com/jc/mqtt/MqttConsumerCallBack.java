@@ -129,7 +129,7 @@ public class MqttConsumerCallBack implements MqttCallback {
             //交易订单id
             String outTradeNo = UUID.randomUUID().toString().replace("-", "");
             // TODO: 2024/10/10 钱根据实际支付测试时都为一分钱
-            String s = wxNativePayTemplate.createOrder(1, outTradeNo, orderId);
+            String s = wxNativePayTemplate.createOrder(1, outTradeNo, "取餐号："+orderId);
             System.out.println(s);
             if (s.split(",")[0].equals("200")) {
                 Map map1 = JSON.parseObject(s.split(",")[1], Map.class);
