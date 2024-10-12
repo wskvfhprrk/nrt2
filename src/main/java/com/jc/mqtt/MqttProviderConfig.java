@@ -1,14 +1,18 @@
 package com.jc.mqtt;
 
+import com.alibaba.fastjson.JSON;
+import com.hejz.util.SignatureUtil;
+import com.hejz.util.dto.SignDto;
+import com.hejz.util.service.SignService;
 import com.jc.config.MqttConfig;
-import com.jc.sign.SignUtil;
+import com.jc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.PostConstruct;
 
 /**
  * 消息发布者客户端配置
@@ -19,7 +23,10 @@ public class MqttProviderConfig {
 
     @Autowired
     private MqttConfig mqttConfig;
-
+    @Autowired
+    private SignService signService;
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 客户端对象
      */
@@ -86,16 +93,30 @@ public class MqttProviderConfig {
 
     /**
      * 发送加密信息
+     *
      * @param qos
      * @param retained
      * @param topic
      * @param s
      */
-    public void publishSign(int qos, boolean retained, String topic, String s) {
-        this.publish(qos,retained,topic,SignUtil.sendSignStr(s));
+    public void publishSign(int qos, boolean retained, String topic, String s) throws Exception {
+        SignDto dto = new SignDto();
+        dto.setNonce(SignatureUtil.generateNonce(16));
+        dto.setTimestamp(System.currentTimeMillis());
+        dto.setData(s);
+        Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
+        if (o == null) {
+            log.error("没有密钥");
+            return;
+        }
+        dto.setSecretKey(String.valueOf(o));
+        String string = JSON.toJSONString(signService.signDataToVo(dto));
+        try {
+            this.publish(qos, retained, topic, string);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-
 
 
 }

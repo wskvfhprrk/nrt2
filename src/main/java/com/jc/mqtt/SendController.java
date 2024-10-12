@@ -1,30 +1,35 @@
 package com.jc.mqtt;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jc.sign.SignUtil;
+import com.alibaba.fastjson.JSON;
+import com.hejz.util.SignatureUtil;
+import com.hejz.util.dto.SignDto;
+import com.hejz.util.service.SignService;
+import com.jc.constants.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 创建控制器测试发布信息
  */
 @Controller
+@Slf4j
 public class SendController {
     @Autowired
     private MqttProviderConfig providerClient;
     @Value("${machineCode}")
     private String machineCode;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Autowired
+    private SignService signService;
 
     @RequestMapping("/sendMessage")
     @ResponseBody
@@ -43,7 +48,20 @@ public class SendController {
      */
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void heartbeat() {
-        String value = SignUtil.sendSignStr("null");
-        sendMessage(0, false, "heartbeat/" + machineCode, value);
+        Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
+        if(o==null){
+            log.error("没有密钥");
+            return;
+        }
+        SignDto dto=new SignDto();
+        dto.setSecretKey(String.valueOf(o));
+        dto.setData(null);
+        dto.setTimestamp(System.currentTimeMillis());
+        dto.setNonce(SignatureUtil.generateNonce(16));
+        try {
+            sendMessage(0, false, "heartbeat/" + machineCode, JSON.toJSONString(signService.signDataToVo(dto)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

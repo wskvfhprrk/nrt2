@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.hejz.pay.wx.WxNativePayTemplate;
 import com.hejz.pay.wx.service.PaySuccessService;
 import com.hejz.pay.wx.service.RefundSuccessService;
+import com.hejz.util.SignatureUtil;
+import com.hejz.util.dto.SignDto;
+import com.hejz.util.service.SignService;
 import com.jc.constants.Constants;
 import com.jc.mqtt.MqttProviderConfig;
-import com.jc.sign.SignUtil;
 import com.jc.vo.OrderPayMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
     private WxNativePayTemplate wxNativePayTemplate;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private SignService signService;
     @Value("${machineCode}")
     private String machineCode;
 
@@ -45,9 +49,24 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
         redisTemplate.delete(Constants.PAY_ORDER_ID + "::" + outTradeNo);
         OrderPayMessage orderPayMessage = JSON.parseObject(o.toString(), OrderPayMessage.class);
         orderPayMessage.setIsPaymentCompleted(true);
-        String s = SignUtil.sendSignStr(JSON.toJSONString(orderPayMessage));
-        // TODO: 2024/10/12 订单状态更改为已支付
-        mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, s);
+        SignDto dto = new SignDto();
+        dto.setData(JSON.toJSONString(orderPayMessage));
+        dto.setNonce(SignatureUtil.generateNonce(16));
+        Object o1 = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
+        if (o1 == null) {
+            log.error("没有密钥");
+            return;
+        }
+        String secretKey = String.valueOf(o1);
+        dto.setSecretKey(secretKey);
+        dto.setTimestamp(System.currentTimeMillis());
+        try {
+            String s = JSON.toJSONString(signService.signDataToVo(dto));
+            // TODO: 2024/10/12 订单状态更改为已支付
+            mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -2,12 +2,14 @@ package com.jc.mqtt;
 
 import com.alibaba.fastjson.JSON;
 import com.hejz.pay.wx.WxNativePayTemplate;
+import com.hejz.util.SignatureUtil;
+import com.hejz.util.dto.SignDto;
+import com.hejz.util.dto.VerifyDto;
+import com.hejz.util.service.SignService;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
 import com.jc.service.impl.RedisQueueService;
-import com.jc.sign.MqttSignUtil;
-import com.jc.sign.SignUtil;
 import com.jc.vo.OrderPayMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -28,7 +30,8 @@ import java.util.UUID;
 public class MqttConsumerCallBack implements MqttCallback {
     @Autowired
     private RedisTemplate redisTemplate;
-
+    @Autowired
+    private SignService signService;
     @Autowired
     @Lazy
     private MqttConsumerConfig mqttConsumerConfig;
@@ -91,8 +94,14 @@ public class MqttConsumerCallBack implements MqttCallback {
 //        log.info(String.format("接收消息Qos : %d", message.getQos()));
 //        log.info(String.format("接收消息内容 : %s", new String(message.getPayload())));
 //        log.info(String.format("接收消息retained : %b", message.isRetained()));
-        Map map = JSON.parseObject(String.valueOf(message), Map.class);
-        Boolean flag = MqttSignUtil.verifySign(map);
+        VerifyDto dto = JSON.parseObject(String.valueOf(message), VerifyDto.class);
+        Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
+        if(o==null){
+            log.error("查找不到密钥");
+            return;
+        }
+        dto.setSecretKey(String.valueOf(o));
+        Boolean flag = signService.verifyData(dto);
         if (!flag) {
             log.error("未通过签名验证");
             return;
@@ -100,12 +109,12 @@ public class MqttConsumerCallBack implements MqttCallback {
 
         //订单支付消息
         if (topic.split("/")[0].equals("pay")) {
-            String data = map.get("data").toString();
+            String data = dto.getData();
             Map map1 = JSON.parseObject(data, Map.class);
             OrderPayMessage payMessage = JSON.parseObject(map1.get("data").toString(), OrderPayMessage.class);
             //如果支付完成就删除缓存中订单，同时增加已经支付订单
             if (payMessage.getIsPaymentCompleted()) {
-                redisTemplate.delete(Constants.PAY_DATA+"::"+payMessage.getOutTradeNo());
+                redisTemplate.delete(Constants.PAY_DATA + "::" + payMessage.getOutTradeNo());
                 Order order = new Order();
                 order.setCustomerName(payMessage.getOrderId());
                 order.setStatus(OrderStatus.PENDING);
@@ -113,7 +122,7 @@ public class MqttConsumerCallBack implements MqttCallback {
                 return;
             }
             //20秒内支付完成，否则二维码不见
-            redisTemplate.opsForValue().set(Constants.PAY_DATA+"::"+payMessage.getOutTradeNo(), map1.get("data").toString(), Duration.ofSeconds(20));
+            redisTemplate.opsForValue().set(Constants.PAY_DATA + "::" + payMessage.getOutTradeNo(), map1.get("data").toString(), Duration.ofSeconds(20));
         }
         if (topic.split("/")[0].equals("message")) {
             // TODO: 2024/10/10 处理其它消息业务逻辑
@@ -130,8 +139,8 @@ public class MqttConsumerCallBack implements MqttCallback {
             //交易订单id
             String outTradeNo = UUID.randomUUID().toString().replace("-", "");
             // TODO: 2024/10/10 钱根据实际支付测试时都为一分钱
-            String s = wxNativePayTemplate.createOrder(1, outTradeNo, "取餐号："+orderId);
-            log.info("支付完成返回的信息：{}",s);
+            String s = wxNativePayTemplate.createOrder(1, outTradeNo, "取餐号：" + orderId);
+            log.info("支付完成返回的信息：{}", s);
             // TODO: 2024/10/12 修改订单状态为待支付状态
             if (s.split(",")[0].equals("200")) {
                 Map map1 = JSON.parseObject(s.split(",")[1], Map.class);
@@ -145,7 +154,12 @@ public class MqttConsumerCallBack implements MqttCallback {
                 orderPayMessage.setOutTradeNo(outTradeNo);
                 orderPayMessage.setMachineCode(topic.split("/")[1]);
                 //发送mqtt消息给客户端
-                mqttProviderConfig.publishSign(0, false, "pay/" + topic.split("/")[1], SignUtil.sendSignStr(JSON.toJSONString(orderPayMessage)));
+                SignDto dto1=new SignDto();
+                dto1.setData(JSON.toJSONString(orderPayMessage));
+                dto1.setTimestamp(System.currentTimeMillis());
+                dto1.setSecretKey(String.valueOf(o));
+                dto1.setNonce(SignatureUtil.generateNonce(16));
+                mqttProviderConfig.publishSign(0, false, "pay/" + topic.split("/")[1], JSON.toJSONString(signService.signDataToVo(dto1)));
                 //缓存下订单，等成功能后根据订单id再删除
                 redisTemplate.opsForValue().set(Constants.PAY_ORDER_ID + "::" + orderPayMessage.getOutTradeNo(), JSON.toJSONString(orderPayMessage));
             }
