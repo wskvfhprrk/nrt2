@@ -202,18 +202,4 @@ public class OrderController {
         return Result.success(lastOrderPayMessage);
     }
 
-
-
-    @GetMapping("test")
-    public Result test(){
-        String s="{\"isPaymentCompleted\":false,\"orderId\":\"A0000\",\"payMethod\":\"wechat\",\"qrCodeText\":\"weixin://wxpay/bizpayurl?pr=O8AnTMgz3\"}";
-        redisTemplate.opsForValue().set(Constants.PAY_DATA+"::A0000001",s);
-        Set<String> keys = redisTemplate.keys(Constants.PAY_DATA+"*"); // 替换 "prefix*" 为你需要匹配的前缀
-
-        for (String key : keys) {
-            String value = redisTemplate.opsForValue().get(key).toString();
-            return Result.success(value);
-        }
-        return null;
-    }
 }
