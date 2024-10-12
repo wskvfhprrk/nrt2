@@ -94,9 +94,10 @@ public class MqttConsumerCallBack implements MqttCallback {
         Map map = JSON.parseObject(String.valueOf(message), Map.class);
         Boolean flag = MqttSignUtil.verifySign(map);
         if (!flag) {
+            log.error("未通过签名验证");
             return;
         }
-        log.info("通过签名验证，处理业务");
+
         //订单支付消息
         if (topic.split("/")[0].equals("pay")) {
             String data = map.get("data").toString();
@@ -130,7 +131,8 @@ public class MqttConsumerCallBack implements MqttCallback {
             String outTradeNo = UUID.randomUUID().toString().replace("-", "");
             // TODO: 2024/10/10 钱根据实际支付测试时都为一分钱
             String s = wxNativePayTemplate.createOrder(1, outTradeNo, "取餐号："+orderId);
-            System.out.println(s);
+            log.info("支付完成返回的信息：{}",s);
+            // TODO: 2024/10/12 修改订单状态为待支付状态
             if (s.split(",")[0].equals("200")) {
                 Map map1 = JSON.parseObject(s.split(",")[1], Map.class);
                 String codeUrl = map1.get("code_url").toString();
