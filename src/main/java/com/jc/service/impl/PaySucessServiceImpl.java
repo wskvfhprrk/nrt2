@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.hejz.pay.wx.WxNativePayTemplate;
 import com.hejz.pay.wx.service.PaySuccessService;
 import com.hejz.pay.wx.service.RefundSuccessService;
-import com.hejz.util.SignatureUtil;
+import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.service.SignService;
 import com.jc.constants.Constants;
@@ -41,27 +41,21 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
         log.info("退款信息：{}", refunds);
         //支付完成后发送状态
         //需要使用订单号更换自定义订单号
-        Object o = redisTemplate.opsForValue().get(Constants.PAY_ORDER_ID + "::" + outTradeNo);
-        if (o == null) {
-            log.error("没有发现订单缓存：{}", outTradeNo);
-            return;
-        }
         redisTemplate.delete(Constants.PAY_ORDER_ID + "::" + outTradeNo);
-        OrderPayMessage orderPayMessage = JSON.parseObject(o.toString(), OrderPayMessage.class);
+        OrderPayMessage orderPayMessage = new OrderPayMessage();
+        orderPayMessage.setOutTradeNo(outTradeNo);
         orderPayMessage.setIsPaymentCompleted(true);
         SignDto dto = new SignDto();
         dto.setData(JSON.toJSONString(orderPayMessage));
-        dto.setNonce(SignatureUtil.generateNonce(16));
+        dto.setNonce(SignUtil.generateNonce(16));
         Object o1 = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if (o1 == null) {
             log.error("没有密钥");
             return;
         }
-        String secretKey = String.valueOf(o1);
-        dto.setSecretKey(secretKey);
         dto.setTimestamp(System.currentTimeMillis());
         try {
-            String s = JSON.toJSONString(signService.signDataToVo(dto));
+            String s = JSON.toJSONString(signService.signDataToVo(dto, String.valueOf(o1)));
             // TODO: 2024/10/12 订单状态更改为已支付
             mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, s);
         } catch (Exception e) {

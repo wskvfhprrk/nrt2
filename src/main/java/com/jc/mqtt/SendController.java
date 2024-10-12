@@ -2,7 +2,7 @@ package com.jc.mqtt;
 
 
 import com.alibaba.fastjson.JSON;
-import com.hejz.util.SignatureUtil;
+import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.service.SignService;
 import com.jc.constants.Constants;
@@ -54,12 +54,11 @@ public class SendController {
             return;
         }
         SignDto dto=new SignDto();
-        dto.setSecretKey(String.valueOf(o));
         dto.setData(null);
         dto.setTimestamp(System.currentTimeMillis());
-        dto.setNonce(SignatureUtil.generateNonce(16));
+        dto.setNonce(SignUtil.generateNonce(16));
         try {
-            sendMessage(0, false, "heartbeat/" + machineCode, JSON.toJSONString(signService.signDataToVo(dto)));
+            sendMessage(0, false, "heartbeat/" + machineCode, JSON.toJSONString(signService.signDataToVo(dto,String.valueOf(o))));
         } catch (Exception e) {
             e.printStackTrace();
         }

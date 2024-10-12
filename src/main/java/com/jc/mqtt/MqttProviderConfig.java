@@ -1,7 +1,7 @@
 package com.jc.mqtt;
 
 import com.alibaba.fastjson.JSON;
-import com.hejz.util.SignatureUtil;
+import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.service.SignService;
 import com.jc.config.MqttConfig;
@@ -101,7 +101,7 @@ public class MqttProviderConfig {
      */
     public void publishSign(int qos, boolean retained, String topic, String s) throws Exception {
         SignDto dto = new SignDto();
-        dto.setNonce(SignatureUtil.generateNonce(16));
+        dto.setNonce(SignUtil.generateNonce(16));
         dto.setTimestamp(System.currentTimeMillis());
         dto.setData(s);
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
@@ -109,8 +109,7 @@ public class MqttProviderConfig {
             log.error("没有密钥");
             return;
         }
-        dto.setSecretKey(String.valueOf(o));
-        String string = JSON.toJSONString(signService.signDataToVo(dto));
+        String string = JSON.toJSONString(signService.signDataToVo(dto,String.valueOf(o)));
         try {
             this.publish(qos, retained, topic, string);
         } catch (Exception e) {

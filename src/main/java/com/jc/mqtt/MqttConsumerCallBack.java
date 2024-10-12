@@ -2,7 +2,7 @@ package com.jc.mqtt;
 
 import com.alibaba.fastjson.JSON;
 import com.hejz.pay.wx.WxNativePayTemplate;
-import com.hejz.util.SignatureUtil;
+import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.dto.VerifyDto;
 import com.hejz.util.service.SignService;
@@ -100,8 +100,7 @@ public class MqttConsumerCallBack implements MqttCallback {
             log.error("查找不到密钥");
             return;
         }
-        dto.setSecretKey(String.valueOf(o));
-        Boolean flag = signService.verifyData(dto);
+        Boolean flag = signService.verifyData(dto,String.valueOf(o));
         if (!flag) {
             log.error("未通过签名验证");
             return;
@@ -157,9 +156,8 @@ public class MqttConsumerCallBack implements MqttCallback {
                 SignDto dto1=new SignDto();
                 dto1.setData(JSON.toJSONString(orderPayMessage));
                 dto1.setTimestamp(System.currentTimeMillis());
-                dto1.setSecretKey(String.valueOf(o));
-                dto1.setNonce(SignatureUtil.generateNonce(16));
-                mqttProviderConfig.publishSign(0, false, "pay/" + topic.split("/")[1], JSON.toJSONString(signService.signDataToVo(dto1)));
+                dto1.setNonce(SignUtil.generateNonce(16));
+                mqttProviderConfig.publishSign(0, false, "pay/" + topic.split("/")[1], JSON.toJSONString(signService.signDataToVo(dto1,String.valueOf(o))));
                 //缓存下订单，等成功能后根据订单id再删除
                 redisTemplate.opsForValue().set(Constants.PAY_ORDER_ID + "::" + orderPayMessage.getOutTradeNo(), JSON.toJSONString(orderPayMessage));
             }
