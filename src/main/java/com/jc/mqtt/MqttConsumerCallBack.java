@@ -111,7 +111,7 @@ public class MqttConsumerCallBack implements MqttCallback {
             String data = JSON.parseObject(String.valueOf(message), SignVo.class).getData();
             Map map1 = JSON.parseObject(data, Map.class);
             OrderPayMessage payMessage = JSON.parseObject(map1.get("data").toString(), OrderPayMessage.class);
-            //如果支付完成就删除缓存中订单，同时增加已经支付订单
+            //如果支付完成就删除缓存中订单，同时增加已经支付订单——通知机器制作
             if (payMessage.getIsPaymentCompleted()) {
                 redisTemplate.delete(Constants.PAY_DATA + "::" + payMessage.getOutTradeNo());
                 Order order = new Order();

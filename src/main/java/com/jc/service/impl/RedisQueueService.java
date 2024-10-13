@@ -25,8 +25,9 @@ public class RedisQueueService {
 
 
     // 将Order对象添加到队列末尾
-    public void enqueue(Order order) {
+    public void   enqueue(Order order) {
         String orderJson = JSON.toJSONString(order);
+        if(order.getCustomerName()==null)return;
         redisTemplate.opsForList().rightPush(Constants.PENDING_ORDER_REDIS_PRIMARY_KEY, orderJson);
     }
 

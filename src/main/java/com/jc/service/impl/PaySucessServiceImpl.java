@@ -41,10 +41,14 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
         log.info("退款信息：{}", refunds);
         //支付完成后发送状态
         //需要使用订单号更换自定义订单号
-        redisTemplate.delete(Constants.PAY_ORDER_ID + "::" + outTradeNo);
-        OrderPayMessage orderPayMessage = new OrderPayMessage();
-        orderPayMessage.setOutTradeNo(outTradeNo);
+        Object o = redisTemplate.opsForValue().get(Constants.PAY_ORDER_ID + "::" + outTradeNo);
+        if(o==null){
+            log.error("已经没有此订单了");
+            return;
+        }
+        OrderPayMessage orderPayMessage =JSON.parseObject(o.toString(),OrderPayMessage.class);
         orderPayMessage.setIsPaymentCompleted(true);
+        redisTemplate.delete(Constants.PAY_ORDER_ID + "::" + outTradeNo);
         Object o1 = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if (o1 == null) {
             log.error("没有密钥");
