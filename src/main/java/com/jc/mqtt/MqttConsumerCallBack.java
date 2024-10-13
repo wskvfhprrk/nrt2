@@ -131,6 +131,10 @@ public class MqttConsumerCallBack implements MqttCallback {
         if (topic.split("/")[0].equals("order")) {
             //todo 制作订单号
             Long increment = redisTemplate.opsForValue().increment(Constants.ORDER_ID + "::" + topic.split("/")[1]) + 1000;
+            //不能超过4位数字，到头从头开始
+            if(increment>=8998){
+                redisTemplate.opsForValue().set(Constants.ORDER_ID + "::" + topic.split("/")[1],0);
+            }
             // 将序列号转换为字符串并取前4位
             // 若不足4位，可以根据业务需要，决定是否进行补位（例如补0）
             String id = String.format("%04d", increment);
