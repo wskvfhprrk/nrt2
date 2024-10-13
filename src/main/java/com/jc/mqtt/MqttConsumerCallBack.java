@@ -6,6 +6,7 @@ import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.dto.VerifyDto;
 import com.hejz.util.service.SignService;
+import com.hejz.util.vo.SignVo;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
@@ -94,13 +95,12 @@ public class MqttConsumerCallBack implements MqttCallback {
 //        log.info(String.format("接收消息Qos : %d", message.getQos()));
 //        log.info(String.format("接收消息内容 : %s", new String(message.getPayload())));
 //        log.info(String.format("接收消息retained : %b", message.isRetained()));
-        VerifyDto dto = JSON.parseObject(String.valueOf(message), VerifyDto.class);
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if(o==null){
             log.error("查找不到密钥");
             return;
         }
-        Boolean flag = signService.verifyData(dto,String.valueOf(o));
+        Boolean flag = signService.verifyData(String.valueOf(message),String.valueOf(o));
         if (!flag) {
             log.error("未通过签名验证");
             return;
@@ -108,7 +108,7 @@ public class MqttConsumerCallBack implements MqttCallback {
 
         //订单支付消息
         if (topic.split("/")[0].equals("pay")) {
-            String data = dto.getData();
+            String data = JSON.parseObject(String.valueOf(message), SignVo.class).getData();
             Map map1 = JSON.parseObject(data, Map.class);
             OrderPayMessage payMessage = JSON.parseObject(map1.get("data").toString(), OrderPayMessage.class);
             //如果支付完成就删除缓存中订单，同时增加已经支付订单

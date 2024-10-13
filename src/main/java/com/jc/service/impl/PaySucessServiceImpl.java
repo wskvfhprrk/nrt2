@@ -45,17 +45,13 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
         OrderPayMessage orderPayMessage = new OrderPayMessage();
         orderPayMessage.setOutTradeNo(outTradeNo);
         orderPayMessage.setIsPaymentCompleted(true);
-        SignDto dto = new SignDto();
-        dto.setData(JSON.toJSONString(orderPayMessage));
-        dto.setNonce(SignUtil.generateNonce(16));
         Object o1 = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if (o1 == null) {
             log.error("没有密钥");
             return;
         }
-        dto.setTimestamp(System.currentTimeMillis());
         try {
-            String s = JSON.toJSONString(signService.signDataToVo(dto, String.valueOf(o1)));
+            String s = JSON.toJSONString(signService.signByData(JSON.toJSONString(orderPayMessage), String.valueOf(o1)));
             // TODO: 2024/10/12 订单状态更改为已支付
             mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, s);
         } catch (Exception e) {
@@ -65,7 +61,7 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
 
     @Override
     public void refundSuccess(String outTradeNo) {
-        log.info("退款成功，退款订单号：{}", outTradeNo);
+        log.warn("退款成功，退款订单号：{}", outTradeNo);
     }
     //获取订单
 }

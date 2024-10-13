@@ -100,16 +100,12 @@ public class MqttProviderConfig {
      * @param s
      */
     public void publishSign(int qos, boolean retained, String topic, String s) throws Exception {
-        SignDto dto = new SignDto();
-        dto.setNonce(SignUtil.generateNonce(16));
-        dto.setTimestamp(System.currentTimeMillis());
-        dto.setData(s);
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if (o == null) {
             log.error("没有密钥");
             return;
         }
-        String string = JSON.toJSONString(signService.signDataToVo(dto,String.valueOf(o)));
+        String string = JSON.toJSONString(signService.signByData(s,String.valueOf(o)));
         try {
             this.publish(qos, retained, topic, string);
         } catch (Exception e) {
