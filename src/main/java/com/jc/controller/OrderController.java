@@ -54,7 +54,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
         //发送mqtt消息
-        String topic = "order/" + machineCode;
+        String topic = "message/order/" + machineCode;
         mqttProviderConfig.publishSign(0, false, topic, JSON.toJSONString(order));
         return new ResponseEntity<>("订单提交成功,请根据支付订单号取餐", HttpStatus.OK);
     }

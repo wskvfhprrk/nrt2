@@ -57,7 +57,7 @@ public class PaySucessServiceImpl implements PaySuccessService, RefundSuccessSer
         try {
             String s = JSON.toJSONString(signService.signByData(JSON.toJSONString(orderPayMessage), String.valueOf(o1)));
             // TODO: 2024/10/12 订单状态更改为已支付
-            mqttProviderConfig.publishSign(0, false, "pay/" + machineCode, s);
+            mqttProviderConfig.publishSign(0, false, "message/pay/" + machineCode, s);
         } catch (Exception e) {
             e.printStackTrace();
         }

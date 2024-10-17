@@ -15,11 +15,14 @@ spring:
     port: 6379
 
 mqtt:
+
   url: tcp://47.120.41.36:1884
   username: admin
   password: 123
   send_id: "send_${machineCode}"
   listen_id: "listen_${machineCode}"
+
+
 
 # 日志配置（仅在 Windows 有效）
 logging:
@@ -126,5 +129,5 @@ pay:
     #支付回调域名，必须是https
     notifyUrl: https://zbuwen8k99yg.guyubao.com
     #密钥文件路径——实际存放路径
-    privateKeyFilePath: D:\均创\微信支付材料\1687404786_20241007_cert\apiclient_key.pem
+    privateKeyFilePath: D:\certs\apiclient_key.pem
 

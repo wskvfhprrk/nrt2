@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.hejz.pay.wx.WxNativePayTemplate;
 import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
-import com.hejz.util.dto.VerifyDto;
 import com.hejz.util.service.SignService;
 import com.hejz.util.vo.SignVo;
 import com.jc.constants.Constants;
@@ -95,6 +94,13 @@ public class MqttConsumerCallBack implements MqttCallback {
 //        log.info(String.format("接收消息Qos : %d", message.getQos()));
 //        log.info(String.format("接收消息内容 : %s", new String(message.getPayload())));
 //        log.info(String.format("接收消息retained : %b", message.isRetained()));
+        if (!topic.split("/")[2].equals(machineCode)) {
+            //不是此服务器的，不做处理
+            return;
+        }
+        if(topic.split("/")[1].equals("getCerts")){
+            // TODO: 2024/10/17 获取密钥返回值
+        }
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if(o==null){
             log.error("查找不到密钥");
@@ -107,7 +113,7 @@ public class MqttConsumerCallBack implements MqttCallback {
         }
 
         //订单支付消息
-        if (topic.split("/")[0].equals("pay")) {
+        if (topic.split("/")[1].equals("pay")) {
             String data = JSON.parseObject(String.valueOf(message), SignVo.class).getData();
             Map map1 = JSON.parseObject(data, Map.class);
             OrderPayMessage payMessage = JSON.parseObject(map1.get("data").toString(), OrderPayMessage.class);
@@ -123,17 +129,13 @@ public class MqttConsumerCallBack implements MqttCallback {
             //20秒内支付完成，否则二维码不见
             redisTemplate.opsForValue().set(Constants.PAY_DATA + "::" + payMessage.getOutTradeNo(), map1.get("data").toString(), Duration.ofSeconds(20));
         }
-        if (topic.split("/")[0].equals("message")) {
-            // TODO: 2024/10/10 处理其它消息业务逻辑
-        }
-
         //以下是——服务端代码
-        if (topic.split("/")[0].equals("order")) {
+        if (topic.split("/")[1].equals("order")) {
             //todo 制作订单号
-            Long increment = redisTemplate.opsForValue().increment(Constants.ORDER_ID + "::" + topic.split("/")[1]) + 1000;
+            Long increment = redisTemplate.opsForValue().increment(Constants.ORDER_ID + "::" + topic.split("/")[2]) + 1000;
             //不能超过4位数字，到头从头开始
             if(increment>=8998){
-                redisTemplate.opsForValue().set(Constants.ORDER_ID + "::" + topic.split("/")[1],0);
+                redisTemplate.opsForValue().set(Constants.ORDER_ID + "::" + topic.split("/")[2],0);
             }
             // 将序列号转换为字符串并取前4位
             // 若不足4位，可以根据业务需要，决定是否进行补位（例如补0）
@@ -155,13 +157,13 @@ public class MqttConsumerCallBack implements MqttCallback {
                 orderPayMessage.setIsPaymentCompleted(false);
                 orderPayMessage.setQrCodeText(codeUrl);
                 orderPayMessage.setOutTradeNo(outTradeNo);
-                orderPayMessage.setMachineCode(topic.split("/")[1]);
+                orderPayMessage.setMachineCode(topic.split("/")[2]);
                 //发送mqtt消息给客户端
                 SignDto dto1=new SignDto();
                 dto1.setData(JSON.toJSONString(orderPayMessage));
                 dto1.setTimestamp(System.currentTimeMillis());
                 dto1.setNonce(SignUtil.generateNonce(16));
-                mqttProviderConfig.publishSign(0, false, "pay/" + topic.split("/")[1], JSON.toJSONString(signService.signDataToVo(dto1,String.valueOf(o))));
+                mqttProviderConfig.publishSign(0, false, "message/pay/" + topic.split("/")[2], JSON.toJSONString(signService.signDataToVo(dto1,String.valueOf(o))));
                 //缓存下订单，等成功能后根据订单id再删除
                 redisTemplate.opsForValue().set(Constants.PAY_ORDER_ID + "::" + orderPayMessage.getOutTradeNo(), JSON.toJSONString(orderPayMessage));
             }

@@ -81,8 +81,10 @@
             </el-form-item>
           </el-form>
           <div class="button-container">
-            <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
+            <el-button type="primary"  @click="submitOrder" class="center-button">提交订单
             </el-button>
+<!--            <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
+            </el-button>-->
           </div>
         </el-main>
       </el-container>
