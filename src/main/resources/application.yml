@@ -16,7 +16,7 @@ spring:
 
 mqtt:
 
-  url: tcp://47.120.41.36:1884
+  url: tcp://${url}:1884
   username: admin
   password: 123
   send_id: "send_${machineCode}"
@@ -30,6 +30,8 @@ logging:
 
 # 机器码
 machineCode: A00001
+# url
+url: www.zjngic.com
 
 # 本机 IP 配置
 ip:
@@ -129,5 +131,18 @@ pay:
     #支付回调域名，必须是https
     notifyUrl: https://zbuwen8k99yg.guyubao.com
     #密钥文件路径——实际存放路径
-    privateKeyFilePath: D:\certs\apiclient_key.pem
+    privateKeyFilePath: ${pay.wx.privateKeyFilePath}
+---
+# Windows 环境的路径
+pay:
+  wx:
+    privateKeyFilePath: D:\\certs\\apiclient_key.pem
+
+# Linux 环境的路径
+---
+spring:
+  profiles: linux
+pay:
+  wx:
+    privateKeyFilePath: /etc/certs/apiclient_key.pem
 
