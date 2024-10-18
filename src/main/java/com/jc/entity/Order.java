@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Order 实体类，表示一个订单
  */
 @Data
-public class Order  {
+public class Order  implements Serializable{
 
     /**
      * 订单ID

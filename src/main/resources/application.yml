@@ -29,7 +29,7 @@ logging:
   config: classpath:logbak.xml
 
 # 机器码
-machineCode: A00001
+machineCode: A000001
 # url
 url: www.zjngic.com
 
@@ -117,32 +117,4 @@ data:
   theFoodOutletIsFacingDownwardsTime: 18
   turntableSpeed: 25
   soupExhaustTime: 10
-pay:
-  #微信支付使用到的数据——服务器端配置
-  wx:
-    #商户号
-    mchId: 1687404786
-    #v3加密序列商户证书序列号
-    mchSerialNo: 71C54979F998464DDF17B5C734ED2ECE7C7C351E
-    #V3密钥
-    apiV3Key: vewBldfD4K8SLvrGWI30l8n4LtBESyv8
-    #appID
-    appid: wxcb93b6485f421333
-    #支付回调域名，必须是https
-    notifyUrl: https://zbuwen8k99yg.guyubao.com
-    #密钥文件路径——实际存放路径
-    privateKeyFilePath: ${pay.wx.privateKeyFilePath}
----
-# Windows 环境的路径
-pay:
-  wx:
-    privateKeyFilePath: D:\\certs\\apiclient_key.pem
-
-# Linux 环境的路径
----
-spring:
-  profiles: linux
-pay:
-  wx:
-    privateKeyFilePath: /etc/certs/apiclient_key.pem
 
