@@ -42,7 +42,7 @@
       <el-container>
         <!-- <el-header class="center-content"> 牛肉汤自助点餐系统 </el-header> -->
         <el-main>
-          <el-form :model="form" label-width="120px">
+          <el-form :model="form" label-width="220px">
             <el-form-item label="选择食谱">
               <el-radio-group v-model="form.selectedRecipe">
                 <el-radio-button :label="'牛肉汤'">牛肉汤</el-radio-button>
@@ -95,7 +95,7 @@
     </div>
 
     <div class="go-to-backend">
-      <el-button type="primary" @click="goToBackend">后台登录</el-button>
+      <el-button type="primary" @click="goToBackend">进入后台</el-button>
     </div>
   </div>
 </template>
@@ -293,7 +293,6 @@ html, body {
 .el-main {
   padding: 20px;
 }
-
 .el-form-item {
   margin-bottom: 40px;
 }
@@ -310,6 +309,7 @@ html, body {
 .el-button {
   height: 40px;
   font-size: calc(12px + 1.5vh);
+  margin-top: 50px;
 }
 
 .order-details {
@@ -377,8 +377,8 @@ html, body {
 /*后管管理按钮*/
 .go-to-backend {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 100px;
+  right: 0px;
 }
 
 .go-to-backend .el-button {
@@ -412,7 +412,7 @@ html, body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 50px;
+  margin-bottom: 130px;
 }
 
 .qr-title {

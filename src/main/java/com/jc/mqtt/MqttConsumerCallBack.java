@@ -86,12 +86,22 @@ public class MqttConsumerCallBack implements MqttCallback {
         log.info(String.format("接收消息Qos : %d", message.getQos()));
         log.info(String.format("接收消息内容 : %s", new String(message.getPayload())));
         log.info(String.format("接收消息retained : %b", message.isRetained()));
-        if (!topic.split("/")[2].equals(machineCode)) {
+        String[] split = topic.split("/");
+        if (split.length == 2 && !topic.split("/")[1].equals(machineCode)) {
             //不是此服务器的，不做处理
             return;
         }
-        if (topic.split("/")[1].equals("getCerts")) {
-            // TODO: 2024/10/17 获取密钥返回值
+        if (split.length == 3 && !topic.split("/")[2].equals(machineCode)) {
+            //不是此服务器的，不做处理
+            return;
+        }
+        if (topic.split("/")[0].equals("key")) {
+            //获取密钥返回值
+            Map map = JSON.parseObject(String.valueOf(message), Map.class);
+            if (map.get("code").equals(200)) {
+                redisTemplate.opsForValue().set(Constants.APP_SECRET_REDIS_KEY, map.get("msg").toString());
+                return;
+            }
         }
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if (o == null) {
