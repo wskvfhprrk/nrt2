@@ -43,11 +43,7 @@ export default {
               }
             });
             this.orderSubmitted = true;
-            this.$message.success('订单提交成功');
-            console.log(response.data);
-            setTimeout(() => {
-              location.reload();
-            }, 5000); // 5秒后刷新页面
+            this.$message.success('密钥已经更新！');
           } catch (error) {
             this.$message.error('订单提交失败');
             console.error(error);
