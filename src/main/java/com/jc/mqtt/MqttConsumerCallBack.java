@@ -98,12 +98,16 @@ public class MqttConsumerCallBack implements MqttCallback {
             //不是此服务器的，不做处理
             return;
         }
+        //获取到的密钥
         if (topic.split("/")[0].equals("key")) {
             //获取密钥返回值
             Map map = JSON.parseObject(String.valueOf(message), Map.class);
             if (map.get("code").equals(200)) {
                 redisTemplate.opsForValue().set(Constants.APP_SECRET_REDIS_KEY, map.get("msg").toString());
+                webSocketHandler.broadcastMessage("getKeySuccess");
                 return;
+            }else {
+                webSocketHandler.broadcastMessage("failedToRetrievePassword");
             }
         }
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);

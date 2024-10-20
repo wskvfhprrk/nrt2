@@ -254,7 +254,13 @@ export default {
           this.qrCodeVisible = false;
           //更新订单
           this.fetchOrderData();
-          this.$message.success('根据订单编号取餐！')
+          this.$message.success('请您根据订单编号和提示注意取餐！')
+        }
+        if (event.data === 'getKeySuccess') {
+          this.$message.success("获取密钥成功");
+        }
+        if (event.data === 'failedToRetrievePassword') {
+          this.$message.error("获取密钥失败,密码错误");
         }
       };
 
@@ -274,8 +280,6 @@ export default {
     this.fetchServerStatus();
     this.fetchOrderData();
     setInterval(this.fetchOrderData, 1000);
-
-    this.generateQrCode(); // 页面加载时生成二维码
   }
 };
 </script>

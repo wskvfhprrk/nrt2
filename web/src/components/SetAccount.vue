@@ -43,7 +43,6 @@ export default {
               }
             });
             this.orderSubmitted = true;
-            this.$message.success('密钥已经更新！');
           } catch (error) {
             this.$message.error('订单提交失败');
             console.error(error);
