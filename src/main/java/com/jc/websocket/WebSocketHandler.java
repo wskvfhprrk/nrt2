@@ -21,7 +21,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         // 添加新连接
-        log.info("客户端连接成功");
+//        log.info("客户端连接成功");
         sessions.add(session);
     }
 
@@ -38,7 +38,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         // 移除断开连接的客户端
-        log.info("客户端失去连接……");
+//        log.info("客户端失去连接……");
         sessions.remove(session);
     }
 
