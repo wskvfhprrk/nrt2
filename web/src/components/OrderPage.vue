@@ -27,11 +27,6 @@
         </div>
       </div>
     </div>
-    <div>
-      <input v-model="message" placeholder="Send a message" />
-      <button @click="sendMessage">Send</button>
-      <p v-for="msg in messages" :key="msg">{{ msg }}</p>
-    </div>
     <!-- 二维码方框 -->
     <div class="qr-code-container" v-show="qrCodeVisible">
       <div class="qr-title">
@@ -50,8 +45,8 @@
           <el-form :model="form" label-width="220px">
             <el-form-item label="选择食谱">
               <el-radio-group v-model="form.selectedRecipe">
-                <el-radio-button :label="'牛肉汤'">牛肉汤</el-radio-button>
-                <el-radio-button :label="'牛杂汤'">牛杂汤</el-radio-button>
+                <el-radio-button :value="'牛肉汤'">牛肉汤</el-radio-button>
+                <el-radio-button :value="'牛杂汤'">牛杂汤</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="选择类别">
@@ -66,14 +61,14 @@
             </el-form-item>
             <el-form-item label="添加香菜">
               <el-radio-group v-model="form.addCilantro">
-                <el-radio-button :label="true">是</el-radio-button>
-                <el-radio-button :label="false">否</el-radio-button>
+                <el-radio-button :value="true">是</el-radio-button>
+                <el-radio-button :value="false">否</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="添加葱花">
               <el-radio-group v-model="form.addOnion">
-                <el-radio-button :label="true">是</el-radio-button>
-                <el-radio-button :label="false">否</el-radio-button>
+                <el-radio-button :value="true">是</el-radio-button>
+                <el-radio-button :value="false">否</el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="支付方式">
@@ -140,9 +135,7 @@ export default {
       completedOrders: [],     // 做完订单队列
       hasOrders: false,         // 是否有订单
 
-      ws: null,
-      message: '',
-      messages: [],
+      errorHandler: null, // 确保 errorHandler 定义在 data 中
 
       qrCodeDialogTitle: "微信支付", // 默认微信支付
       qrCodeVisible: false,    // 控制二维码弹窗的显示与隐藏
@@ -187,11 +180,10 @@ export default {
             }
           });
           this.orderSubmitted = true;
-          this.$message.success('订单提交成功');
-          console.log(response.data);
-          setTimeout(() => {
-            location.reload();
-          }, 5000); // 5秒后刷新页面
+          // this.$message.success('订单提交成功');
+          // setTimeout(() => {
+          //   location.reload();
+          // }, 5000); // 5秒后刷新页面
         } catch (error) {
           this.$message.error('订单提交失败');
           console.error(error);
@@ -254,23 +246,24 @@ export default {
       this.ws = new WebSocket("ws://localhost:8080/ws");
       console.log("连接websocket……")
       this.ws.onmessage = (event) => {
-        this.messages.push(event.data);
+        // console.log(event.data)
+        if (event.data === 'qrSuccess') {
+          this.fetchQrData();
+        }
+        if (event.data === 'paySuccess') {
+          this.qrCodeVisible = false;
+          //更新订单
+          this.fetchOrderData();
+          this.$message.success('根据订单编号取餐！')
+        }
       };
 
       this.ws.onopen = () => {
-        console.log("Connected to WebSocket server");
+        console.log("WebSocket连接成功");
       };
-
       this.ws.onclose = () => {
-        console.log("WebSocket connection closed");
+        console.log("WebSocket连接关闭");
       };
-    },
-    //websocket发送信息
-    sendMessage() {
-      if (this.ws && this.message) {
-        this.ws.send(this.message);
-        this.message = '';
-      }
     }
   },
   mounted() {
@@ -279,11 +272,8 @@ export default {
     /*清空登陆session*/
     this.cleanSession();
     this.fetchServerStatus();
-    this.fetchQrData();
-    // setInterval(this.fetchQrData, 1000);
-    // setInterval(this.fetchServerStatus, 1000);
-    // this.fetchOrderData();
-    // setInterval(this.fetchOrderData, 1000);
+    this.fetchOrderData();
+    setInterval(this.fetchOrderData, 1000);
 
     this.generateQrCode(); // 页面加载时生成二维码
   }

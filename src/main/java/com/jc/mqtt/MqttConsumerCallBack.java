@@ -5,9 +5,9 @@ import com.hejz.util.service.SignService;
 import com.hejz.util.vo.SignVo;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
-import com.jc.enums.OrderStatus;
 import com.jc.service.impl.RedisQueueService;
 import com.jc.vo.OrderPayMessage;
+import com.jc.websocket.WebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -31,6 +31,9 @@ public class MqttConsumerCallBack implements MqttCallback {
     @Autowired
     @Lazy
     private MqttConsumerConfig mqttConsumerConfig;
+
+    @Autowired
+    private WebSocketHandler webSocketHandler;
 
     private static final int MAX_RETRIES = 3; // 最大重试次数
     private static final int RETRY_INTERVAL_MS = 3000; // 每次重试间隔，单位为毫秒
@@ -114,13 +117,16 @@ public class MqttConsumerCallBack implements MqttCallback {
             return;
         }
 
-        //订单支付消息
+        //订单支付返回二维码
         if (topic.split("/")[1].equals("pay")) {
             String data = JSON.parseObject(String.valueOf(message), SignVo.class).getData();
             OrderPayMessage payMessage = JSON.parseObject(data, OrderPayMessage.class);
             //如果支付完成就删除缓存中订单，同时增加已经支付订单——通知机器制作
             redisTemplate.opsForValue().set(Constants.PAY_DATA + "::" + payMessage.getOutTradeNo(), data, Duration.ofSeconds(20));
+            //通知前台访问路径
+            webSocketHandler.broadcastMessage("qrSuccess");
         }
+        //订单支付成功
         if (topic.split("/")[1].equals("paySuccess")) {
             String data = JSON.parseObject(String.valueOf(message), SignVo.class).getData();
             Order order = JSON.parseObject(data, Order.class);
@@ -128,7 +134,8 @@ public class MqttConsumerCallBack implements MqttCallback {
             //删除二维码缓存
             redisTemplate.delete(Constants.PAY_DATA + "::" + order.getOrderId());
             queueService.enqueue(order);
-
+            //通知前台支付成功关闭二维码
+            webSocketHandler.broadcastMessage("paySuccess");
         }
     }
 
