@@ -27,6 +27,11 @@
         </div>
       </div>
     </div>
+    <div>
+      <input v-model="message" placeholder="Send a message" />
+      <button @click="sendMessage">Send</button>
+      <p v-for="msg in messages" :key="msg">{{ msg }}</p>
+    </div>
     <!-- 二维码方框 -->
     <div class="qr-code-container" v-show="qrCodeVisible">
       <div class="qr-title">
@@ -81,10 +86,10 @@
             </el-form-item>
           </el-form>
           <div class="button-container">
-            <el-button type="primary"  @click="submitOrder" class="center-button">提交订单
+            <el-button type="primary" @click="submitOrder" class="center-button">提交订单
             </el-button>
-<!--            <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
-            </el-button>-->
+            <!--            <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
+                        </el-button>-->
           </div>
         </el-main>
       </el-container>
@@ -135,11 +140,15 @@ export default {
       completedOrders: [],     // 做完订单队列
       hasOrders: false,         // 是否有订单
 
+      ws: null,
+      message: '',
+      messages: [],
+
       qrCodeDialogTitle: "微信支付", // 默认微信支付
       qrCodeVisible: false,    // 控制二维码弹窗的显示与隐藏
       qrCodeText: '',               // 用于生成二维码的url
       orderId: 'A0000',
-      payMethods:''    //付款方式——正在支付的订单
+      payMethods: ''    //付款方式——正在支付的订单
     };
   },
   methods: {
@@ -226,7 +235,7 @@ export default {
         const response = await axios.get(baseUrl + '/qrcode');
         if (response.data.code === 200 & response.data.data !== null) {
           this.qrCodeText = response.data.data.qrCodeText;
-          console.log("response.data.data.qrCodeText==="+response.data.data)
+          console.log("response.data.data.qrCodeText===" + response.data.data)
           this.orderId = response.data.data.orderId;
           this.payMethods = response.data.data.payMethods;
           this.generateQrCode();
@@ -239,17 +248,42 @@ export default {
         this.qrCodeVisible = false;
         console.error('获取订单数据时出错:', error);
       }
+    },
+    //websocket连接
+    connectWebSocket() {
+      this.ws = new WebSocket("ws://localhost:8080/ws");
+      console.log("连接websocket……")
+      this.ws.onmessage = (event) => {
+        this.messages.push(event.data);
+      };
+
+      this.ws.onopen = () => {
+        console.log("Connected to WebSocket server");
+      };
+
+      this.ws.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+    },
+    //websocket发送信息
+    sendMessage() {
+      if (this.ws && this.message) {
+        this.ws.send(this.message);
+        this.message = '';
+      }
     }
   },
   mounted() {
+    //启动websocket
+    this.connectWebSocket();
     /*清空登陆session*/
     this.cleanSession();
     this.fetchServerStatus();
     this.fetchQrData();
-    setInterval(this.fetchQrData, 1000);
-    setInterval(this.fetchServerStatus, 1000);
-    this.fetchOrderData();
-    setInterval(this.fetchOrderData, 1000);
+    // setInterval(this.fetchQrData, 1000);
+    // setInterval(this.fetchServerStatus, 1000);
+    // this.fetchOrderData();
+    // setInterval(this.fetchOrderData, 1000);
 
     this.generateQrCode(); // 页面加载时生成二维码
   }
@@ -293,6 +327,7 @@ html, body {
 .el-main {
   padding: 20px;
 }
+
 .el-form-item {
   margin-bottom: 40px;
 }
