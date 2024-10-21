@@ -16,7 +16,8 @@ import java.util.concurrent.Callable;
  */
 @Service
 @Slf4j
-public class RobotPlaceEmptyBowl {
+public class
+RobotPlaceEmptyBowl {
 
     @Autowired
     private RobotService robotService;

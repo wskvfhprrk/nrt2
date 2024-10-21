@@ -24,7 +24,7 @@ public class OrderQueueListener {
 
 
     // 每秒钟检查一次队列中的订单
-    @Scheduled(fixedRate = 2000) // 1秒
+//    @Scheduled(fixedRate = 2000) // 1秒
     public void checkAndProcessOrders() {
         //如果定时任务没有打开就不要进行
         if (!pubConfig.getIsExecuteTask()){

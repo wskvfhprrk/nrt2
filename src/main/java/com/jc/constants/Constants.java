@@ -23,7 +23,6 @@ public class Constants {
     public static final String NOT_INITIALIZED = "2";
 
 
-
     /** 传感器的值 */
     /**
      * 转盘复位传感器X1
@@ -74,6 +73,64 @@ public class Constants {
      */
     public static final int GOODS_AISLE_PHOTOELECTRIC_SENSOR = 17;
 
+
+    /**
+     * 重新定义
+     */
+
+    /**
+     * 粉丝仓原点
+     */
+    public static final int X_FAN_COMPARTMENT_ORIGIN = 6;
+    /**
+     * 粉丝仓右限位
+     */
+    public static final int X_FAN_COMPARTMENT_RIGHT_LIMIT = 7;
+    /**
+     * 粉丝仓左限位
+     */
+    public static final int X_FAN_COMPARTMENT_LEFT_LIMIT = 8;
+    /**
+     * 有碗信号
+     */
+    public static final int X_BOWL_PRESENT_SIGNAL = 9;
+    /**
+     * 空碗信号
+     */
+    public static final int X_EMPTY_BOWL_SIGNAL = 10;
+    /**
+     * 放碗信号
+     */
+    public static final int X_PLACE_BOWL_SIGNAL = 11;
+
+    /**
+     * 汤左限位
+     */
+    public static final int X_SOUP_LEFT_LIMIT = 12;
+    /**
+     * 汤右限位
+     */
+    public static final int X_SOUP_RIGHT_LIMIT = 13;
+    /**
+     * 汤原点
+     */
+    public static final int X_SOUP_ORIGIN = 14;
+    /**
+     * 蒸汽上限位
+     */
+    public static final int X_STEAM_UPPER_LIMIT = 15;
+    /**
+     * 蒸汽原点
+     */
+    public static final int X_STEAM_ORIGIN = 16;
+    /**
+     * 蒸汽下限位
+     */
+    public static final int X_STEAM_LOWER_LIMIT = 17;
+    /**
+     * 汤料传感器
+     */
+    public static final int X_SOUP_INGREDIENT_SENSOR = 18;
 
     /** 32位继电器 */
     /**

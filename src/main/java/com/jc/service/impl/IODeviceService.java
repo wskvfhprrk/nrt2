@@ -71,23 +71,26 @@ public class IODeviceService implements DeviceHandler {
 
     /**
      * 打印高低电平变化
+     *
      * @param currentLevels
      */
     private void highAndLowLevelsChange(StringBuffer currentLevels) {
         if (previousLevels == null) {
             // 如果之前没有记录，表示这是第一次读取
-            log.info("首次读取的高低电平：{}", currentLevels);
+//            log.info("首次读取的高低电平：{}", currentLevels);
         } else {
             // 与上次的高低电平进行对比
             log.info("上次的高低电平：{}", previousLevels);
             log.info("本次的高低电平：{}", currentLevels);
+            String[] previousLevelStr = previousLevels.toString().split(",");
+            String[] currentLevelStr = currentLevels.toString().split(",");
 
             // 对比每一位的高低电平变化
-            for (int i = 0; i < currentLevels.length(); i++) {
-                char previousLevel = previousLevels.charAt(i);
-                char currentLevel = currentLevels.charAt(i);
-                if (previousLevel != currentLevel) {
-                    log.info("第{}位电平发生变化，从 {} 变为 {}", i + 1, previousLevel, currentLevel);
+            for (int i = 0; i < currentLevelStr.length; i++) {
+
+
+                if (!previousLevelStr[i].equals(currentLevelStr[i])) {
+                    log.info("第 X{} 位电平发生变化，从 {} 变为 {}", i + 1, previousLevelStr[i], currentLevelStr[i]);
                 }
             }
         }
@@ -165,13 +168,13 @@ public class IODeviceService implements DeviceHandler {
             relayDeviceService.stopBowl();
         }
         //计算工位的值
-        calculateWorkstationValue(split);
-        //汤的液位解析
-        soupLevelAnalysis(split);
-        //粉丝监测
-        fancheck(split);
-        //出餐传感器逻辑
-        servingSensorLogic(split);
+//        calculateWorkstationValue(split);
+//        //汤的液位解析
+//        soupLevelAnalysis(split);
+//        //粉丝监测
+//        fancheck(split);
+//        //出餐传感器逻辑
+//        servingSensorLogic(split);
     }
 
     /**
@@ -265,6 +268,4 @@ public class IODeviceService implements DeviceHandler {
         // 通过日志记录当前的转台工位数
         log.info("TurntableNumber:{}", pubConfig.getTurntableNumber());
     }
-
-
 }
