@@ -81,8 +81,7 @@ private MqttConfig mqttConfig;
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         IMqttAsyncClient client = token.getClient();
-        log.info("{}   发布消息成功！", client.getClientId());
-
+//        log.info("{}   发布消息成功！", client.getClientId());
     }
 
 }
