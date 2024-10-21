@@ -34,6 +34,8 @@ public class IODeviceService implements DeviceHandler {
     @Autowired
     @Lazy
     private StepperMotorService stepperMotorService;
+    // 类级变量，用于保存上一次的高低电平状态
+    private StringBuffer previousLevels = null;
 
 
     /**
@@ -56,6 +58,7 @@ public class IODeviceService implements DeviceHandler {
                 }
             }
             log.info("传感器的高低电平：{}", sb);
+            highAndLowLevelsChange(sb);
             try {
                 sensorInstructionProcessing(sb);
             } catch (Exception e) {
@@ -64,6 +67,32 @@ public class IODeviceService implements DeviceHandler {
         } else {
             log.info("IO设备——普通消息: {}", message);
         }
+    }
+
+    /**
+     * 打印高低电平变化
+     * @param currentLevels
+     */
+    private void highAndLowLevelsChange(StringBuffer currentLevels) {
+        if (previousLevels == null) {
+            // 如果之前没有记录，表示这是第一次读取
+            log.info("首次读取的高低电平：{}", currentLevels);
+        } else {
+            // 与上次的高低电平进行对比
+            log.info("上次的高低电平：{}", previousLevels);
+            log.info("本次的高低电平：{}", currentLevels);
+
+            // 对比每一位的高低电平变化
+            for (int i = 0; i < currentLevels.length(); i++) {
+                char previousLevel = previousLevels.charAt(i);
+                char currentLevel = currentLevels.charAt(i);
+                if (previousLevel != currentLevel) {
+                    log.info("第{}位电平发生变化，从 {} 变为 {}", i + 1, previousLevel, currentLevel);
+                }
+            }
+        }
+        // 更新上一次的电平状态
+        previousLevels = new StringBuffer(currentLevels);
     }
 
     /**
