@@ -77,7 +77,26 @@ public class Constants {
     /**
      * 重新定义
      */
-
+    /**
+     * 粉丝仓一
+     */
+    public static final int X_FANS_WAREHOUSE_1 = 1;
+    /**
+     * 粉丝仓二
+     */
+    public static final int X_FANS_WAREHOUSE_2 = 2;
+    /**
+     * 粉丝仓三
+     */
+    public static final int X_FANS_WAREHOUSE_3 = 3;
+    /**
+     * 粉丝仓四
+     */
+    public static final int X_FANS_WAREHOUSE_4 = 4;
+    /**
+     * 粉丝仓五
+     */
+    public static final int X_FANS_WAREHOUSE_5 = 5;
     /**
      * 粉丝仓原点
      */
@@ -132,6 +151,7 @@ public class Constants {
      */
     public static final int X_SOUP_INGREDIENT_SENSOR = 18;
 
+
     /** 32位继电器 */
     /**
      * 出餐口向下——电推杆
@@ -164,7 +184,7 @@ public class Constants {
     /**
      * 蒸汽发生器继电器
      */
-    public static final int STEAM_SWITCH = 7;
+    public static final int STEAM_SWITCH = 20;
     /**
      * 后箱风扇
      */

@@ -57,7 +57,7 @@ public class IODeviceService implements DeviceHandler {
                     heightOrLow(split[3 + i / 4], sb);
                 }
             }
-            log.info("传感器的高低电平：{}", sb);
+//            log.info("传感器的高低电平：{}", sb);
             highAndLowLevelsChange(sb);
             try {
                 sensorInstructionProcessing(sb);
@@ -80,8 +80,8 @@ public class IODeviceService implements DeviceHandler {
 //            log.info("首次读取的高低电平：{}", currentLevels);
         } else {
             // 与上次的高低电平进行对比
-            log.info("上次的高低电平：{}", previousLevels);
-            log.info("本次的高低电平：{}", currentLevels);
+//            log.info("上次的高低电平：{}", previousLevels);
+//            log.info("本次的高低电平：{}", currentLevels);
             String[] previousLevelStr = previousLevels.toString().split(",");
             String[] currentLevelStr = currentLevels.toString().split(",");
 
@@ -167,105 +167,6 @@ public class IODeviceService implements DeviceHandler {
             log.info("到达限位点，停止碗升降的步进电机");
             relayDeviceService.stopBowl();
         }
-        //计算工位的值
-//        calculateWorkstationValue(split);
-//        //汤的液位解析
-//        soupLevelAnalysis(split);
-//        //粉丝监测
-//        fancheck(split);
-//        //出餐传感器逻辑
-//        servingSensorLogic(split);
     }
 
-    /**
-     * 出餐传感器逻辑
-     *
-     * @param split
-     */
-    private void servingSensorLogic(String[] split) {
-        //出餐口复位传感器
-        String resetServingWindow = split[Constants.SERVING_WINDOW_RESET_SENSOR];
-        //出餐口感器
-        String servingWindowSensor = split[Constants.SERVING_WINDOW_SENSOR];
-        //取餐完成传感器
-        String pickupCompletionSensor = split[Constants.PICKUP_COMPLETION_SENSOR];
-        //出口复位传感器高电平时为没有复位
-        if (resetServingWindow.equals(SignalLevel.HIGH.getValue())) {
-            pubConfig.setServingWindowResetSensor(false);
-            log.info("出餐口未复位");
-        } else {
-            pubConfig.setServingWindowResetSensor(true);
-            log.info("出餐口已经复位");
-        }
-        //出餐口感器高电平时
-        if (servingWindowSensor.equals(SignalLevel.HIGH.getValue())) {
-            pubConfig.setThereIsABowlAtTheServingWindow(true);
-            log.info("出餐口有碗");
-        } else {
-            pubConfig.setThereIsABowlAtTheServingWindow(false);
-            log.info("出餐口没有碗");
-        }
-        //取餐完成传感器
-        if (pickupCompletionSensor.equals(SignalLevel.HIGH.getValue())) {
-            pubConfig.setTheBowlWasNotTakenFromTheServingWindow(true);
-            log.info("取餐完成");
-        } else {
-            pubConfig.setTheBowlWasNotTakenFromTheServingWindow(false);
-            log.info("取餐未完成");
-        }
-    }
-
-    private void fancheck(String[] split) {
-        if (split[Constants.GOODS_AISLE_PHOTOELECTRIC_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            log.info("检测粉丝掉下来");
-            pubConfig.setIsPlacingNoodlesCompleted(true);
-        }
-    }
-
-    /**
-     * 汤的液位解析
-     *
-     * @param split
-     */
-    private void soupLevelAnalysis(String[] split) {
-        if (split[Constants.SOUP_LEVEL_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            log.info("加汤完成！");
-            pubConfig.setIsAddingSoupCompleted(true);
-        } else {
-            pubConfig.setIsAddingSoupCompleted(false);
-        }
-    }
-
-
-    /**
-     * 计算工位的值
-     *
-     * @param split
-     */
-    private void calculateWorkstationValue(String[] split) {
-        // 如果转台复位传感器信号为高电平
-        if (split[Constants.ROTARY_TABLE_RESET_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            // 将转台的工位数设为0
-            pubConfig.setTurntableNumber(1);
-            pubConfig.setIsTurntableReset(true);
-        }
-
-        // 如果转台状态为空（首次调用时可能为空）
-        if (turntableStatus == null) {
-            // 将转台状态设置为当前传感器信号值
-            turntableStatus = split[Constants.ROTARY_TABLE_STATION_SENSOR];
-            // 结束方法，不进行后续操作
-            return;
-        }
-
-        log.info("turntableStatus:{}", turntableStatus);
-        // 如果转台状态改变且当前传感器信号为高电平
-        if (turntableStatus.equals(SignalLevel.LOW.getValue()) && split[Constants.ROTARY_TABLE_STATION_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            // 将转台的工位数加1
-            pubConfig.setTurntableNumber(pubConfig.getTurntableNumber() + 1);
-        }
-        turntableStatus = split[Constants.ROTARY_TABLE_STATION_SENSOR];
-        // 通过日志记录当前的转台工位数
-        log.info("TurntableNumber:{}", pubConfig.getTurntableNumber());
-    }
 }
