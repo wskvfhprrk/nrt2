@@ -15,7 +15,7 @@
 
     <!-- Turntable and Bowl Operations -->
     <div class="button-group">
-      <h3 class="section-title">转台和碗</h3>
+      <h3 class="section-title">碗粉丝</h3>
       <div class="button-columns">
         <div v-for="(btn, index) in buttonsGroup2" :key="`btn2-${index}`" class="button-column">
           <el-button type="primary" :style="buttonStyle" @click="openDialog(btn.id, btn.name)">
@@ -102,16 +102,15 @@ export default {
       buttonsGroup1: [
         {id: 1, name: "机器人重置"},
         {id: 2, name: "机器人取碗"},
-        {id: 3, name: "机器人出汤"},
-        {id: 4, name: "取餐口复位"},
-        {id: 5, name: "取餐口出餐"}
+        {id: 3, name: "机器人取粉丝"},
+        {id: 4, name: "机器人出餐"},
+        {id: 5, name: "取餐口复位"},
+        {id: 6, name: "取餐口出餐"}
       ],
       buttonsGroup2: [
-        {id: 6, name: "转台复位"},
-        {id: 7, name: "工位（数）"},
-        {id: 8, name: "碗复位"},
-        {id: 9, name: "碗向上"},
-        {id: 10, name: "碗向下"}
+        {id: 7, name: "出碗"},
+        {id: 8, name: "粉丝仓复位"},
+        {id: 8, name: "粉丝仓出粉丝"},
       ],
       buttonsGroup3: [
         {id: 11, name: "蒸汽打开"},
@@ -141,7 +140,9 @@ export default {
       dialogVisible: false,
       parameter: '',
       currentButtonId: null,
-      currentButtonName: ''
+      currentButtonName: '',
+
+      errorHandler:null
     };
   },
   computed: {
@@ -203,6 +204,8 @@ export default {
 }
 
 .button-group {
+  height: 400px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
