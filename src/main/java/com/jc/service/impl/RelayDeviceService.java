@@ -5,6 +5,7 @@ import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
+import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class RelayDeviceService implements DeviceHandler {
     private IpConfig ipConfig;
     @Autowired
     private BeefConfig beefConfig;
+    @Autowired
+    private IODeviceService ioDeviceService;
 
     /**
      * 处理消息
@@ -252,9 +255,9 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void soupPump(int seconds) {
         //抽汤前先打开汤开关，防止水流
-        openClose(Constants.SOUP_SWITCH, seconds);
+        openClose(Constants.Y_SOUP_SWITCH, seconds);
         log.info("打开抽汤{}秒钟", seconds);
-        openClose(Constants.SOUP_PUMP_SWITCH, seconds);
+        openClose(Constants.Y_SOUP_PUMP_SWITCH, seconds);
     }
 
     /**
@@ -262,7 +265,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void steamOpen() {
         log.info("蒸汽打开");
-        relayOpening(Constants.STEAM_SWITCH);
+        relayOpening(Constants.Y_STEAM_SWITCH);
     }
 
     /**
@@ -270,7 +273,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void steamClose() {
         log.info("蒸汽关闭");
-        relayClosing(Constants.STEAM_SWITCH);
+        relayClosing(Constants.Y_STEAM_SWITCH);
     }
 
     /**
@@ -545,36 +548,26 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result bowlSteam(int number) {
+        //盖子方向向下
+        relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子下降盖着碗
-        relayOpening(Constants.STEAM_COVER_1);
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        relayOpening(Constants.STEAM_COVER_2);
+        relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         try {
             Thread.sleep(2000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE, number);
+//        openClose(Constants.BOWL_STEAM_SOLENOID_VALVE, number);
         //加蒸汽完成后
         try {
             Thread.sleep(number * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //盖子再升起来
-        relayClosing(Constants.STEAM_COVER_2);
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        relayClosing(Constants.STEAM_COVER_1);
-        //碗蒸汽加完状态赋值
-        pubConfig.setIsAddingSteamCompleted(true);
+        //盖子方向向上
+        relayOpening(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
+        //盖子下降盖着碗
+        relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         return Result.success();
     }
 
@@ -585,7 +578,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result soupSwitchOff() {
-        relayClosing(Constants.SOUP_SWITCH);
+        relayClosing(Constants.Y_SOUP_SWITCH);
         return Result.success();
     }
 
@@ -593,7 +586,7 @@ public class RelayDeviceService implements DeviceHandler {
      * 打开蒸汽发生器
      */
     public Result openSteamGenerator() {
-        relayOpening(Constants.STEAM_SWITCH);
+        relayOpening(Constants.Y_STEAM_SWITCH);
         return Result.success();
     }
 
@@ -604,11 +597,23 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public void soupExhaust(Integer second) {
         //碗开关关闭
-        relayClosing(Constants.SOUP_SWITCH);
+        relayClosing(Constants.Y_SOUP_SWITCH);
         //循环开关打开
         openClose(Constants.LOOP_SWITCH, second);
         //抽汤泵打开+2秒
-        openClose(Constants.SOUP_PUMP_SWITCH,second+2);
+        openClose(Constants.Y_SOUP_PUMP_SWITCH,second+2);
 
+    }
+
+    public Result chuWanStart() {
+        if(ioDeviceService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL)==SignalLevel.LOW.ordinal()){
+            log.error("没有碗了！");
+            return Result.error(500,"没有碗了！");
+        }
+        relayOpening(Constants.Y_CHU_WAN);
+        return Result.success();
+    }
+    public void chuWanStop() {
+        relayClosing(Constants.Y_CHU_WAN);
     }
 }

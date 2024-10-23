@@ -112,42 +112,5 @@ public class TurntableService {
 
     }
 
-    /**
-     * 转到某一个工位停止
-     *
-     * @param number
-     */
-    public void alignToPosition(int number) {
-        //如果没有初始化要多转一圈第一圈让重置
-        //除以6求余为工位
-        if (pubConfig.getIsTurntableReset() && pubConfig.getTurntableNumber() % Constants.WORKSTATION_NUMBER == number) {
-            log.info("已经在{}位上", number);
-            return;
-        }
-        //发送转盘的转速为最大值,太大IO感应不到，会超过原点位置
-        //发送转盘的转速为最大值为40,太大IO感应不到，会超过原点位置
-        stepperMotorService.modificationSpeed(Constants.ROTARY_TABLE_STEPPER_MOTOR, beefConfig.getTurntableSpeed());
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //转动电机
-        stepperMotorService.startStepperMotor(Constants.ROTARY_TABLE_STEPPER_MOTOR, true, 0);
-        Boolean flag = true;
-        while (flag) {
-            try {
-                Thread.sleep(Constants.SLEEP_TIME_MS / 50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            int newNumber = pubConfig.getTurntableNumber();
-            if (newNumber % Constants.WORKSTATION_NUMBER == number) {
-                stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
-                flag = false;
-            }
-        }
-        log.info("工位数值：{}", pubConfig.getTurntableNumber());
-    }
 
 }

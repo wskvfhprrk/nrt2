@@ -104,22 +104,22 @@ export default {
         {id: 2, name: "机器人取碗"},
         {id: 3, name: "机器人取粉丝"},
         {id: 4, name: "机器人出餐"},
-        {id: 5, name: "取餐口复位"},
-        {id: 6, name: "取餐口出餐"}
+        {id: 6, name: "取餐口出餐"},
+        {id: 5, name: "取餐口复位"}
       ],
       buttonsGroup2: [
         {id: 7, name: "出碗"},
-        {id: 8, name: "粉丝仓复位"},
-        {id: 8, name: "粉丝仓出粉丝"},
+        {id: 9, name: "粉丝仓出粉丝"},
+        {id: 8, name: "粉丝仓复位"}
       ],
       buttonsGroup3: [
         {id: 11, name: "蒸汽打开"},
         {id: 12, name: "蒸汽关闭"},
         {id: 13, name: "关汤蒸汽阀"},
-        {id: 14, name: "抽汤（秒）"},
+        {id: 14, name: "加汤（秒）"},
         {id: 15, name: "汤管排气（秒）"},
-        {id: 16, name: "汤加热至（度）"},
-        {id: 17, name: "碗加蒸汽（秒）"}
+        {id: 17, name: "加蒸汽（秒）"},
+        {id: 16, name: "汤加热至（度）"}
       ],
       buttonsGroup4: [
         {id: 18, name: "后箱风扇开"},
@@ -204,7 +204,7 @@ export default {
 }
 
 .button-group {
-  height: 400px;
+  height: 500px;
   width: 300px;
   display: flex;
   flex-direction: column;

@@ -188,7 +188,7 @@ public class Relay1DeviceService implements DeviceHandler {
     public void steam() {
         log.info("蒸汽测试,打开5秒后关闭");
         //继电器7打开15秒关闭
-        this.openClose(Constants.STEAM_SWITCH, 5);
+        this.openClose(Constants.Y_STEAM_SWITCH, 5);
     }
 
 
@@ -247,7 +247,7 @@ public class Relay1DeviceService implements DeviceHandler {
      */
     public void soupPump() {
         log.info("打开抽汤泵10秒钟时间");
-        openClose(Constants.SOUP_PUMP_SWITCH, 10);
+        openClose(Constants.Y_SOUP_PUMP_SWITCH, 10);
     }
 
     /**
@@ -255,7 +255,7 @@ public class Relay1DeviceService implements DeviceHandler {
      */
     public void steamOpen() {
         log.info("蒸汽打开");
-        relayOpening(Constants.STEAM_SWITCH);
+        relayOpening(Constants.Y_STEAM_SWITCH);
     }
 
     /**
@@ -263,7 +263,7 @@ public class Relay1DeviceService implements DeviceHandler {
      */
     public void steamClose() {
         log.info("蒸汽关闭");
-        relayClosing(Constants.STEAM_SWITCH);
+        relayClosing(Constants.Y_STEAM_SWITCH);
     }
 
     /**

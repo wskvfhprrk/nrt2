@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.utils.CRC16;
 import lombok.extern.slf4j.Slf4j;

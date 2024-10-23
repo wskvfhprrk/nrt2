@@ -9,4 +9,6 @@ public interface RobotService {
     Result reset();
     Result takeBowl();
     Result putBowl();
+
+    Result getFans();
 }

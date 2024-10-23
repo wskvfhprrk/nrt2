@@ -17,10 +17,6 @@ public class Constants {
      * 最大速度
      */
     public static final int MAX_SPEED = 500;
-    /**
-     * 传感器无值状态为2
-     */
-    public static final String NOT_INITIALIZED = "2";
 
 
     /** 传感器的值 */
@@ -184,7 +180,7 @@ public class Constants {
     /**
      * 蒸汽发生器继电器
      */
-    public static final int STEAM_SWITCH = 20;
+    public static final int Y_STEAM_SWITCH = 20;
     /**
      * 后箱风扇
      */
@@ -224,7 +220,7 @@ public class Constants {
     /**
      * 抽汤泵
      */
-    public static final int SOUP_PUMP_SWITCH = 17;
+    public static final int Y_SOUP_PUMP_SWITCH = 21;
     /**
      * 弹簧货道电机5
      */
@@ -256,7 +252,7 @@ public class Constants {
     /**
      * 汤开关
      */
-    public static final int SOUP_SWITCH = 25;
+    public static final int Y_SOUP_SWITCH = 21;
     /**
      * 震动器
      */
@@ -388,4 +384,16 @@ public class Constants {
     public static final String PAY_DATA = "payData";
     public static final String PAY_ORDER_ID = "payOrderId";
     public static final String ORDER_ID = "orderId";
+    /**
+     * 伸缩杆方向控制——通电收缩，不通电伸开
+     */
+    public static final int Y_TELESCOPIC_ROD_DIRECTION_CONTROL= 1;
+    /**
+     * 伸缩杆开关控制
+     */
+    public static final int Y_TELESCOPIC_ROD_SWITCH_CONTROL= 2;
+    /**
+     * 碗电机
+     */
+    public static final int Y_CHU_WAN = 15;
 }

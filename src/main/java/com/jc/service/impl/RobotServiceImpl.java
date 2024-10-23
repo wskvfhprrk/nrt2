@@ -53,7 +53,7 @@ public class RobotServiceImpl implements RobotService {
         }
         //如果碗传感器为低电平，则重新发出碗重置命令
         String ioStatus = ioDeviceService.getStatus();
-        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
+        while (ioStatus == null) {
             log.error("无法获取传感器的值！");
             // 先重置传感器
             nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
@@ -65,7 +65,7 @@ public class RobotServiceImpl implements RobotService {
             }
             // 重新获取传感器状态
             ioStatus = ioDeviceService.getStatus();
-            if (ioStatus.equals(Constants.NOT_INITIALIZED)) {
+            if (ioStatus==null) {
                 log.error("没有发现传感器的值！");
             }
         }
@@ -129,6 +129,11 @@ public class RobotServiceImpl implements RobotService {
             e.printStackTrace();
         }
         return Result.success();
+    }
+
+    @Override
+    public Result getFans() {
+        return null;
     }
 
 }

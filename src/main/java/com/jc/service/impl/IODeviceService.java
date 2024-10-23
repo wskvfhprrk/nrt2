@@ -8,6 +8,7 @@ import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +29,12 @@ public class IODeviceService implements DeviceHandler {
     private IpConfig ipConfig;
     //工位值——当为原点时为0，共6个工位
     @Autowired
-    private PubConfig pubConfig;
-    //当前转台的工位状态
-    private String turntableStatus;
-    @Autowired
     @Lazy
     private StepperMotorService stepperMotorService;
     // 类级变量，用于保存上一次的高低电平状态
     private StringBuffer previousLevels = null;
 
+    private String ioStatus = null;
 
     /**
      * 处理消息
@@ -57,13 +55,9 @@ public class IODeviceService implements DeviceHandler {
                     heightOrLow(split[3 + i / 4], sb);
                 }
             }
-//            log.info("传感器的高低电平：{}", sb);
+            log.info("传感器的高低电平：{}", sb);
+            ioStatus = sb.toString();
             highAndLowLevelsChange(sb);
-            try {
-                sensorInstructionProcessing(sb);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
         } else {
             log.info("IO设备——普通消息: {}", message);
         }
@@ -87,15 +81,39 @@ public class IODeviceService implements DeviceHandler {
 
             // 对比每一位的高低电平变化
             for (int i = 0; i < currentLevelStr.length; i++) {
-
-
                 if (!previousLevelStr[i].equals(currentLevelStr[i])) {
                     log.info("第 X{} 位电平发生变化，从 {} 变为 {}", i + 1, previousLevelStr[i], currentLevelStr[i]);
+                    passdata(i + 1, previousLevelStr[i], currentLevelStr[i]);
                 }
             }
         }
         // 更新上一次的电平状态
         previousLevels = new StringBuffer(currentLevels);
+    }
+
+    private void passdata(int i, String s, String s1) {
+        //有碗信号感应到时
+        if (i == Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")) {
+            relayDeviceService.chuWanStop();
+        }
+        //如果碗报警信号
+        if(i==Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")){
+            // TODO: 2024/10/23 报警给服务器通知管理人员上碗 ，订单最多再接几单
+            log.warn("碗快没有了，要放碗了");
+        }
+        //蒸汽原位停止
+        if(i==Constants.X_STEAM_ORIGIN && s.equals("0") && s1.equals("1")){
+            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+        }
+        //蒸汽下限位停止
+        if(i==Constants.X_STEAM_LOWER_LIMIT && s.equals("0") && s1.equals("1")){
+            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+        }
+        //蒸汽限上位停止
+        if(i==Constants.X_STEAM_UPPER_LIMIT && s.equals("0") && s1.equals("1")){
+            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
+        }
     }
 
     /**
@@ -105,11 +123,7 @@ public class IODeviceService implements DeviceHandler {
      */
     public String getStatus() {
         // TODO: 2024/9/4 凡是无法获取传感器的都停止，不运行，只有获取到了才可以
-        String ioStatus = this.getStatus();
-        while (ioStatus.equals(Constants.NOT_INITIALIZED)) {
-            log.error("无法获取传感器的值！");
-            relayDeviceService.closeAll();
-            stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
+        while (ioStatus == null) {
             // 先重置传感器
             nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
@@ -118,10 +132,14 @@ public class IODeviceService implements DeviceHandler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            // 重新获取传感器状态
-            ioStatus = this.getStatus();
         }
         return ioStatus;
+    }
+
+    public int getStatus(int i) {
+        String[] split = getStatus().split(",");
+        String str = split[i];
+        return Integer.valueOf(str);
     }
 
 

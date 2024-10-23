@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 按钮测试页面
+ * 手动按钮测试页面
  */
 @RestController
 @RequestMapping("/buttonAction")
 @Slf4j
-public class ButtonController {
+public class ManualOperationController {
 
     @Autowired
     private RobotService robotService;
@@ -52,43 +52,35 @@ public class ButtonController {
                 actionResult = "机器人取碗";
                 robotService.takeBowl();
                 break;
-            case 3:  // 机器人出汤
-                actionResult = "机器人出汤";
+            case 3:  // 机器人取粉丝
+                actionResult = "机器人取粉丝";
+//                robotService.getFans();
+                break;
+            case 4:  // 机器人出餐
+                actionResult = "机器人出餐";
                 robotService.putBowl();
                 break;
-            case 4:  // 取餐口复位
+            case 5:  // 取餐口复位
                 actionResult = "取餐口复位";
                 relayDeviceService.theFoodOutletIsFacingUpwards();
                 break;
-            case 5:  // 取餐口出餐
+            case 6:  // 取餐口出餐
                 actionResult = "取餐口出餐";
                 relayDeviceService.theFoodOutletIsFacingDownwards();
                 break;
 
-            // 转台和碗操作
-            case 6:  // 转台复位
-                actionResult = "转台复位";
-                turntableService.turntableReset();
+            // 碗操作
+            case 7:  // 出碗
+                actionResult = "出碗";
+                relayDeviceService.chuWanStart();
                 break;
-            case 7:  // 转台工位（数字）
-                if (number != null) {
-                    turntableService.alignToPosition(number);
-                    actionResult = "转台工位（数字）";
-                } else {
-                    actionResult = "缺少必要参数";
-                }
-                break;
-            case 8:  // 碗复位
-                actionResult = "碗复位";
+            case 8:  // 粉丝仓复位
+                actionResult = "粉丝仓复位";
                 bowlService.bowlReset();
                 break;
-            case 9:  // 碗向上
-                actionResult = "碗向上";
+            case 9:  // 粉丝仓出粉丝
+                actionResult = "粉丝仓出粉丝";
                 bowlService.bowlRising();
-                break;
-            case 10: // 碗向下
-                actionResult = "碗向下";
-                bowlService.bowlDown();
                 break;
 
             // 蒸汽和温度控制
@@ -111,14 +103,14 @@ public class ButtonController {
                 relayDeviceService.soupPump(number);
                 actionResult = "抽汤";
                 break;
-            case 15: // 抽汤排气（秒）
+            case 15: // 汤管排气（秒）
                 if (number == null) {
                     number = beefConfig.getSoupExhaustTime();
                 }
                 relayDeviceService.soupExhaust(number);
-                actionResult = "抽汤排气";
+                actionResult = "汤管排气";
                 break;
-            case 16: // 汤加热温度（度）
+            case 16: // 汤加热至（度）
                 if (number == null) {
                     double temperature = beefConfig.getSoupHeatingTemperature();
                     number = (int) temperature;
@@ -164,14 +156,14 @@ public class ButtonController {
                     number = beefConfig.getCilantro();
                 }
                 relayDeviceService.vegetableMotorInKg(2, number);
-                actionResult = "二号配菜电机（g）";
+                actionResult = "二号配菜电机";
                 break;
             case 23: // 三号配菜电机（g）
                 if (number == null) {
                     number = beefConfig.getChoppedGreenOnion();
                 }
                 relayDeviceService.vegetableMotorInKg(3, number);
-                actionResult = "三号配菜电机（g）";
+                actionResult = "三号配菜电机";
                 break;
 
             // 配料分发操作
@@ -213,7 +205,6 @@ public class ButtonController {
         }
         return actionResult;
     }
-
 
     @GetMapping("/emergencyStop")
     public String emergencyStop() {

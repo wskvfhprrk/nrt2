@@ -77,7 +77,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setRelayDevice(flag);
             log.info("打开蒸汽发生器");
-            relayDeviceService.openSteamGenerator();
+//            relayDeviceService.openSteamGenerator();
         } else if (ipConfig.getSend485Order().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setSend485Order(flag);
         } else if (ipConfig.getReceive485Signal().equals(clientAddress.getAddress().getHostAddress())) {

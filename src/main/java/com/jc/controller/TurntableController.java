@@ -20,9 +20,4 @@ public class TurntableController {
     }
 
 
-    @GetMapping("moveNumber")
-    public Result moveNumber(int number){
-        turntableService.alignToPosition(number);
-        return Result.success();
-    }
 }

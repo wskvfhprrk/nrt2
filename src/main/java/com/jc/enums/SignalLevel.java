@@ -4,7 +4,7 @@ package com.jc.enums;
  * 高低电平枚举类
  */
 public enum SignalLevel {
-    HIGH("1"), LOW("0");
+    LOW("0"),HIGH("1");
 
     private final String value;
 
