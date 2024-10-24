@@ -270,7 +270,7 @@ public class Relay1DeviceService implements DeviceHandler {
      * 打开震动器
      */
     public Result openVibrator(){
-        openClose(Constants.SHAKER_SWITCH,5);
+        openClose(Constants.Y_SHAKER_SWITCH_1,5);
         return Result.success();
     }
 

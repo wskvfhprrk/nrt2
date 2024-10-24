@@ -31,7 +31,7 @@ public class RobotServiceImpl implements RobotService {
     private int takeBowlNumber = 0;
 
     @Override
-    public Result reset() {
+    public Result robotReset() {
         try {
             nettyClientConfig.connectAndSendData("run(reset.jspf)");
             if (!pubConfig.getIsRobotStatus()) {
@@ -45,7 +45,7 @@ public class RobotServiceImpl implements RobotService {
     }
 
     @Override
-    public Result takeBowl() {
+    public Result robotTakeBowl() {
         //如果重试三次不再重试
         if (takeBowlNumber > 3) {
             log.error("重试三次无法取到碗，请检查!");
@@ -110,7 +110,7 @@ public class RobotServiceImpl implements RobotService {
         String[] split1 = status.split(",");
         if (split1[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.LOW.getValue())) {
             takeBowlNumber += 1;
-            this.takeBowl();
+            this.robotTakeBowl();
         }
         return Result.success();
     }
@@ -133,6 +133,16 @@ public class RobotServiceImpl implements RobotService {
 
     @Override
     public Result getFans() {
+        return null;
+    }
+
+    @Override
+    public Result robotTakeFans() {
+        return null;
+    }
+
+    @Override
+    public Result robotDeliverMeal() {
         return null;
     }
 

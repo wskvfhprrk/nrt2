@@ -253,7 +253,7 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @param seconds 多少秒关闭
      */
-    public void soupPump(int seconds) {
+    public void soupAdd(int seconds) {
         //抽汤前先打开汤开关，防止水流
         openClose(Constants.Y_SOUP_SWITCH, seconds);
         log.info("打开抽汤{}秒钟", seconds);
@@ -280,7 +280,7 @@ public class RelayDeviceService implements DeviceHandler {
      * 打开震动器
      */
     public Result openVibrator() {
-        openClose(Constants.SHAKER_SWITCH, 5);
+        openClose(Constants.Y_SHAKER_SWITCH_1, 5);
         return Result.success();
     }
 
@@ -305,13 +305,35 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 震动器测试（秒）
+     * 震动器测试1（秒）
      *
      * @param number
      * @return
      */
-    public Result vibratorTest(Integer number) {
-        openClose(Constants.SHAKER_SWITCH, number);
+    public Result vibrator1Test(Integer number) {
+        openClose(Constants.Y_SHAKER_SWITCH_1, number);
+        return Result.success();
+    }
+
+    /**
+     * 震动器测试2(秒）
+     *
+     * @param number
+     * @return
+     */
+    public Result<Object> vibrator2Test(Integer number) {
+        openClose(Constants.Y_SHAKER_SWITCH_2, number);
+        return Result.success();
+    }
+
+    /**
+     * 出料仓3测试
+     *
+     * @param number
+     * @return
+     */
+    public Result DischargeBin3Test(Integer number) {
+        openClose(Constants.Y_DISCHARGE_BIN_3, number);
         return Result.success();
     }
 
@@ -321,28 +343,28 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result soupHeating(Double number) {
-        //关闭汤开关
-        soupSwitchOff();
-        //初始化温度
-        pubConfig.setSoupTemperatureValue(0.0);
-        //发送查询温度指令
-        Boolean flag = true;
-        while (flag) {
-            //发送温度
-            readTemperature();
-            Double soupTemperatureValue = pubConfig.getSoupTemperatureValue();
-            if (soupTemperatureValue >= beefConfig.getSoupHeatingTemperature()) {
-                pubConfig.setIsSoupHeatingComplete(true);
-            }
-            if (soupTemperatureValue >= number) {
-                flag = false;
-                relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
-            } else {
-                relayOpening(Constants.SOUP_STEAM_SOLENOID_VALVE);
-            }
-
-        }
+    public Result soupHeatTo(Integer number) {
+//        //关闭汤开关
+//        soupSteamValveClose();
+//        //初始化温度
+//        pubConfig.setSoupTemperatureValue(0.0);
+//        //发送查询温度指令
+//        Boolean flag = true;
+//        while (flag) {
+//            //发送温度
+//            readTemperature();
+//            Double soupTemperatureValue = pubConfig.getSoupTemperatureValue();
+//            if (soupTemperatureValue >= beefConfig.getsoupHeatToTemperature()) {
+//                pubConfig.setIssoupHeatToComplete(true);
+//            }
+//            if (soupTemperatureValue >= number) {
+//                flag = false;
+//                relayClosing(Constants.SOUP_STEAM_SOLENOID_VALVE);
+//            } else {
+//                relayOpening(Constants.SOUP_STEAM_SOLENOID_VALVE);
+//            }
+//
+//        }
         return Result.success();
     }
 
@@ -522,7 +544,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result vegetableMotorInKg(int i, Integer number) throws InterruptedException {
+    public Result vegetable1Motor(int i, Integer number) throws InterruptedException {
         //清零
         //02 06 00 26 00 01 A9 F2
         nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
@@ -547,7 +569,7 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @return
      */
-    public Result bowlSteam(int number) {
+    public Result bowlSteamAdd(int number) {
         //盖子方向向下
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子下降盖着碗
@@ -577,7 +599,7 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @return
      */
-    public Result soupSwitchOff() {
+    public Result soupSteamValveClose() {
         relayClosing(Constants.Y_SOUP_SWITCH);
         return Result.success();
     }
@@ -595,25 +617,89 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @param second 时间
      */
-    public void soupExhaust(Integer second) {
+    public void soupPipeExhaust(Integer second) {
         //碗开关关闭
         relayClosing(Constants.Y_SOUP_SWITCH);
         //循环开关打开
         openClose(Constants.LOOP_SWITCH, second);
         //抽汤泵打开+2秒
-        openClose(Constants.Y_SOUP_PUMP_SWITCH,second+2);
+        openClose(Constants.Y_SOUP_PUMP_SWITCH, second + 2);
 
     }
 
-    public Result chuWanStart() {
-        if(ioDeviceService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL)==SignalLevel.LOW.ordinal()){
+    public Result deliverBowl() {
+        if (ioDeviceService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL) == SignalLevel.LOW.ordinal()) {
             log.error("没有碗了！");
-            return Result.error(500,"没有碗了！");
+            return Result.error(500, "没有碗了！");
         }
         relayOpening(Constants.Y_CHU_WAN);
         return Result.success();
     }
+
     public void chuWanStop() {
         relayClosing(Constants.Y_CHU_WAN);
+    }
+
+
+    public Result foodOutletReset() {
+        return Result.success();
+    }
+
+    public Result foodOutletDeliver() {
+        return null;
+    }
+
+    /**
+     * 一号料仓打开
+     *
+     * @return
+     */
+    public Result firstBinOpen() {
+        //控制方向
+        relayOpening(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
+        //控制电源
+        relayOpening(Constants.Y_HOPPER1_SWITCH_CONTROL);
+
+        return Result.success();
+    }
+
+    public Result firstBinClose() {
+        //控制方向
+        relayClosing(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
+        //控制电源
+        relayOpening(Constants.Y_HOPPER1_SWITCH_CONTROL);
+        return Result.success();
+    }
+
+    public Result secondBinOpen() {
+        //控制方向
+        relayOpening(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
+        //控制电源
+        relayOpening(Constants.Y_HOPPER2_SWITCH_CONTROL);
+        return Result.success();
+    }
+
+    public Result secondBinClose() {
+        //控制方向
+        relayClosing(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
+        //控制电源
+        relayOpening(Constants.Y_HOPPER2_SWITCH_CONTROL);
+        return Result.success();
+    }
+
+    public Result thirdBinOpen() {
+        //控制方向
+        relayOpening(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
+        //控制电源
+        relayOpening(Constants.Y_HOPPER3_SWITCH_CONTROL);
+        return Result.success();
+    }
+
+    public Result thirdBinClose() {
+        //控制方向
+        relayClosing(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
+        //控制电源
+        relayOpening(Constants.Y_HOPPER3_SWITCH_CONTROL);
+        return Result.success();
     }
 }

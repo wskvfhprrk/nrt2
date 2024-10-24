@@ -42,72 +42,73 @@ public class ManualOperationController {
         String actionResult = "";
 
         // Handling button actions based on ID
+        // Handling button actions based on ID
         switch (id) {
             // 机器人和取餐操作
             case 1:  // 机器人重置
                 actionResult = "机器人重置";
-                robotService.reset();
+                robotService.robotReset();  // 机器人重置
                 break;
             case 2:  // 机器人取碗
                 actionResult = "机器人取碗";
-                robotService.takeBowl();
+                robotService.robotTakeBowl();  // 机器人取碗
                 break;
             case 3:  // 机器人取粉丝
                 actionResult = "机器人取粉丝";
-//                robotService.getFans();
+        robotService.robotTakeFans();  // 机器人取粉丝
                 break;
             case 4:  // 机器人出餐
                 actionResult = "机器人出餐";
-                robotService.putBowl();
+                robotService.robotDeliverMeal();  // 机器人出餐
                 break;
             case 5:  // 取餐口复位
                 actionResult = "取餐口复位";
-                relayDeviceService.theFoodOutletIsFacingUpwards();
+                relayDeviceService.foodOutletReset();  // 取餐口复位
                 break;
             case 6:  // 取餐口出餐
                 actionResult = "取餐口出餐";
-                relayDeviceService.theFoodOutletIsFacingDownwards();
+                relayDeviceService.foodOutletDeliver();  // 取餐口出餐
                 break;
 
             // 碗操作
             case 7:  // 出碗
                 actionResult = "出碗";
-                relayDeviceService.chuWanStart();
+                relayDeviceService.deliverBowl();  // 出碗
                 break;
             case 8:  // 粉丝仓复位
                 actionResult = "粉丝仓复位";
-                bowlService.bowlReset();
+//                bowlService.noodleBinReset();  // 粉丝仓复位
                 break;
             case 9:  // 粉丝仓出粉丝
                 actionResult = "粉丝仓出粉丝";
-                bowlService.bowlRising();
+//                bowlService.noodleBinDeliver();  // 粉丝仓出粉丝
                 break;
 
             // 蒸汽和温度控制
             case 11: // 蒸汽打开
                 actionResult = "蒸汽打开";
-                relayDeviceService.steamOpen();
+                relayDeviceService.steamOpen();  // 蒸汽打开
                 break;
             case 12: // 蒸汽关闭
                 actionResult = "蒸汽关闭";
-                relayDeviceService.steamClose();
+                relayDeviceService.steamClose();  // 蒸汽关闭
                 break;
             case 13: // 关闭汤蒸汽阀
                 actionResult = "关闭汤蒸汽阀";
-                relayDeviceService.soupSwitchOff();
+                relayDeviceService.soupSteamValveClose();  // 关闭汤蒸汽阀
                 break;
-            case 14: // 抽汤（秒）
+            case 14: // 加汤（秒）
                 if (number == null) {
                     number = beefConfig.getSoupExtractionTime();
                 }
-                relayDeviceService.soupPump(number);
-                actionResult = "抽汤";
+                relayDeviceService.soupAdd(number);  // 加汤（秒）
+                actionResult = "加汤";
                 break;
             case 15: // 汤管排气（秒）
                 if (number == null) {
                     number = beefConfig.getSoupExhaustTime();
                 }
-                relayDeviceService.soupExhaust(number);
+                relayDeviceService.soupPipeExhaust(number);  // 汤管排气（秒）
                 actionResult = "汤管排气";
                 break;
             case 16: // 汤加热至（度）
@@ -115,94 +116,101 @@ public class ManualOperationController {
                     double temperature = beefConfig.getSoupHeatingTemperature();
                     number = (int) temperature;
                 }
-                relayDeviceService.soupHeating(Double.valueOf(number));
-                actionResult = "汤加热温度";
+                relayDeviceService.soupHeatTo(number);  // 汤加热至（度）
+                actionResult = "汤加热至";
                 break;
             case 17: // 碗加蒸汽（秒）
                 if (number == null) {
                     number = beefConfig.getBowlSteamTime();
                 }
-                relayDeviceService.bowlSteam(number);
+                relayDeviceService.bowlSteamAdd(number);  // 碗加蒸汽（秒）
                 actionResult = "碗加蒸汽";
                 break;
 
             // 风扇和震动测试
             case 18: // 后箱风扇开
                 actionResult = "后箱风扇开";
-                relayDeviceService.rearFanOpen();
+                relayDeviceService.rearFanOpen();  // 后箱风扇开
                 break;
             case 19: // 后箱风扇关
                 actionResult = "后箱风扇关";
-                relayDeviceService.rearFanClose();
+                relayDeviceService.rearFanClose();  // 后箱风扇关
                 break;
-            case 20: // 震动器测试（秒）
+            case 20: // 震动器1测试（秒）
                 if (number == null) {
                     number = beefConfig.getVibratorTime();
                 }
-                relayDeviceService.vibratorTest(number);
-                actionResult = "震动器测试";
+                relayDeviceService.vibrator1Test(number);  // 震动器1测试
+                actionResult = "震动器1测试";
+                break;
+            case 21: // 震动器2测试（秒）
+                if (number == null) {
+                    number = beefConfig.getVibratorTime();
+                }
+                relayDeviceService.vibrator2Test(number);  // 震动器2测试
+                actionResult = "震动器2测试";
+                break;
+            case 22: // 出料3测试（秒）
+                if (number == null) {
+                    number = beefConfig.getVibratorTime();
+                }
+                relayDeviceService.DischargeBin3Test(number);  // 出料3测试
+                actionResult = "出料3测试";
                 break;
 
             // 称重与配料操作
-            case 21: // 一号配菜电机（g）
+            case 23: // 一号配菜（g）
                 if (number == null) {
                     number = beefConfig.getBeef10();
                 }
-                relayDeviceService.vegetableMotorInKg(1, number);
-                actionResult = "一号配菜电机";
+                relayDeviceService.vegetable1Motor(1,number);  // 一号配菜（g）
+                actionResult = "一号配菜";
                 break;
-            case 22: // 二号配菜电机（g）
+            case 24: // 二号配菜（g）
                 if (number == null) {
                     number = beefConfig.getCilantro();
                 }
-                relayDeviceService.vegetableMotorInKg(2, number);
-                actionResult = "二号配菜电机";
+                relayDeviceService.vegetable1Motor(2,number);  // 二号配菜（g）
+                actionResult = "二号配菜";
                 break;
-            case 23: // 三号配菜电机（g）
+            case 25: // 三号配菜（g）
                 if (number == null) {
                     number = beefConfig.getChoppedGreenOnion();
                 }
-                relayDeviceService.vegetableMotorInKg(3, number);
-                actionResult = "三号配菜电机";
+                relayDeviceService.vegetable1Motor(3,number);  // 三号配菜（g）
+                actionResult = "三号配菜";
                 break;
 
             // 配料分发操作
-            case 24: // 调料机（配方）
-                if (number != null) {
-                    seasoningMachineService.dischargeAccordingToFormula(number);
-                    actionResult = "调料机测试（配方）完成";
-                } else {
-                    actionResult = "缺少必要参数";
-                }
+            case 26: // 一号料仓打开
+                actionResult = "一号料仓打开";
+                relayDeviceService.firstBinOpen();  // 一号料仓打开
                 break;
-            case 25: // 弹簧货道（编号）
-                if (number != null) {
-                    relayDeviceService.springChannel(number);
-                    actionResult = "弹簧货道（编号）";
-                } else {
-                    actionResult = "缺少必要参数";
-                }
+            case 27: // 一号料仓关闭
+                actionResult = "一号料仓关闭";
+                relayDeviceService.firstBinClose();  // 一号料仓关闭
                 break;
-            case 26: // 配菜称重盒打开（编号）
-                if (number != null) {
-                    relayDeviceService.openWeighingBox(number);
-                    actionResult = "配菜称重盒打开（编号）";
-                } else {
-                    actionResult = "缺少必要参数";
-                }
+            case 28: // 二号料仓打开
+                actionResult = "二号料仓打开";
+                relayDeviceService.secondBinOpen();  // 二号料仓打开
                 break;
-            case 27: // 配菜称重盒关闭（编号）
-                if (number != null) {
-                    relayDeviceService.closeWeighingBox(number);
-                    actionResult = "配菜称重盒关闭（编号）";
-                } else {
-                    actionResult = "缺少必要参数";
-                }
+            case 29: // 二号料仓关闭
+                actionResult = "二号料仓关闭";
+                relayDeviceService.secondBinClose();  // 二号料仓关闭
+                break;
+            case 30: // 三号料仓打开
+                actionResult = "三号料仓打开";
+                relayDeviceService.thirdBinOpen();  // 三号料仓打开
+                break;
+            case 31: // 三号料仓关闭
+                actionResult = "三号料仓关闭";
+                relayDeviceService.thirdBinClose();  // 三号料仓关闭
                 break;
 
             default: // 未知操作
                 actionResult = "未知操作";
         }
+
         return actionResult;
     }
 

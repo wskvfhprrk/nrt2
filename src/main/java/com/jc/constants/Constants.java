@@ -256,7 +256,7 @@ public class Constants {
     /**
      * 震动器
      */
-    public static final int SHAKER_SWITCH = 26;
+    public static final int Y_SHAKER_SWITCH_1 = 17;
     /**
      * 配料电机4
      */
@@ -396,4 +396,24 @@ public class Constants {
      * 碗电机
      */
     public static final int Y_CHU_WAN = 15;
+    /**
+     * 震动器2
+     */
+    public static final int Y_SHAKER_SWITCH_2 = 18;
+    /**
+     * 出料3
+     */
+    public static final int Y_DISCHARGE_BIN_3 = 16;
+    /**
+     * 一号仓门方向控制
+     */
+    public static final int Y_FIRST_BIN_DIRECTION_CONTROL = 3;
+    /**
+     * 一号仓门开关控制
+     */
+    public static final int Y_HOPPER1_SWITCH_CONTROL = 4;
+    public static final int Y_SECOND_BIN_DIRECTION_CONTROL = 5;
+    public static final int Y_HOPPER2_SWITCH_CONTROL = 6;
+    public static final int Y_THIRD_BIN_DIRECTION_CONTROL = 7;
+    public static final int Y_HOPPER3_SWITCH_CONTROL = 8;
 }

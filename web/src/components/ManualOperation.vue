@@ -104,13 +104,13 @@ export default {
         {id: 2, name: "机器人取碗"},
         {id: 3, name: "机器人取粉丝"},
         {id: 4, name: "机器人出餐"},
-        {id: 6, name: "取餐口出餐"},
-        {id: 5, name: "取餐口复位"}
+        {id: 5, name: "取餐口复位"},
+        {id: 6, name: "取餐口出餐"}
       ],
       buttonsGroup2: [
         {id: 7, name: "出碗"},
-        {id: 9, name: "粉丝仓出粉丝"},
-        {id: 8, name: "粉丝仓复位"}
+        {id: 8, name: "粉丝仓复位"},
+        {id: 9, name: "粉丝仓出粉丝"}
       ],
       buttonsGroup3: [
         {id: 11, name: "蒸汽打开"},
@@ -118,24 +118,28 @@ export default {
         {id: 13, name: "关汤蒸汽阀"},
         {id: 14, name: "加汤（秒）"},
         {id: 15, name: "汤管排气（秒）"},
-        {id: 17, name: "加蒸汽（秒）"},
-        {id: 16, name: "汤加热至（度）"}
+        {id: 16, name: "汤加热至（度）"},
+        {id: 17, name: "加蒸汽（秒）"}
       ],
       buttonsGroup4: [
         {id: 18, name: "后箱风扇开"},
         {id: 19, name: "后箱风扇关"},
-        {id: 20, name: "震动器（秒）"}
+        {id: 20, name: "震动器1（秒）"},
+        {id: 21, name: "震动器2（秒）"},
+        {id: 22, name: "出料3（秒）"}
       ],
       buttonsGroup5: [
-        {id: 21, name: "一号配菜（g）"},
-        {id: 22, name: "二号配菜（g）"},
-        {id: 23, name: "三号配菜（g）"}
+        {id: 23, name: "一号配菜（g）"},
+        {id: 24, name: "二号配菜（g）"},
+        {id: 25, name: "三号配菜（g）"}
       ],
       buttonsGroup6: [
-        {id: 24, name: "调料机（配方）"},
-        {id: 25, name: "弹簧货道（编号）"},
-        {id: 26, name: "称重盒开（编号）"},
-        {id: 27, name: "称重盒关（编号）"}
+        {id: 26, name: "一号料仓打开"},
+        {id: 27, name: "一号料仓关闭"},
+        {id: 28, name: "二号料仓打开"},
+        {id: 29, name: "二号料仓关闭"},
+        {id: 30, name: "三号料仓打开"},
+        {id: 31, name: "三号料仓关闭"}
       ],
       dialogVisible: false,
       parameter: '',

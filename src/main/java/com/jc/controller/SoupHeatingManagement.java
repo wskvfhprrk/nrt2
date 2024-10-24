@@ -32,7 +32,7 @@ public class SoupHeatingManagement {
      */
     public Result heatSoupToMaximumTemperature() {
         log.info("汤加热出到汤温度");
-        new Thread(() -> relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature())).start();
+//        new Thread(() -> relayDeviceService.soupHeating(beefConfig.getSoupHeatingTemperature())).start();
         return Result.success();
     }
 
@@ -43,7 +43,7 @@ public class SoupHeatingManagement {
      */
     public Result heatSoupToMediumTemperature() {
         log.info("汤加热至保湿最高温度");
-        new Thread(()->relayDeviceService.soupHeating(Constants.SOUP_MAXIMUM_TEMPERATURE_VALUE)).start();
+//        new Thread(()->relayDeviceService.soupHeating(Constants.SOUP_MAXIMUM_TEMPERATURE_VALUE)).start();
         return Result.success();
     }
 
@@ -54,7 +54,7 @@ public class SoupHeatingManagement {
      */
     public Result heatSoupToMinimumTemperature() {
         log.info("汤加热至最低温度");
-        new Thread(()->relayDeviceService.soupHeating(Constants.SOUP_MINIMUM_TEMPERATURE_VALUE)).start();
+//        new Thread(()->relayDeviceService.soupHeating(Constants.SOUP_MINIMUM_TEMPERATURE_VALUE)).start();
         return Result.success();
     }
 
