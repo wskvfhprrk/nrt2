@@ -27,7 +27,7 @@ public class ConfigLoader {
             beefConfig.setChoppedGreenOnion(Integer.parseInt(properties.getProperty("choppedGreenOnion")));
             beefConfig.setSoupExtractionTime(Integer.parseInt(properties.getProperty("soupExtractionTime")));
             beefConfig.setVibratorTime(Integer.parseInt(properties.getProperty("vibratorTime")));
-            beefConfig.setSoupHeatingTemperature(Double.parseDouble(properties.getProperty("soupHeatingTemperature")));
+            beefConfig.setSoupHeatingTemperature(Integer.parseInt(properties.getProperty("soupHeatingTemperature")));
 
         } catch (IOException e) {
             e.printStackTrace();

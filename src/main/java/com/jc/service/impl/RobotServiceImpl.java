@@ -84,7 +84,7 @@ public class RobotServiceImpl implements RobotService {
             return Result.error(500, "机器人未复位！");
         }
         if (!bowlSensor) {
-            bowlService.bowlReset();
+//            bowlService.bowlReset();
         } else {
             pubConfig.setIsAddingBowlCompleted(true);
         }

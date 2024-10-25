@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 
 /**
- * 发送485指令
+ * 发送485指令——步进电机和伺服驱
  */
 @Service
 @Slf4j
@@ -25,8 +25,6 @@ public class Send485OrderService implements DeviceHandler {
     private NettyServerHandler nettyServerHandler;
     @Autowired
     private IpConfig ipConfig;
-    @Autowired
-    private RobotConfig robotConfig;
 
     /**
      * 处理消息
@@ -37,44 +35,22 @@ public class Send485OrderService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-//            log.info("发送485指令返回的HEX消息: {}", message);
-            try {
-                theDischargeMachineIsCompletedToJudge(message);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
+            log.info("发送485指令返回的HEX消息: {}", message);
         } else {
             log.info("发送485指令返回的普通消息: {}", message);
             // 在这里添加处理普通字符串消息的逻辑
         }
     }
 
-    /**
-     * 对于收到出料机出料完成进行判断
-     */
-    private void theDischargeMachineIsCompletedToJudge(String message) {
-        //02 01 01 01 90 0C
-        boolean validateCRC = CRC16.validateCRC(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));
-        if (!validateCRC) return;
-        //根据前两位判断出料机信息
-        String[] s = message.split(" ");
-        int address = Integer.valueOf(s[0]);
-        if (address == Constants.SEASONING_MACHINE) {
-            if (s[3].equals("00")) {
-                robotConfig.setEjectionIsComplete(true);
-                log.info("出料机出料完成！");
-            } else {
-                robotConfig.setEjectionIsComplete(false);
-            }
-        }
-    }
 
     /**
      * 发送485指令
      *
-     * @param HexXtr
+     * @param HexStr
      */
-    public void sendOrder(String HexXtr) {
-        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), HexXtr, true);
+    public void sendOrder(String HexStr) {
+        String modbusrtuString = CRC16.getModbusrtuString(HexStr);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSend485Order(), HexStr+modbusrtuString, true);
     }
+
 }

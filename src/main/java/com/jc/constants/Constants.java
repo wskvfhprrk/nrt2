@@ -214,45 +214,25 @@ public class Constants {
      */
     public static final int TO_BE_USED = 15;
     /**
-     * 循环开关
-     */
-    public static final int LOOP_SWITCH = 16;
-    /**
      * 抽汤泵
      */
     public static final int Y_SOUP_PUMP_SWITCH = 21;
     /**
-     * 弹簧货道电机5
-     */
-    public static final int SPRING_TRACK_MOTOR5 = 18;
-    /**
-     * 弹簧货道电机4
-     */
-    public static final int SPRING_TRACK_MOTOR4 = 19;
-    /**
-     * 弹簧货道电机3
-     */
-    public static final int SPRING_TRACK_MOTOR3 = 20;
-    /**
-     * 弹簧货道电机2
-     */
-    public static final int SPRING_TRACK_MOTOR2 = 21;
-    /**
-     * 弹簧货道电机1
-     */
-    public static final int SPRING_TRACK_MOTOR1 = 22;
-    /**
      * 碗蒸汽电磁阀
      */
-    public static final int BOWL_STEAM_SOLENOID_VALVE = 23;
+    public static final int Y_BOWL_STEAM_SOLENOID_VALVE = 22;
+    /**
+     * 配料蒸汽电磁阀
+     */
+    public static final int Y_BATCHING_STEAM_SOLENOID_VALVE = 24;
     /**
      * 汤蒸汽开关
      */
-    public static final int SOUP_STEAM_SOLENOID_VALVE = 24;
+    public static final int Y_SOUP_STEAM_SOLENOID_VALVE = 25;
     /**
-     * 汤开关
+     * 汤循环开关
      */
-    public static final int Y_SOUP_SWITCH = 21;
+    public static final int Y_SOUP_SWITCH = 23;
     /**
      * 震动器
      */
@@ -387,11 +367,11 @@ public class Constants {
     /**
      * 伸缩杆方向控制——通电收缩，不通电伸开
      */
-    public static final int Y_TELESCOPIC_ROD_DIRECTION_CONTROL= 1;
+    public static final int Y_TELESCOPIC_ROD_DIRECTION_CONTROL = 1;
     /**
      * 伸缩杆开关控制
      */
-    public static final int Y_TELESCOPIC_ROD_SWITCH_CONTROL= 2;
+    public static final int Y_TELESCOPIC_ROD_SWITCH_CONTROL = 2;
     /**
      * 碗电机
      */

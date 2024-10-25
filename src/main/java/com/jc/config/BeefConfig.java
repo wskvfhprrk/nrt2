@@ -43,7 +43,7 @@ public class BeefConfig {
     /**
      * 汤加热温度
      */
-    private Double soupHeatingTemperature;
+    private int soupHeatingTemperature;
     /**
      * 碗蒸汽时间
      */

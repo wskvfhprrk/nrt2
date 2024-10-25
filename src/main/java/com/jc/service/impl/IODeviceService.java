@@ -114,6 +114,7 @@ public class IODeviceService implements DeviceHandler {
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }
+
     }
 
     /**

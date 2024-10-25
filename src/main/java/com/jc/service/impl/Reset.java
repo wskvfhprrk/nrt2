@@ -40,7 +40,7 @@ public class Reset {
         turntableService.turntableReset();
         //碗复位
         log.info("碗复位");
-        bowlService.bowlReset();
+//        bowlService.bowlReset();
         //出汤口复位
         log.info("出汤口复位");
         relayDeviceService.theFoodOutletIsFacingUpwards();

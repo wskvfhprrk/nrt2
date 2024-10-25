@@ -126,7 +126,7 @@ public class Receive485SignalService implements DeviceHandler {
                 number = 0;
             }
             sensorValues[i] = number;
-            log.info("称重传感器 {} 的值为：{} g", i, number);
+            log.info("称重传感器 {} 的值为：{} g", i+1, number);
         }
         pubConfig.setCalculateWeight(sensorValues);
         return sensorValues;
