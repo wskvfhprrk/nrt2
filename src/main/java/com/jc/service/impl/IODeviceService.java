@@ -2,6 +2,7 @@ package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
@@ -35,6 +36,11 @@ public class IODeviceService implements DeviceHandler {
     private StringBuffer previousLevels = null;
 
     private String ioStatus = null;
+    @Lazy
+    @Autowired
+    private IODeviceService ioDeviceService;
+    @Autowired
+    private Send485OrderService send485OrderService;
 
     /**
      * 处理消息
@@ -97,22 +103,39 @@ public class IODeviceService implements DeviceHandler {
             relayDeviceService.chuWanStop();
         }
         //如果碗报警信号
-        if(i==Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")){
+        if (i == Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")) {
             // TODO: 2024/10/23 报警给服务器通知管理人员上碗 ，订单最多再接几单
             log.warn("碗快没有了，要放碗了");
         }
         //蒸汽原位停止
-        if(i==Constants.X_STEAM_ORIGIN && s.equals("0") && s1.equals("1")){
+        if (i == Constants.X_STEAM_ORIGIN && s.equals("0") && s1.equals("1")) {
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽下限位停止
-        if(i==Constants.X_STEAM_LOWER_LIMIT && s.equals("0") && s1.equals("1")){
+        if (i == Constants.X_STEAM_LOWER_LIMIT && s.equals("0") && s1.equals("1")) {
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽限上位停止
-        if(i==Constants.X_STEAM_UPPER_LIMIT && s.equals("0") && s1.equals("1")){
+        if (i == Constants.X_STEAM_UPPER_LIMIT && s.equals("0") && s1.equals("1")) {
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
+        }
+        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
+            //停止
+            String hex = "030600020001";
+            send485OrderService.sendOrder(hex);
+        }
+        //粉丝仓左限位
+        if(ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT)==SignalLevel.HIGH.ordinal()){
+            //停止
+            String hex = "040600020001";
+            send485OrderService.sendOrder(hex);
+        }
+        //粉丝仓左限位
+        if(ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT)==SignalLevel.HIGH.ordinal()){
+            //停止
+            String hex = "040600020001";
+            send485OrderService.sendOrder(hex);
         }
 
     }
@@ -139,7 +162,7 @@ public class IODeviceService implements DeviceHandler {
 
     public int getStatus(int i) {
         String[] split = getStatus().split(",");
-        String str = split[i];
+        String str = split[i - 1];
         return Integer.valueOf(str);
     }
 

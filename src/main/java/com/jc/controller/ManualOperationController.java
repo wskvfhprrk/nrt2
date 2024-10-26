@@ -2,6 +2,7 @@ package com.jc.controller;
 
 import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
@@ -104,7 +105,10 @@ public class ManualOperationController {
                 break;
             case 14:
                 actionResult = "加汤蒸汤盖下降";
-                relayDeviceService.soupSteamCoverDown();
+                Result result = relayDeviceService.soupSteamCoverDown();
+                if(result.getCode()!=200){
+                    actionResult=result.getMessage();
+                }
                 break;
             case 15:
                 actionResult = "加汤蒸汤盖上升";

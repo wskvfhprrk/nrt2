@@ -253,9 +253,12 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @param seconds 多少秒关闭
      */
-    public void soupAdd(int seconds) {
+    public Result soupAdd(int seconds) {
         //盖子下降
-        this.soupSteamCoverDown();
+        Result result = this.soupSteamCoverDown();
+        if (result.getCode() == 500) {
+            return result;
+        }
         //抽汤前先打开汤开关，防止水流
         openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, seconds);
         log.info("打开抽汤{}秒钟", seconds);
@@ -269,6 +272,7 @@ public class RelayDeviceService implements DeviceHandler {
         }
         //盖子上升
         this.soupSteamCoverUp();
+        return Result.success();
     }
 
     /**
@@ -539,7 +543,7 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @return
      */
-    public Result bowlSteamAdd(int number)  {
+    public Result bowlSteamAdd(int number) {
         //盖子方向向下
         this.soupSteamCoverDown();
         //加蒸汽
@@ -552,7 +556,7 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         //盖子方向向上
-       this.soupSteamCoverUp();
+        this.soupSteamCoverUp();
         return Result.success();
     }
 
@@ -669,7 +673,10 @@ public class RelayDeviceService implements DeviceHandler {
      *
      * @return
      */
-    public Result soupSteamCoverDown()  {
+    public Result soupSteamCoverDown() {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            return Result.error(500, "菜勺还在倒菜位置上！");
+        }
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子开关通电
         relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
@@ -689,9 +696,9 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result soupSteamCoverUp() {
 
-        openClose(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL,9);
+        openClose(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL, 9);
         //盖子开关通电
-        openClose(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL,9);
+        openClose(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL, 9);
         //无需要停止
         return Result.success();
     }

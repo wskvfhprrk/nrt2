@@ -28,6 +28,8 @@ public class Reset {
         }
         log.info("设备自检复位中……");
         //打开蒸汽发生器
+
+
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();
         log.info("抽汤排气");
@@ -54,3 +56,4 @@ public class Reset {
 //        log.info("定时任务打开！");
     }
 }
+
