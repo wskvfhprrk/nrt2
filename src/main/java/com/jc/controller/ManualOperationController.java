@@ -29,7 +29,7 @@ public class ManualOperationController {
     @Autowired
     private StepperMotorService stepperMotorService;
     @Autowired
-    private SeasoningMachineService seasoningMachineService;
+    private WeightService weightService;
     @Autowired
     private BeefConfig beefConfig;
     @Autowired
@@ -40,172 +40,183 @@ public class ManualOperationController {
     private PubConfig pubConfig;
 
     @GetMapping("/{id}")
-    public String handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
+    public Result handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
         log.info("Button action triggered with id=={}", id);
         String actionResult = "";
+        Result result = null;
 
-        // Handling button actions based on ID and new button order
+        // Handling button actions based on new button order
         switch (id) {
             // Group 1: 机器人和取餐操作
             case 1:
                 actionResult = "机器人重置";
-                robotService.robotReset();
+                result = robotService.robotReset();
                 break;
             case 2:
                 actionResult = "机器人取碗";
-                robotService.robotTakeBowl();
+                result = robotService.robotTakeBowl();
                 break;
             case 3:
                 actionResult = "机器人取粉丝";
-                robotService.robotTakeFans();
+                result = robotService.robotTakeFans();
                 break;
             case 4:
                 actionResult = "机器人出餐";
-                robotService.robotDeliverMeal();
+                result = robotService.robotDeliverMeal();
                 break;
             case 5:
                 actionResult = "取餐口复位";
-                relayDeviceService.foodOutletReset();
+                result = relayDeviceService.foodOutletReset();
                 break;
             case 6:
                 actionResult = "取餐口出餐";
-                relayDeviceService.foodOutletDeliver();
+                result = relayDeviceService.foodOutletDeliver();
                 break;
 
             // Group 2: 碗和粉丝仓操作
             case 7:
                 actionResult = "出碗";
-                relayDeviceService.deliverBowl();
+                result = relayDeviceService.deliverBowl();
                 break;
             case 8:
                 actionResult = "粉丝仓复位";
-                fansService.noodleBinReset();
+                result = fansService.noodleBinReset();
                 break;
             case 9:
                 actionResult = "粉丝仓出粉丝";
-                fansService.noodleBinDeliver();
+                result = fansService.noodleBinDeliver();
                 break;
             case 10:
                 actionResult = "装菜勺复位";
-                bowlService.spoonReset();
+                result = bowlService.spoonReset();
                 break;
             case 11:
                 actionResult = "装菜勺倒菜";
-                bowlService.spoonPour();
+                result = bowlService.spoonPour();
                 break;
 
             // Group 3: 蒸汽和温度控制
             case 12:
                 actionResult = "蒸汽打开";
-                relayDeviceService.steamOpen();
+                result = relayDeviceService.steamOpen();
                 break;
             case 13:
                 actionResult = "蒸汽关闭";
-                relayDeviceService.steamClose();
+                result = relayDeviceService.steamClose();
                 break;
             case 14:
                 actionResult = "加汤蒸汤盖下降";
-                Result result = relayDeviceService.soupSteamCoverDown();
-                if(result.getCode()!=200){
-                    actionResult=result.getMessage();
-                }
+                result = relayDeviceService.soupSteamCoverDown();
                 break;
             case 15:
                 actionResult = "加汤蒸汤盖上升";
-                relayDeviceService.soupSteamCoverUp();
+                result = relayDeviceService.soupSteamCoverUp();
                 break;
             case 16:
-                actionResult = "关闭汤蒸汽阀";
-                relayDeviceService.soupSteamValveClose();
+                actionResult = "关汤蒸汽阀";
+                result = relayDeviceService.soupSteamValveClose();
                 break;
             case 17:
                 actionResult = "加汤";
-                relayDeviceService.soupAdd(number != null ? number : beefConfig.getSoupExtractionTime());
+                result = relayDeviceService.soupAdd(number != null ? number : beefConfig.getSoupExtractionTime());
                 break;
             case 18:
                 actionResult = "汤管排气";
-                relayDeviceService.soupPipeExhaust(number != null ? number : beefConfig.getSoupExhaustTime());
+                result = relayDeviceService.soupPipeExhaust(number != null ? number : beefConfig.getSoupExhaustTime());
                 break;
             case 19:
                 actionResult = "汤加热至";
-                relayDeviceService.soupHeatTo(number != null ? number : (int) beefConfig.getSoupHeatingTemperature());
+                result = relayDeviceService.soupHeatTo(number != null ? number : (int) beefConfig.getSoupHeatingTemperature());
                 break;
             case 20:
                 actionResult = "加蒸汽";
-                relayDeviceService.bowlSteamAdd(number != null ? number : beefConfig.getBowlSteamTime());
+                result = relayDeviceService.bowlSteamAdd(number != null ? number : beefConfig.getBowlSteamTime());
                 break;
 
             // Group 4: 风扇和震动测试
             case 21:
                 actionResult = "后箱风扇开";
-                relayDeviceService.rearFanOpen();
+                result = relayDeviceService.rearFanOpen();
                 break;
             case 22:
                 actionResult = "后箱风扇关";
-                relayDeviceService.rearFanClose();
+                result = relayDeviceService.rearFanClose();
                 break;
             case 23:
                 actionResult = "震动器1测试";
-                relayDeviceService.vibrator1Test(number != null ? number : beefConfig.getVibratorTime());
+                result = relayDeviceService.vibrator1Test(number != null ? number : beefConfig.getVibratorTime());
                 break;
             case 24:
                 actionResult = "震动器2测试";
-                relayDeviceService.vibrator2Test(number != null ? number : beefConfig.getVibratorTime());
+                result = relayDeviceService.vibrator2Test(number != null ? number : beefConfig.getVibratorTime());
                 break;
             case 25:
                 actionResult = "出料3测试";
-                relayDeviceService.DischargeBin3Test(number != null ? number : beefConfig.getVibratorTime());
+                result = relayDeviceService.DischargeBin3Test(number != null ? number : beefConfig.getVibratorTime());
                 break;
 
             // Group 5: 配菜操作
             case 26:
                 actionResult = "一号配菜";
-                relayDeviceService.vegetable1Motor(1, number != null ? number : beefConfig.getBeef10());
+                result = relayDeviceService.vegetable1Motor(1, number != null ? number : beefConfig.getBeef10());
                 break;
             case 27:
                 actionResult = "二号配菜";
-                relayDeviceService.vegetable1Motor(2, number != null ? number : beefConfig.getCilantro());
+                result = relayDeviceService.vegetable1Motor(2, number != null ? number : beefConfig.getCilantro());
                 break;
             case 28:
                 actionResult = "三号配菜";
-                relayDeviceService.vegetable1Motor(3, number != null ? number : beefConfig.getChoppedGreenOnion());
+                result = relayDeviceService.vegetable1Motor(3, number != null ? number : beefConfig.getChoppedGreenOnion());
                 break;
             case 29:
                 actionResult = "四号配菜";
-                relayDeviceService.vegetable1Motor(4, number != null ? number : beefConfig.getChoppedGreenOnion());
+                result = relayDeviceService.vegetable1Motor(4, number != null ? number : beefConfig.getChoppedGreenOnion());
+                break;
+            case 30:
+                actionResult = "全部清0";
+                result = weightService.clearAll();
+                break;
+            case 31:
+                actionResult = "标定500g";
+                result = weightService.calibrateWeight(number != null ? number : 1);
                 break;
 
             // Group 6: 料仓操作
-            case 30:
-                actionResult = "一号料仓打开";
-                relayDeviceService.firstBinOpen();
-                break;
-            case 31:
-                actionResult = "一号料仓关闭";
-                relayDeviceService.firstBinClose();
-                break;
             case 32:
-                actionResult = "二号料仓打开";
-                relayDeviceService.secondBinOpen();
+                actionResult = "一号料仓打开";
+                result = relayDeviceService.firstBinOpen();
                 break;
             case 33:
-                actionResult = "二号料仓关闭";
-                relayDeviceService.secondBinClose();
+                actionResult = "一号料仓关闭";
+                result = relayDeviceService.firstBinClose();
                 break;
             case 34:
-                actionResult = "三号料仓打开";
-                relayDeviceService.thirdBinOpen();
+                actionResult = "二号料仓打开";
+                result = relayDeviceService.secondBinOpen();
                 break;
             case 35:
+                actionResult = "二号料仓关闭";
+                result = relayDeviceService.secondBinClose();
+                break;
+            case 36:
+                actionResult = "三号料仓打开";
+                result = relayDeviceService.thirdBinOpen();
+                break;
+            case 37:
                 actionResult = "三号料仓关闭";
-                relayDeviceService.thirdBinClose();
+                result = relayDeviceService.thirdBinClose();
                 break;
 
             default:
                 actionResult = "未知操作";
         }
 
-        return actionResult;
+        // Returning result
+        if (result != null && result.getCode() != 200) {
+            return result;
+        }
+
+        return Result.success(actionResult);
     }
 
     @GetMapping("/emergencyStop")

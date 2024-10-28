@@ -140,16 +140,18 @@ export default {
         {id: 26, name: "一号配菜（g）"},
         {id: 27, name: "二号配菜（g）"},
         {id: 28, name: "三号配菜（g）"},
-        {id: 29, name: "四号配菜（g）"}
+        {id: 29, name: "四号配菜（g）"},
+        {id: 30, name: "称重全部清0"},
+        {id: 31, name: "标重500g（编号）"}
       ],
 
       buttonsGroup6: [
-        {id: 30, name: "一号料仓打开"},
-        {id: 31, name: "一号料仓关闭"},
-        {id: 32, name: "二号料仓打开"},
-        {id: 33, name: "二号料仓关闭"},
-        {id: 34, name: "三号料仓打开"},
-        {id: 35, name: "三号料仓关闭"}
+        {id: 32, name: "一号料仓打开"},
+        {id: 33, name: "一号料仓关闭"},
+        {id: 34, name: "二号料仓打开"},
+        {id: 35, name: "二号料仓关闭"},
+        {id: 36, name: "三号料仓打开"},
+        {id: 37, name: "三号料仓关闭"}
       ],
       dialogVisible: false,
       parameter: '',
@@ -170,7 +172,12 @@ export default {
     async sendRequest(url) {
       try {
         const response = await axios.get(url);
-        this.$message.success(`操作成功：${response.data}`);
+        if(response.data.code===200){
+          this.$message.success(`操作成功：${response.data.data}`);
+        }else {
+          this.$message.error(`操作失败：${response.data.message}`)
+        }
+        // this.$message.success(`操作成功：${response.data}`);
         console.log(response.data);
       } catch (error) {
         this.$message.error('操作失败');
@@ -218,7 +225,7 @@ export default {
 }
 
 .button-group {
-  height: 500px;
+  height: 600px;
   width: 300px;
   display: flex;
   flex-direction: column;

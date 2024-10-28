@@ -277,18 +277,24 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 蒸汽打开
+     *
+     * @return
      */
-    public void steamOpen() {
+    public Result steamOpen() {
         log.info("蒸汽打开");
         relayOpening(Constants.Y_STEAM_SWITCH);
+        return Result.success();
     }
 
     /**
      * 蒸汽关闭
+     *
+     * @return
      */
-    public void steamClose() {
+    public Result steamClose() {
         log.info("蒸汽关闭");
         relayClosing(Constants.Y_STEAM_SWITCH);
+        return Result.success();
     }
 
     /**
@@ -583,13 +589,15 @@ public class RelayDeviceService implements DeviceHandler {
      * 抽汤排气
      *
      * @param second 时间
+     * @return
      */
-    public void soupPipeExhaust(Integer second) {
+    public Result soupPipeExhaust(Integer second) {
         //汤管开关关闭
         openClose(Constants.Y_SOUP_SWITCH, second);
         //抽汤泵打开+2秒
         openClose(Constants.Y_SOUP_PUMP_SWITCH, second + 2);
 
+        return Result.success();
     }
 
     public Result deliverBowl() {
@@ -611,7 +619,7 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     public Result foodOutletDeliver() {
-        return null;
+        return Result.success();
     }
 
     /**
