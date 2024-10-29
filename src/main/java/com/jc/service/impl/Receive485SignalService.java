@@ -77,10 +77,12 @@ public class Receive485SignalService implements DeviceHandler {
      * @return
      */
     private int[] calculateWeight(String message) {
-        if (Constants.ZEROING_CALIBRATION.replaceAll(" ", "").equals(message.replaceAll(" ", ""))) {
-            log.info("所有秤已置零！");
-            return new int[4];
-        }
+//        if (Constants.ZEROING_CALIBRATION.replaceAll(" ", "").equals(message.replaceAll(" ", ""))) {
+//            log.info("所有秤已置零！");
+//            return new int[4];
+//        }
+        //判断如果不是稳重值就不管了
+        if (!message.replaceAll(" ","").substring(0, 4).equals("0203")) return null;
         message = message.replaceAll(" ", "");
         int[] sensorValues = new int[4];
         for (int i = 0; i < 4; i++) {
@@ -126,7 +128,7 @@ public class Receive485SignalService implements DeviceHandler {
                 number = 0;
             }
             sensorValues[i] = number;
-            log.info("称重传感器 {} 的值为：{} g", i+1, number);
+            log.info("称重传感器 {} 的值为：{} g", i + 1, number);
         }
         pubConfig.setCalculateWeight(sensorValues);
         return sensorValues;

@@ -47,7 +47,7 @@ public class FicationProcessing {
             ioDeviceService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getRelay())) {
             relayDeviceService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getRelay11())) {
+        } else if (clientIp.equals(ipConfig.getSiloWeighBox())) {
             relay1DeviceService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getSend485Order())) {
             send485OrderService.handle(message, flag);

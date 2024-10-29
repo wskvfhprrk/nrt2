@@ -43,17 +43,27 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public Result spoonReset() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
-            return Result.error(500, "没有到达倒菜位置！");
+        log.info("装菜勺复位1");
+        //如果没有走完就不返回
+        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            //移到倒菜位置
+            moveToDishDumpingPosition();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        log.info("装菜勺复位2");
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
         }
+        log.info("装菜勺复位3");
         //先发送脉冲数，再发送指令
         String hex = "030600070480";
         send485OrderService.sendOrder(hex);
         //速度
-        hex = "030600050110";
+        hex = "030600050090";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "030600000001";
@@ -73,23 +83,80 @@ public class BowlService implements DeviceHandler {
     }
 
     /**
+     * 伺服电机移到倒菜位置
+     */
+    private Result moveToDishDumpingPosition() {
+        //先发送脉冲数，再发送指令
+        String hex = "010600070000";
+        send485OrderService.sendOrder(hex);
+        //速度
+        hex = "010600050055";
+        send485OrderService.sendOrder(hex);
+        //先发送脉冲数，再发送指令
+        hex = "010600010001";
+        send485OrderService.sendOrder(hex);
+        return Result.success();
+
+    }
+
+    /**
      * 装菜勺倒菜
      *
      * @return
      */
     public Result spoonPour() {
+        log.info("装菜勺倒菜");
         //如果没有到达位置倒菜勺——汤右限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
-            return Result.error(500, "没有到达倒菜位置！");
+        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            moveToDishDumpingPosition();
+            try {
+                Thread.sleep(2000l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         //先发送脉冲数，再发送指令
         String hex = "030600070480";
         send485OrderService.sendOrder(hex);
         //倒菜时速度
-        hex = "030600050110";
+        hex = "030600050090";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "030600010001";
+        send485OrderService.sendOrder(hex);
+        //倒完复位——阻塞2秒,等倒完再下一个复位指令
+        try {
+            Thread.sleep(2000l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.spoonReset();
+        return Result.success();
+    }
+
+    /**
+     * 装菜勺装菜
+     *
+     * @return
+     */
+    public Result spoonLoad() throws InterruptedException {
+        //如果碗没有复位不行
+        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+            return Result.error(500, "菜勺没有复位！");
+        }
+        //先发送脉冲数，再发送指令
+        String hex = "010600070000";
+        send485OrderService.sendOrder(hex);
+        //速度
+        hex = "010600050055";
+        send485OrderService.sendOrder(hex);
+        //先发送脉冲数，再发送指令
+        hex = "010600000001";
+        send485OrderService.sendOrder(hex);
+        hex = "0106000503E8";
+        send485OrderService.sendOrder(hex);
+        Thread.sleep(2000L);
+        hex = "010600050055";
         send485OrderService.sendOrder(hex);
         return Result.success();
     }

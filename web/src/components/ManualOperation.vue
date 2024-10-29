@@ -113,52 +113,55 @@ export default {
         {id: 8, name: "粉丝仓复位"},
         {id: 9, name: "粉丝仓出粉丝"},
         {id: 10, name: "装菜勺复位"},
-        {id: 11, name: "装菜勺倒菜"}
+        {id: 11, name: "装菜勺倒菜"},
+        {id: 12, name: "装菜勺装菜"}
       ],
 
       buttonsGroup3: [
-        {id: 12, name: "蒸汽打开"},
-        {id: 13, name: "蒸汽关闭"},
-        {id: 14, name: "加汤蒸汤盖下降"},
-        {id: 15, name: "加汤蒸汤盖上升"},
-        {id: 16, name: "关汤蒸汽阀"},
-        {id: 17, name: "加汤（秒）"},
-        {id: 18, name: "汤管排气（秒）"},
-        {id: 19, name: "汤加热至（度）"},
-        {id: 20, name: "加蒸汽（秒）"}
+        {id: 13, name: "蒸汽打开"},
+        {id: 14, name: "蒸汽关闭"},
+        {id: 15, name: "加汤蒸汤盖下降"},
+        {id: 16, name: "加汤蒸汤盖上升"},
+        {id: 17, name: "关汤蒸汽阀"},
+        {id: 18, name: "加汤（秒）"},
+        {id: 19, name: "汤管排气（秒）"},
+        {id: 20, name: "汤加热至（度）"},
+        {id: 21, name: "加蒸汽（秒）"}
       ],
 
       buttonsGroup4: [
-        {id: 21, name: "后箱风扇开"},
-        {id: 22, name: "后箱风扇关"},
-        {id: 23, name: "震动器1（秒）"},
-        {id: 24, name: "震动器2（秒）"},
-        {id: 25, name: "出料3（秒）"}
+        {id: 22, name: "后箱风扇开"},
+        {id: 23, name: "后箱风扇关"},
+        {id: 24, name: "震动器1（秒）"},
+        {id: 25, name: "震动器2（秒）"},
+        {id: 26, name: "出料3（秒）"}
       ],
 
       buttonsGroup5: [
-        {id: 26, name: "一号配菜（g）"},
-        {id: 27, name: "二号配菜（g）"},
-        {id: 28, name: "三号配菜（g）"},
-        {id: 29, name: "四号配菜（g）"},
-        {id: 30, name: "称重全部清0"},
-        {id: 31, name: "标重500g（编号）"}
+        {id: 27, name: "一号配菜（g）"},
+        {id: 28, name: "二号配菜（g）"},
+        {id: 29, name: "三号配菜（g）"},
+        {id: 30, name: "四号配菜（g）"},
+        {id: 31, name: "称重全部清0"},
+        {id: 32, name: "标重500g（编号）"},
+        {id: 33, name: "打开称重盒（编号）"},
+        {id: 34, name: "关闭称重盒（编号）"}
       ],
 
       buttonsGroup6: [
-        {id: 32, name: "一号料仓打开"},
-        {id: 33, name: "一号料仓关闭"},
-        {id: 34, name: "二号料仓打开"},
-        {id: 35, name: "二号料仓关闭"},
-        {id: 36, name: "三号料仓打开"},
-        {id: 37, name: "三号料仓关闭"}
+        {id: 35, name: "一号料仓打开"},
+        {id: 36, name: "一号料仓关闭"},
+        {id: 37, name: "二号料仓打开"},
+        {id: 38, name: "二号料仓关闭"},
+        {id: 39, name: "三号料仓打开"},
+        {id: 40, name: "三号料仓关闭"}
       ],
       dialogVisible: false,
       parameter: '',
       currentButtonId: null,
       currentButtonName: '',
 
-      errorHandler:null
+      errorHandler: null
     };
   },
   computed: {
@@ -172,9 +175,9 @@ export default {
     async sendRequest(url) {
       try {
         const response = await axios.get(url);
-        if(response.data.code===200){
+        if (response.data.code === 200) {
           this.$message.success(`操作成功：${response.data.data}`);
-        }else {
+        } else {
           this.$message.error(`操作失败：${response.data.message}`)
         }
         // this.$message.success(`操作成功：${response.data}`);
@@ -234,7 +237,7 @@ export default {
   padding: 10px;
   box-sizing: border-box;
   border-radius: 12px; /* 圆角设置 */
-  overflow: hidden;    /* 防止子元素溢出父容器的圆角 */
+  overflow: hidden; /* 防止子元素溢出父容器的圆角 */
 }
 
 .button-columns {
