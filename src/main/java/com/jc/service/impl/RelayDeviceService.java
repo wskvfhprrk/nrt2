@@ -527,8 +527,8 @@ public class RelayDeviceService implements DeviceHandler {
     public Result vegetable1Motor(int i, Integer number) throws InterruptedException {
         //清零
         //02 06 00 26 00 01 A9 F2
-        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
-        Thread.sleep(Constants.SLEEP_TIME_MS);
+//        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
+//        Thread.sleep(Constants.SLEEP_TIME_MS);
         vegetableMotor(i - 1);
         //查看是否够重量
         Boolean flag = true;
