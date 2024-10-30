@@ -2,7 +2,7 @@
   <div class="container">
     <el-form label-width="100px">
       <!-- Meat Category Selection -->
-      <el-form-item label="选择肉类">
+      <el-form-item label="选择肉类" style="font-size: 15px;">
         <el-radio-group v-model="selectedCategory">
           <el-radio-button label="牛肉, 牛杂">牛肉和牛杂</el-radio-button>
           <el-radio-button label="羊肉, 羊杂">羊肉和羊杂</el-radio-button>

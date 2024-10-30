@@ -42,5 +42,6 @@ export default {
 <style scoped>
 .el-button{
   width: 180px;
+  font-size: 15px;
 }
 </style>

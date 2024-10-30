@@ -2,7 +2,7 @@
   <el-form :model="form" label-width="120px">
     <el-row gutter="10">
       <el-col :span="24" v-for="(field, index) in formFields" :key="index">
-        <el-form-item :label="field.label">
+        <el-form-item :label="field.label" style="font-size: 15px;">
           <el-input v-model="form[field.model]" placeholder="Enter value">
             <template #append>{{ field.unit }}</template>
           </el-input>
