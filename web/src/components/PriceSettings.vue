@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <el-form label-width="50px">
       <!-- Extra Portion Price -->
       <el-form-item label="加量">
@@ -26,7 +26,7 @@
       </el-form-item>
 
       <!-- Submit Button -->
-      <el-button type="primary" @click="submitSettings">提交设置</el-button>
+      <el-button type="primary" @click="submitSettings"  style="margin: 40px 40px;">提交设置</el-button>
     </el-form>
   </div>
 </template>
@@ -56,6 +56,10 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  width: 600px;
+  margin: 100px 100px;
+}
 .el-form-item {
   margin-bottom: 20px;
   display: flex;

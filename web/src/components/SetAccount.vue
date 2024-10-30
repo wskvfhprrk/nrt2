@@ -1,7 +1,6 @@
 <!-- components/SetAccount.vue -->
 <template>
   <el-main>
-    <h1>账户设置</h1>
     <div class="form">
       <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-form">
         <el-form-item label="本机机器码" prop="code">
@@ -12,7 +11,6 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('form')">重密密钥</el-button>
-          <!--          <el-button @click="resetForm('form')">重置</el-button>-->
         </el-form-item>
       </el-form>
     </div>

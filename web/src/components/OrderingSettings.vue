@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <el-form label-width="100px">
       <!-- Meat Category Selection -->
       <el-form-item label="选择肉类">
@@ -39,7 +39,7 @@
       </el-form-item>
 
       <!-- Submit Button -->
-      <el-button type="primary" @click="modifyMenuPage">修改点餐页面</el-button>
+      <el-button type="primary" style="margin: 40px 40px;" @click="modifyMenuPage">修改点餐页面</el-button>
     </el-form>
   </div>
 </template>
@@ -65,6 +65,10 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  width: 600px;
+  margin: 100px 100px;
+}
 .el-form-item {
   margin-bottom: 20px;
 }
