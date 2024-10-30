@@ -257,6 +257,7 @@ export default {
 
 .el-button {
   margin: 5px 0;
+  font-size: 15px;
 }
 
 .fixed-buttons {

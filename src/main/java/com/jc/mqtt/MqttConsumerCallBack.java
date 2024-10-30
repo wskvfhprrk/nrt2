@@ -109,6 +109,7 @@ public class MqttConsumerCallBack implements MqttCallback {
             }else {
                 webSocketHandler.broadcastMessage("failedToRetrievePassword");
             }
+            return;
         }
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if (o == null) {

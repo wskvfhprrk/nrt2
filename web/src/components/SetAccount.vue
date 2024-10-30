@@ -4,15 +4,15 @@
     <h1>账户设置</h1>
     <div class="form">
       <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-form">
-        <el-form-item label="本机机器码" prop="code" >
+        <el-form-item label="本机机器码" prop="code">
           <el-input v-model.number="form.code" readonly></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('form')">提交</el-button>
-          <el-button @click="resetForm('form')">重置</el-button>
+          <el-button type="primary" @click="submitForm('form')">重密密钥</el-button>
+          <!--          <el-button @click="resetForm('form')">重置</el-button>-->
         </el-form-item>
       </el-form>
     </div>
@@ -21,15 +21,26 @@
 
 <script>
 import axios from "axios";
+
 const baseUrl = 'http://127.0.0.1:8080/setAccount';
 export default {
   name: 'SetAccount',
   data() {
-    return{
+    return {
       form: {
         code: '',
         password: ''
       },
+      rules: {
+        code: [
+          {required: true, message: '请输入本机编号', trigger: 'blur'},
+          {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+        ]
+      }
     }
   },
   methods: {
@@ -52,11 +63,13 @@ export default {
           return false;
         }
       });
-    },
+    }
+    ,
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    async getCode(){
+    }
+    ,
+    async getCode() {
       try {
         const response = await axios.get(baseUrl + '/getCode');
         if (response.data.code === 200) {
@@ -68,7 +81,8 @@ export default {
         console.error('获取订单数据时出错:', error);
       }
     }
-  },
+  }
+  ,
   mounted() {
     this.getCode();
   }
@@ -76,7 +90,7 @@ export default {
 </script>
 
 <style scoped>
-.form{
+.form {
   margin-top: 100px;
   width: 350px;
 }
