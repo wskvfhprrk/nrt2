@@ -1,16 +1,71 @@
-<!-- components/OrderingSettings.vue -->
 <template>
-  <el-main>
-    <h1>点餐设置</h1>
-    <!-- 在这里添加更多页面内容 -->
-  </el-main>
+  <div>
+    <el-form label-width="100px">
+      <!-- Meat Category Selection -->
+      <el-form-item label="选择肉类">
+        <el-radio-group v-model="selectedCategory">
+          <el-radio-button label="牛肉, 牛杂">牛肉和牛杂</el-radio-button>
+          <el-radio-button label="羊肉, 羊杂">羊肉和羊杂</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
+      <!-- Options for Displaying Attributes -->
+      <el-form-item label="显示辣椒">
+        <el-radio-group v-model="showChili">
+          <el-radio-button label="显示">显示</el-radio-button>
+          <el-radio-button label="不显示">不显示</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="显示味精">
+        <el-radio-group v-model="showMsg">
+          <el-radio-button label="显示">显示</el-radio-button>
+          <el-radio-button label="不显示">不显示</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="显示香菜">
+        <el-radio-group v-model="showCilantro">
+          <el-radio-button label="显示">显示</el-radio-button>
+          <el-radio-button label="不显示">不显示</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
+      <el-form-item label="显示葱花">
+        <el-radio-group v-model="showGreenOnion">
+          <el-radio-button label="显示">显示</el-radio-button>
+          <el-radio-button label="不显示">不显示</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
+      <!-- Submit Button -->
+      <el-button type="primary" @click="modifyMenuPage">修改点餐页面</el-button>
+    </el-form>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'OrderingSettings'
-}
+  data() {
+    return {
+      selectedCategory: '牛肉, 牛杂', // Either "牛肉, 牛杂" or "羊肉, 羊杂"
+      showChili: '不显示',
+      showMsg: '不显示',
+      showCilantro: '不显示',
+      showGreenOnion: '不显示'
+    };
+  },
+  methods: {
+    modifyMenuPage() {
+      // Logic for modifying the menu page can be added here
+      console.log('Menu settings updated');
+    }
+  }
+};
 </script>
 
 <style scoped>
+.el-form-item {
+  margin-bottom: 20px;
+}
 </style>
