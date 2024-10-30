@@ -1,9 +1,9 @@
 <template>
-  <div style="text-align: center; padding-top: 50px;">
+  <div style="text-align: center; padding-top: 50px; margin-top: 100px;">
     <!-- 手动清洗按钮 -->
     <el-button type="primary" @click="manualClean">手动清洗</el-button>
 
-    <div style="margin: 20px 0;"></div>
+    <div style="margin: 200px 0;"></div>
 
     <!-- 机器自动清洗显示 -->
     <div>
@@ -12,7 +12,7 @@
       <span>分钟/次</span>
     </div>
 
-    <div style="margin: 20px 0;"></div>
+    <div style="margin: 30px 0;"></div>
 
     <!-- 修改自动清洗时间按钮 -->
     <el-button type="primary" @click="updateCleanTime">修改自动清洗时间</el-button>
@@ -40,5 +40,7 @@ export default {
 </script>
 
 <style scoped>
-/* 可根据需要自定义样式 */
+.el-button{
+  width: 180px;
+}
 </style>

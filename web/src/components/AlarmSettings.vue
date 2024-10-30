@@ -2,29 +2,29 @@
   <div style="padding: 20px; max-width: 600px; margin: auto;">
 
     <!-- 添加项目 -->
-    <div v-for="(item, index) in addItems" :key="index" style="margin-bottom: 10px;">
-      <span>{{ item.label }}</span>
+    <div v-for="(item, index) in addItems" :key="index" style="margin-bottom: 10px; display: flex; align-items: center;">
+      <span style="width: 150px;">{{ item.label }}</span>
       <el-input-number v-model="item.value" :min="0" :step="1" size="small" controls-position="right" style="width: 100px; margin: 0 10px;" />
       <span>{{ item.unit }}</span>
     </div>
 
     <!-- 清零和添加按钮 -->
-    <div style="margin: 20px 0;">
+    <div style="margin: 30px 0;">
       <el-button type="danger" @click="resetValues" style="margin-right: 10px;">所有清零</el-button>
       <el-button type="success" @click="confirmAdd">确认添加</el-button>
     </div>
 
     <!-- 销售项目设置 -->
     <div v-for="(item, index) in saleItems" :key="index" style="margin-bottom: 20px; display: flex; align-items: center;">
-      <span style="width: 150px;">销售{{ item.label }}</span>
-      <el-input-number v-model="item.saleAmount" :min="0" :step="0.1" size="small" controls-position="right" style="width: 100px; margin-right: 10px;" />
-      <span>量报警密</span>
-      <el-input-number v-model="item.alarmThreshold" :min="0" :step="0.01" size="small" controls-position="right" style="width: 100px; margin-right: 10px;" />
+      <span style="width: 150px;">{{ item.label }}</span>
+      <el-input-number v-model="item.saleAmount" :min="0" :step="0.1" size="small" controls-position="right" style="width: 120px; " />
+      <span>量报警警</span>
+      <el-input-number v-model="item.alarmThreshold" :min="0" :step="0.01" size="small" controls-position="right" style="width: 100px; " />
       <span>量停止售</span>
     </div>
 
     <!-- 修改参数按钮 -->
-    <el-button type="primary" @click="updateParameters" style="margin-top: 20px;">修改参数</el-button>
+    <el-button type="primary" @click="updateParameters" style="margin-top: 20px;margin-left: 200px;">修改参数</el-button>
   </div>
 </template>
 
