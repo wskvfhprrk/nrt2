@@ -469,10 +469,13 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result vegetableMotor(Integer number) {
+        //打开震动
+
         int i = 0;
         switch (number) {
             case 1:
                 i = Constants.INGREDIENT_MOTOR1;
+                // TODO: 2024/11/1 打开1号门
                 break;
             case 2:
                 i = Constants.INGREDIENT_MOTOR2;
@@ -486,7 +489,8 @@ public class RelayDeviceService implements DeviceHandler {
             default:
 
         }
-        relayOpening(i);
+        relayOpening(Constants.Y_CHU_WAN);
+        relayOpening(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();
     }
 
@@ -500,6 +504,7 @@ public class RelayDeviceService implements DeviceHandler {
         switch (number) {
             case 1:
                 i = Constants.INGREDIENT_MOTOR1;
+                // TODO: 2024/11/1 关闭1号门
                 break;
             case 2:
                 i = Constants.INGREDIENT_MOTOR2;
@@ -513,7 +518,8 @@ public class RelayDeviceService implements DeviceHandler {
             default:
 
         }
-        relayClosing(i);
+        relayClosing(Constants.Y_CHU_WAN);
+        relayClosing(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();
     }
 

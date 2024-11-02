@@ -9,8 +9,8 @@
     </div>
 
     <!-- 清零和添加按钮 -->
-    <div style="margin: 30px 0;">
-      <el-button type="danger" @click="resetValues" style="margin-right: 10px;">所有清零</el-button>
+    <div style="margin: 30px 0;font-size: 15px;">
+      <el-button type="danger" @click="resetValues" style="margin-right: 10px;font-size: 15px;">所有清零</el-button>
       <el-button type="success" @click="confirmAdd">确认添加</el-button>
     </div>
 
@@ -24,7 +24,7 @@
     </div>
 
     <!-- 修改参数按钮 -->
-    <el-button type="primary" @click="updateParameters" style="margin-top: 20px;margin-left: 200px;">修改参数</el-button>
+    <el-button type="primary" @click="updateParameters" style="margin-top: 20px;margin-left: 200px;font-size: 15px;">修改参数</el-button>
   </div>
 </template>
 

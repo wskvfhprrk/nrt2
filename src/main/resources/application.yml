@@ -111,7 +111,7 @@ data:
   choppedGreenOnion: 10
   soupExtractionTime: 8
   vibratorTime: 5
-  soupHeatingTemperature: 120.0
+  soupHeatingTemperature: 120
   bowlSteamTime: 12
   shakerSwitchTime: 5
   theFoodOutletIsFacingDownwardsTime: 18

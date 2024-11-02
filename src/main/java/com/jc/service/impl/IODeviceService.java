@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.BeefConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
@@ -29,9 +30,6 @@ public class IODeviceService implements DeviceHandler {
     @Autowired
     private IpConfig ipConfig;
     //工位值——当为原点时为0，共6个工位
-    @Autowired
-    @Lazy
-    private StepperMotorService stepperMotorService;
     // 类级变量，用于保存上一次的高低电平状态
     private StringBuffer previousLevels = null;
 
@@ -126,30 +124,29 @@ public class IODeviceService implements DeviceHandler {
             send485OrderService.sendOrder(hex);
         }
         //粉丝仓左限位
-        if(ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT)==SignalLevel.HIGH.ordinal()){
+        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "040600020001";
             send485OrderService.sendOrder(hex);
         }
         //粉丝仓左限位
-        if(ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT)==SignalLevel.HIGH.ordinal()){
+        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "040600020001";
             send485OrderService.sendOrder(hex);
         }
         //倒菜伺服到位——汤右限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() ) {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
-            String hex = "010600020001";
+            String hex = "020600020001";
             send485OrderService.sendOrder(hex);
         }
         //倒菜伺服到位——汤左限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             //停止
-            String hex = "010600020001";
+            String hex = "020600020001";
             send485OrderService.sendOrder(hex);
         }
-
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.jc.service.impl;
 
-import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
@@ -45,7 +44,7 @@ public class BowlService implements DeviceHandler {
     public Result spoonReset() {
         log.info("装菜勺复位1");
         //如果没有走完就不返回
-        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             //移到倒菜位置
             moveToDishDumpingPosition();
             try {
@@ -87,16 +86,15 @@ public class BowlService implements DeviceHandler {
      */
     private Result moveToDishDumpingPosition() {
         //先发送脉冲数，再发送指令
-        String hex = "010600070000";
+        String hex = "0206000703e8";
         send485OrderService.sendOrder(hex);
         //速度
-        hex = "010600050055";
+        hex = "020600050055";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
-        hex = "010600010001";
+        hex = "020600010001";
         send485OrderService.sendOrder(hex);
         return Result.success();
-
     }
 
     /**
@@ -145,18 +143,18 @@ public class BowlService implements DeviceHandler {
             return Result.error(500, "菜勺没有复位！");
         }
         //先发送脉冲数，再发送指令
-        String hex = "010600070000";
+        String hex = "020600070000";
         send485OrderService.sendOrder(hex);
         //速度
-        hex = "010600050055";
+        hex = "020600050055";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
-        hex = "010600000001";
+        hex = "020600000001";
         send485OrderService.sendOrder(hex);
-        hex = "0106000503E8";
+        hex = "0206000503E8";
         send485OrderService.sendOrder(hex);
         Thread.sleep(2000L);
-        hex = "010600050055";
+        hex = "020600050055";
         send485OrderService.sendOrder(hex);
         return Result.success();
     }
