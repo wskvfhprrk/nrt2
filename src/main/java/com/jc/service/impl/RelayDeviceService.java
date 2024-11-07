@@ -716,4 +716,30 @@ public class RelayDeviceService implements DeviceHandler {
         //无需要停止
         return Result.success();
     }
+
+    public Result bowlSteamAndSoupAdd() {
+        //盖子方向向下
+        this.soupSteamCoverDown();
+        //加蒸汽
+        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, beefConfig.getBowlSteamTime());
+        openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, beefConfig.getBowlSteamTime());
+        //加蒸汽完成后
+        try {
+            Thread.sleep(beefConfig.getBowlSteamTime() * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //抽汤前先打开汤开关，防止水流
+        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE,  beefConfig.getSoupExtractionTime());
+        openClose(Constants.Y_SOUP_PUMP_SWITCH,  beefConfig.getSoupExtractionTime());
+        //加蒸汽完成后
+        try {
+            Thread.sleep( beefConfig.getSoupExtractionTime() * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //盖子上升
+        this.soupSteamCoverUp();
+        return Result.success();
+    }
 }

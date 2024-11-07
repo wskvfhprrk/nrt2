@@ -114,8 +114,8 @@ export default {
         {id: 9, name: "移动粉丝仓（编号）"},
         {id: 10, name: "粉丝仓出粉丝"},
         {id: 11, name: "装菜勺复位"},
-        {id: 12, name: "装菜勺倒菜"},
-        {id: 13, name: "装菜勺装菜"}
+        {id: 12, name: "装菜勺装菜"},
+        {id: 13, name: "装菜勺倒菜"}
       ],
 
       buttonsGroup3: [
@@ -127,35 +127,36 @@ export default {
         {id: 19, name: "加汤（秒）"},
         {id: 20, name: "汤管排气（秒）"},
         {id: 21, name: "汤加热至（度）"},
-        {id: 22, name: "加蒸汽（秒）"}
+        {id: 22, name: "加蒸汽（秒）"},
+        {id: 23, name: "加蒸汽和汤"}
       ],
 
       buttonsGroup4: [
-        {id: 23, name: "后箱风扇开"},
-        {id: 24, name: "后箱风扇关"},
-        {id: 25, name: "震动器1（秒）"},
-        {id: 26, name: "震动器2（秒）"},
-        {id: 27, name: "出料3（秒）"}
+        {id: 24, name: "后箱风扇开"},
+        {id: 25, name: "后箱风扇关"},
+        {id: 26, name: "震动器1（秒）"},
+        {id: 27, name: "震动器2（秒）"},
+        {id: 28, name: "出料3（秒）"}
       ],
 
       buttonsGroup5: [
-        {id: 28, name: "一号配菜（g）"},
-        {id: 29, name: "二号配菜（g）"},
-        {id: 30, name: "三号配菜（g）"},
-        {id: 31, name: "四号配菜（g）"},
-        {id: 32, name: "称重全部清0"},
-        {id: 33, name: "标重500g（编号）"},
-        {id: 34, name: "打开称重盒（编号）"},
-        {id: 35, name: "关闭称重盒（编号）"}
+        {id: 29, name: "一号配菜（g）"},
+        {id: 30, name: "二号配菜（g）"},
+        {id: 31, name: "三号配菜（g）"},
+        {id: 32, name: "四号配菜（g）"},
+        {id: 33, name: "称重全部清0"},
+        {id: 34, name: "标重500g（编号）"},
+        {id: 35, name: "打开称重盒（编号）"},
+        {id: 36, name: "关闭称重盒（编号）"}
       ],
 
       buttonsGroup6: [
-        {id: 36, name: "一号料仓打开"},
-        {id: 37, name: "一号料仓关闭"},
-        {id: 38, name: "二号料仓打开"},
-        {id: 39, name: "二号料仓关闭"},
-        {id: 40, name: "三号料仓打开"},
-        {id: 41, name: "三号料仓关闭"}
+        {id: 37, name: "一号料仓打开"},
+        {id: 38, name: "一号料仓关闭"},
+        {id: 39, name: "二号料仓打开"},
+        {id: 40, name: "二号料仓关闭"},
+        {id: 41, name: "三号料仓打开"},
+        {id: 42, name: "三号料仓关闭"}
       ],
       dialogVisible: false,
       parameter: '',

@@ -95,12 +95,12 @@ public class ManualOperationController {
                 result = bowlService.spoonReset();
                 break;
             case 12:
-                actionResult = "装菜勺倒菜";
-                result = bowlService.spoonPour();
-                break;
-            case 13:
                 actionResult = "装菜勺装菜";
                 result = bowlService.spoonLoad();
+                break;
+            case 13:
+                actionResult = "装菜勺倒菜";
+                result = bowlService.spoonPour();
                 break;
 
             // Group 3: 蒸汽和温度控制
@@ -140,85 +140,89 @@ public class ManualOperationController {
                 actionResult = "加蒸汽";
                 result = relayDeviceService.bowlSteamAdd(number != null ? number : beefConfig.getBowlSteamTime());
                 break;
+            case 23:
+                actionResult = "加蒸汽和汤";
+                result = relayDeviceService.bowlSteamAndSoupAdd();
+                break;
 
             // Group 4: 风扇和震动测试
-            case 23:
+            case 24:
                 actionResult = "后箱风扇开";
                 result = relayDeviceService.rearFanOpen();
                 break;
-            case 24:
+            case 25:
                 actionResult = "后箱风扇关";
                 result = relayDeviceService.rearFanClose();
                 break;
-            case 25:
+            case 26:
                 actionResult = "震动器1测试";
                 result = relayDeviceService.vibrator1Test(number != null ? number : beefConfig.getVibratorTime());
                 break;
-            case 26:
+            case 27:
                 actionResult = "震动器2测试";
                 result = relayDeviceService.vibrator2Test(number != null ? number : beefConfig.getVibratorTime());
                 break;
-            case 27:
+            case 28:
                 actionResult = "出料3测试";
                 result = relayDeviceService.DischargeBin3Test(number != null ? number : beefConfig.getVibratorTime());
                 break;
 
             // Group 5: 配菜操作
-            case 28:
+            case 29:
                 actionResult = "一号配菜";
                 result = relayDeviceService.vegetable1Motor(1, number != null ? number : beefConfig.getBeef10());
                 break;
-            case 29:
+            case 30:
                 actionResult = "二号配菜";
                 result = relayDeviceService.vegetable1Motor(2, number != null ? number : beefConfig.getCilantro());
                 break;
-            case 30:
+            case 31:
                 actionResult = "三号配菜";
                 result = relayDeviceService.vegetable1Motor(3, number != null ? number : beefConfig.getChoppedGreenOnion());
                 break;
-            case 31:
+            case 32:
                 actionResult = "四号配菜";
                 result = relayDeviceService.vegetable1Motor(4, number != null ? number : beefConfig.getChoppedGreenOnion());
                 break;
-            case 32:
+            case 33:
                 actionResult = "称重全部清0";
                 result = weightService.clearAll();
                 break;
-            case 33:
+            case 34:
                 actionResult = "标重500g";
                 result = weightService.calibrateWeight(number != null ? number : 1);
                 break;
-            case 34:
+            case 35:
                 actionResult = "打开称重盒";
                 result = siloWeighBoxSwitchService.openWeighBox(number != null ? number : 1);
                 break;
-            case 35:
+            case 36:
                 actionResult = "关闭称重盒";
                 result = siloWeighBoxSwitchService.closeWeighBox(number != null ? number : 1);
                 break;
 
             // Group 6: 料仓操作
-            case 36:
+            case 37:
                 actionResult = "一号料仓打开";
                 result = relayDeviceService.firstBinOpen();
                 break;
-            case 37:
+            case 38:
                 actionResult = "一号料仓关闭";
                 result = relayDeviceService.firstBinClose();
                 break;
-            case 38:
+            case 39:
                 actionResult = "二号料仓打开";
                 result = relayDeviceService.secondBinOpen();
                 break;
-            case 39:
+            case 40:
                 actionResult = "二号料仓关闭";
                 result = relayDeviceService.secondBinClose();
                 break;
-            case 40:
+            case 41:
                 actionResult = "三号料仓打开";
                 result = relayDeviceService.thirdBinOpen();
                 break;
-            case 41:
+            case 42:
                 actionResult = "三号料仓关闭";
                 result = relayDeviceService.thirdBinClose();
                 break;
