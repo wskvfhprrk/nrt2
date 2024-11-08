@@ -717,7 +717,7 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-    public Result bowlSteamAndSoupAdd() {
+    public Result steamAndSoupAdd() {
         //盖子方向向下
         this.soupSteamCoverDown();
         //加蒸汽
@@ -742,4 +742,5 @@ public class RelayDeviceService implements DeviceHandler {
         this.soupSteamCoverUp();
         return Result.success();
     }
+
 }

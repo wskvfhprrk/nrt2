@@ -26,7 +26,7 @@ RobotPlaceEmptyBowl {
     }
 
     public Result putBowl() {
-        robotService.putBowl();
+        robotService.robotPlaceBowl();
         return Result.success();
     }
 }

@@ -19,21 +19,15 @@ public class RobotServiceImpl implements RobotService {
     @Autowired
     NettyClientConfig nettyClientConfig;
     @Autowired
-    private IODeviceService ioDeviceService;
-    @Autowired
-    private NettyServerHandler nettyServerHandler;
-    @Autowired
-    private IpConfig ipConfig;
-    @Autowired
-    private BowlService bowlService;
-    @Autowired
     private PubConfig pubConfig;
     private int takeBowlNumber = 0;
+    @Autowired
+    private RelayDeviceService relayDeviceService;
 
     @Override
     public Result robotReset() {
         try {
-            nettyClientConfig.connectAndSendData("run(reset.jspf)");
+            nettyClientConfig.connectAndSendData("run(jiaZhua/reset.jspf)");
             if (!pubConfig.getIsRobotStatus()) {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             }
@@ -46,104 +40,105 @@ public class RobotServiceImpl implements RobotService {
 
     @Override
     public Result robotTakeBowl() {
-        //如果重试三次不再重试
-        if (takeBowlNumber > 3) {
-            log.error("重试三次无法取到碗，请检查!");
-            return Result.error(500, "重试三次无法取到碗，请人工检查！");
-        }
-        //如果碗传感器为低电平，则重新发出碗重置命令
-        String ioStatus = ioDeviceService.getStatus();
-        while (ioStatus == null) {
-            log.error("无法获取传感器的值！");
-            // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
-            try {
-                // 等待指定时间，确保传感器完成重置
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // 重新获取传感器状态
-            ioStatus = ioDeviceService.getStatus();
-            if (ioStatus==null) {
-                log.error("没有发现传感器的值！");
-            }
-        }
-        // 解析传感器状态字符串
-        String[] split = ioStatus.split(",");
-        boolean bowlSensor = split[Constants.AUTO_BOWL_LIFT_POSITION_SENSOR].equals(SignalLevel.HIGH.getValue()); // 碗传感器状态
-        //是否检测到有东西
-        Boolean isObjectDetected = split[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.HIGH.getValue());
-        if (isObjectDetected) {
-            log.error("检测放碗位置到有东西！");
-            return Result.error(500, "检测放碗位置到有东西！");
-        }
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
-        if (!bowlSensor) {
-//            bowlService.bowlReset();
+        try {
+            nettyClientConfig.connectAndSendData("run(bowl/getBowl.jspf)");
+            if (!pubConfig.getIsRobotStatus()) {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            }
+            log.info("机器人复位自检成功");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            Thread.sleep(2000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //出碗指令
+        Result result = relayDeviceService.deliverBowl();
+        if (result.getCode() == 20) {
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
-            pubConfig.setIsAddingBowlCompleted(true);
+            return result;
         }
-        //向机器人发送取碗指令
-        try {
-            nettyClientConfig.connectAndSendData("run(takeABowl.jspf)");
-            pubConfig.setIsRobotStatus(false);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //等待到机器人发出HOME指令才算完成
-        while (!pubConfig.getIsRobotStatus()) {
-            try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                if (pubConfig.getIsRobotStatus()) {
-                    continue;
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        String status = ioDeviceService.getStatus();
-        String[] split1 = status.split(",");
-        if (split1[Constants.ROBOT_EMPTY_BOWL_SENSOR].equals(SignalLevel.LOW.getValue())) {
-            takeBowlNumber += 1;
-            this.robotTakeBowl();
-        }
+        pubConfig.setIsRobotStatus(true);
         return Result.success();
     }
 
     @Override
-    public Result putBowl() {
+    public Result robotPlaceBowl() {
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
         try {
-            nettyClientConfig.connectAndSendData("run(putABowl.jspf)");
+            nettyClientConfig.connectAndSendData("run(bowl/putBowl.jspf)");
             pubConfig.setIsRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return Result.success();
-    }
-
-    @Override
-    public Result getFans() {
-        return null;
-    }
-
-    @Override
-    public Result robotTakeFans() {
-        return null;
     }
 
     @Override
     public Result robotDeliverMeal() {
-        return null;
+        //检测机器人是否加home点
+//        if (!pubConfig.getIsRobotStatus()) {
+//            log.error("机器人未复位");
+//            return Result.error(500, "机器人未复位！");
+//        }
+        try {
+            nettyClientConfig.connectAndSendData("run(bowl/pickUpSoupBowl.jspf)");
+            pubConfig.setIsRobotStatus(false);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Result.success();
     }
+
+    @Override
+    public Result robotTakeBasket() {
+        //检测机器人是否加home点
+        if (!pubConfig.getIsRobotStatus()) {
+            log.error("机器人未复位");
+            return Result.error(500, "机器人未复位！");
+        }
+        try {
+            nettyClientConfig.connectAndSendData("run(pieCai/main.jspf)");
+            pubConfig.setIsRobotStatus(false);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Result.success();
+    }
+
+
+    @Override
+    public Result robotTakeFans() {
+        //检测机器人是否加home点
+        if (!pubConfig.getIsRobotStatus()) {
+            log.error("机器人未复位");
+            return Result.error(500, "机器人未复位！");
+        }
+        try {
+            // TODO: 2024/11/7 根据出粉丝进行判断
+            nettyClientConfig.connectAndSendData("run(fenSi/fen1.jspf)");
+            pubConfig.setIsRobotStatus(false);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Result.success();
+    }
+
 
 }

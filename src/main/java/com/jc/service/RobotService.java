@@ -6,13 +6,16 @@ import com.jc.config.Result;
  * 机器人取碗
  */
 public interface RobotService {
-    Result robotReset();
-    Result robotTakeBowl();
-    Result putBowl();
 
-    Result getFans();
+    Result robotReset();
+
+    Result robotTakeBowl();
+
+    Result robotPlaceBowl();
 
     Result robotTakeFans();
 
     Result robotDeliverMeal();
+
+    Result robotTakeBasket();
 }

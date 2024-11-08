@@ -22,6 +22,7 @@ public class FansService {
     private IODeviceService ioDeviceService;
     //当前粉丝仓编号
     private int currentFanBinNumber = 0;
+    private boolean isFansReset = false;
 
     /**
      * 粉丝仓复位
@@ -50,26 +51,23 @@ public class FansService {
         //先发速度
         String hex = "0106000503E8";
         send485OrderService.sendOrder(hex);
-        hex="0106000703E8";
+        hex = "0106000703E8";
         send485OrderService.sendOrder(hex);
-        hex="010600000001";
-        send485OrderService.sendOrder(hex);
-        try {
-            Thread.sleep(4000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        hex="010600010001";
+        hex = "010600000001";
         send485OrderService.sendOrder(hex);
         try {
             Thread.sleep(4000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        isFansReset = false;
         return Result.success();
     }
 
     public Result moveFanBin(int i) {
+        if (!isFansReset) {
+            return Result.error(500, "推杆没有复位");
+        }
         //先回原蹼再发脉冲
         Result result = this.noodleBinReset();
         if (result.getCode() == 200) {
@@ -131,19 +129,33 @@ public class FansService {
                     //先发送脉冲数
                     hex = "040600070600";
                     send485OrderService.sendOrder(hex);
-                    hex = "040600010001";
-                    send485OrderService.sendOrder(hex);
-                    try {
-                        Thread.sleep(3000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     currentFanBinNumber = 5;
                     return Result.success();
                 default:
                     return Result.error(500, "不是1-5数字");
             }
         }
+        currentFanBinNumber=i;
+        return Result.success();
+    }
+
+    public Result FanReset() {
+        if (isFansReset) {
+            return Result.success();
+        }
+        //先发速度
+        String hex = "0106000503E8";
+        send485OrderService.sendOrder(hex);
+        hex = "0106000703E8";
+        send485OrderService.sendOrder(hex);
+        hex = "010600010001";
+        send485OrderService.sendOrder(hex);
+        try {
+            Thread.sleep(4000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        isFansReset = true;
         return Result.success();
     }
 }
