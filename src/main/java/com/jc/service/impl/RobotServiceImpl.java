@@ -23,6 +23,8 @@ public class RobotServiceImpl implements RobotService {
     private int takeBowlNumber = 0;
     @Autowired
     private RelayDeviceService relayDeviceService;
+    @Autowired
+    private FansService fansService;
 
     @Override
     public Result robotReset() {
@@ -45,6 +47,7 @@ public class RobotServiceImpl implements RobotService {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
+        pubConfig.setIsRobotStatus(false);
         try {
             nettyClientConfig.connectAndSendData("run(bowl/getBowl.jspf)");
             if (!pubConfig.getIsRobotStatus()) {
@@ -81,6 +84,7 @@ public class RobotServiceImpl implements RobotService {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
+        pubConfig.setIsRobotStatus(false);
         try {
             nettyClientConfig.connectAndSendData("run(bowl/putBowl.jspf)");
             pubConfig.setIsRobotStatus(false);
@@ -93,10 +97,11 @@ public class RobotServiceImpl implements RobotService {
     @Override
     public Result robotDeliverMeal() {
         //检测机器人是否加home点
-//        if (!pubConfig.getIsRobotStatus()) {
-//            log.error("机器人未复位");
-//            return Result.error(500, "机器人未复位！");
-//        }
+        if (!pubConfig.getIsRobotStatus()) {
+            log.error("机器人未复位");
+            return Result.error(500, "机器人未复位！");
+        }
+        pubConfig.setIsRobotStatus(false);
         try {
             nettyClientConfig.connectAndSendData("run(bowl/pickUpSoupBowl.jspf)");
             pubConfig.setIsRobotStatus(false);
@@ -113,6 +118,7 @@ public class RobotServiceImpl implements RobotService {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
+        pubConfig.setIsRobotStatus(false);
         try {
             nettyClientConfig.connectAndSendData("run(pieCai/main.jspf)");
             pubConfig.setIsRobotStatus(false);
@@ -130,6 +136,7 @@ public class RobotServiceImpl implements RobotService {
             log.error("机器人未复位");
             return Result.error(500, "机器人未复位！");
         }
+        pubConfig.setIsRobotStatus(false);
         try {
             // TODO: 2024/11/7 根据出粉丝进行判断
             nettyClientConfig.connectAndSendData("run(fenSi/fen1.jspf)");
@@ -140,5 +147,7 @@ public class RobotServiceImpl implements RobotService {
         return Result.success();
     }
 
-
+    public Result takeFans() {
+        return fansService.takeFans();
+    }
 }

@@ -1,7 +1,7 @@
 package com.jc.service.impl;
 
 
-import com.jc.config.BeefConfig;
+import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
@@ -20,8 +20,9 @@ public class FansService {
     private Send485OrderService send485OrderService;
     @Autowired
     private IODeviceService ioDeviceService;
+    @Autowired
+    private PubConfig pubConfig;
     //当前粉丝仓编号
-    private int currentFanBinNumber = 0;
     private boolean isFansReset = false;
 
     /**
@@ -30,8 +31,14 @@ public class FansService {
      * @return
      */
     public Result noodleBinReset() {
+        if (!isFansReset()) {
+            Result result = this.pushRodOpen();
+            if (result.getCode() != 200) {
+                return result;
+            }
+        }
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            currentFanBinNumber = 1;
+            pubConfig.setCurrentFanBinNumber(1);
             return Result.success();
         }
         while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
@@ -47,6 +54,11 @@ public class FansService {
         return Result.success();
     }
 
+    /**
+     * 推杆向推向前
+     *
+     * @return
+     */
     public Result noodleBinDeliver() {
         //先发速度
         String hex = "0106000503E8";
@@ -65,8 +77,12 @@ public class FansService {
     }
 
     public Result moveFanBin(int i) {
-        if (!isFansReset) {
-            return Result.error(500, "推杆没有复位");
+        if (!isFansReset()) {
+            log.warn("推杆没有复位");
+            Result result = pushRodOpen();
+            if (result.getCode() != 200) {
+                return result;
+            }
         }
         //先回原蹼再发脉冲
         Result result = this.noodleBinReset();
@@ -83,8 +99,7 @@ public class FansService {
                 //先发送脉冲数，再发送指令
                 case 1:
                     //原点位置为第一个室
-                    currentFanBinNumber = 1;
-                    return Result.success();
+                    break;
                 case 2:
                     //先发送脉冲数
                     hex = "040600070180";
@@ -96,8 +111,7 @@ public class FansService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    currentFanBinNumber = 2;
-                    return Result.success();
+                    break;
                 case 3:
                     //先发送脉冲数
                     hex = "040600070300";
@@ -109,8 +123,7 @@ public class FansService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    currentFanBinNumber = 3;
-                    return Result.success();
+                    break;
                 case 4:
                     log.info("执行到达第 {} 粉丝仓位", i);
                     //先发送脉冲数
@@ -123,26 +136,21 @@ public class FansService {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    currentFanBinNumber = 4;
-                    return Result.success();
-                case 5:
-                    //先发送脉冲数
-                    hex = "040600070600";
-                    send485OrderService.sendOrder(hex);
-                    currentFanBinNumber = 5;
-                    return Result.success();
+                    break;
                 default:
-                    return Result.error(500, "不是1-5数字");
+                    return Result.error(500, "不是1-4数字");
             }
         }
-        currentFanBinNumber=i;
+        pubConfig.setCurrentFanBinNumber(i);
         return Result.success();
     }
 
-    public Result FanReset() {
-        if (isFansReset) {
-            return Result.success();
-        }
+    /**
+     * 推杆后拉
+     *
+     * @return
+     */
+    private Result pushRodOpen() {
         //先发速度
         String hex = "0106000503E8";
         send485OrderService.sendOrder(hex);
@@ -157,5 +165,97 @@ public class FansService {
         }
         isFansReset = true;
         return Result.success();
+    }
+
+    public Result FanReset() {
+        //原点传感器
+        boolean b = ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal();
+        if (isFansReset() && b) {
+            return Result.success();
+        }
+        if (isFansReset() && !b) {
+            return moveFanBin(1);
+        }
+        if (!b) {
+            //推杆拉开移动到第一个
+            Result result = pushRodOpen();
+            if (result.getCode() != 200) {
+                return result;
+            }
+            return moveFanBin(1);
+        }
+        return Result.error(500, "未知错误");
+    }
+
+    public Result takeFans() {
+        //判断粉丝状态
+        Boolean falg = determineFanStatus();
+        if (falg) {
+            return Result.success();
+        }
+        //如果没有就复位再推送从当前推送一个
+        Result result = resendFromCurrentPush();
+        if (result.getCode() != 200) {
+            return result;
+        }
+        //再检查一下，如果粉丝传感器感应到，并且推杆推到位即可
+        falg = determineFanStatus();
+        if (falg) {
+            return Result.success();
+        }
+        //否则移动到下一个，递归
+        result = moveToNextOne();
+        if (result.getCode() != 200) {
+            return result;
+        }
+
+        takeFans();
+        return null;
+    }
+
+    /**
+     * 移动到下一个粉丝仓
+     */
+    private Result moveToNextOne() {
+        if (pubConfig.getCurrentFanBinNumber() == 4) {
+            moveFanBin(1);
+            return Result.error(500, "没有粉丝了！");
+        }
+        moveFanBin(pubConfig.getCurrentFanBinNumber() + 1);
+        return Result.success();
+    }
+
+    /**
+     * 推杆向前推
+     *
+     * @return
+     */
+    private Result resendFromCurrentPush() {
+        //如果是复位就直接推
+        if (isFansReset()) {
+            noodleBinDeliver();
+            return Result.success();
+        }
+        Result result = pushRodOpen();
+        if (result.getCode() != 200) {
+            return result;
+        }
+        noodleBinDeliver();
+        return Result.success();
+    }
+
+    private Boolean determineFanStatus() {
+        //如果粉丝传感器感应到，并且推杆推到位根据位置判断哪里返回
+        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal() && ioDeviceService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal()) {
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean isFansReset() {
+        if (isFansReset) {
+            return true;
+        }
+        return ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal();
     }
 }

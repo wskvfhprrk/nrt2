@@ -144,5 +144,9 @@ public class PubConfig {
      * 是否开启定时任务——初始化时给开启，急停关闭
      */
     public Boolean isExecuteTask = false;
+    /**
+     * 粉丝货道
+     */
+    public int currentFanBinNumber = 1;
 
 }

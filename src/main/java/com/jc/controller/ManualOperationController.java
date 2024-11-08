@@ -95,7 +95,7 @@ public class ManualOperationController {
                 break;
             case 12:
                 actionResult = "粉丝仓出粉丝";
-                result = fansService.noodleBinDeliver();
+                result = fansService.takeFans();
                 break;
             case 13:
                 actionResult = "装菜勺复位";

@@ -94,7 +94,7 @@ public class Constants {
      */
     public static final int X_FANS_WAREHOUSE_5 = 5;
     /**
-     * 粉丝仓原点
+     * 粉丝仓原点——推植复位点
      */
     public static final int X_FAN_COMPARTMENT_ORIGIN = 6;
     /**
