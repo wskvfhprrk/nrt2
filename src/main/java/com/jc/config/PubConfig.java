@@ -147,6 +147,6 @@ public class PubConfig {
     /**
      * 粉丝货道
      */
-    public int currentFanBinNumber = 1;
+    public int currentFanBinNumber = 0;
 
 }

@@ -92,10 +92,10 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
                 clientConfig.getRelayDevice();
-//        if (allDevicesConnected) {
-//            pubConfig.setAllDevicesConnectedStatus(true);
+        if (allDevicesConnected) {
+            pubConfig.setAllDevicesConnectedStatus(true);
 //            reset.start();
-//        }
+        }
     }
 
     /**

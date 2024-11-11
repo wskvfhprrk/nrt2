@@ -64,7 +64,7 @@ public class RobotServiceImpl implements RobotService {
         }
         //出碗指令
         Result result = relayDeviceService.deliverBowl();
-        if (result.getCode() == 20) {
+        if (result.getCode() == 200) {
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException e) {
@@ -74,6 +74,7 @@ public class RobotServiceImpl implements RobotService {
             return result;
         }
         pubConfig.setIsRobotStatus(true);
+        log.info("机器人状态赋值为true");
         return Result.success();
     }
 
@@ -139,7 +140,23 @@ public class RobotServiceImpl implements RobotService {
         pubConfig.setIsRobotStatus(false);
         try {
             // TODO: 2024/11/7 根据出粉丝进行判断
-            nettyClientConfig.connectAndSendData("run(fenSi/fen1.jspf)");
+            int currentFanBinNumber = pubConfig.getCurrentFanBinNumber();
+            switch (currentFanBinNumber) {
+                case 1:
+                    nettyClientConfig.connectAndSendData("run(fenSi/fen1.jspf)");
+                    break;
+                case 2:
+                    nettyClientConfig.connectAndSendData("run(fenSi/fen2.jspf)");
+                    break;
+                case 3:
+                    nettyClientConfig.connectAndSendData("run(fenSi/fen3.jspf)");
+                    break;
+                case 4:
+                    nettyClientConfig.connectAndSendData("run(fenSi/fen4.jspf)");
+                    break;
+                default:
+                    return Result.error(500,"没有粉丝仓！");
+            }
             pubConfig.setIsRobotStatus(false);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -147,7 +164,4 @@ public class RobotServiceImpl implements RobotService {
         return Result.success();
     }
 
-    public Result takeFans() {
-        return fansService.takeFans();
-    }
 }

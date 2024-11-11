@@ -39,6 +39,8 @@ public class IODeviceService implements DeviceHandler {
     private IODeviceService ioDeviceService;
     @Autowired
     private Send485OrderService send485OrderService;
+    @Autowired
+    private PubConfig pubConfig;
 
     /**
      * 处理消息
@@ -59,7 +61,7 @@ public class IODeviceService implements DeviceHandler {
                     heightOrLow(split[3 + i / 4], sb);
                 }
             }
-            log.info("传感器的高低电平：{}", sb);
+//            log.info("传感器的高低电平：{}", sb);
             ioStatus = sb.toString();
             highAndLowLevelsChange(sb);
         } else {
@@ -125,12 +127,16 @@ public class IODeviceService implements DeviceHandler {
         }
         //粉丝仓左限位
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            log.info("粉丝仓左限位");
+            //设置原点为1仓
+            pubConfig.setCurrentFanBinNumber(1);
             //停止
             String hex = "040600020001";
             send485OrderService.sendOrder(hex);
         }
-        //粉丝仓左限位
+        //粉丝仓右限位
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            log.info("粉丝仓右限位");
             //停止
             String hex = "040600020001";
             send485OrderService.sendOrder(hex);

@@ -16,44 +16,50 @@ public class Reset {
     @Autowired
     private RelayDeviceService relayDeviceService;
     @Autowired
-    private TurntableService turntableService;
-    @Autowired
     private PubConfig pubConfig;
     @Autowired
     private BeefConfig beefConfig;
+    @Autowired
+    private FansService fansService;
 
     public void start() {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
             return;
         }
         log.info("设备自检复位中……");
+        //粉丝仓复位
+//        fansService.FanReset();
         //打开蒸汽发生器
-
-
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();
         log.info("抽汤排气");
-        new Thread(()->relayDeviceService.soupPipeExhaust(beefConfig.soupExhaustTime)).start();
+        new Thread(() -> relayDeviceService.soupPipeExhaust(beefConfig.soupExhaustTime)).start();
         //机器人复位
         log.info("机器人复位");
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         robotService.robotReset();
-        //转台复位
-        log.info("转台复位");
-        turntableService.turntableReset();
-        //碗复位
-        log.info("碗复位");
-//        bowlService.bowlReset();
         //出汤口复位
         log.info("出汤口复位");
-        relayDeviceService.theFoodOutletIsFacingUpwards();
+//        relayDeviceService.theFoodOutletIsFacingUpwards();
         //设备自检完成
-        pubConfig.setDeviceSelfCheckComplete(true);
+//        while (!pubConfig.getIsRobotStatus()) {
+//            try {
+//                Thread.sleep(500L);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
         log.info("自检完成！");
+        pubConfig.setDeviceSelfCheckComplete(true);
         /**
          * 打开系统定时任务
          */
         pubConfig.setIsExecuteTask(true);
-//        log.info("定时任务打开！");
+        log.info("定时任务打开！");
     }
 }
 

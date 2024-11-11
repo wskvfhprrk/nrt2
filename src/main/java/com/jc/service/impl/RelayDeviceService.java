@@ -29,6 +29,8 @@ public class RelayDeviceService implements DeviceHandler {
     private BeefConfig beefConfig;
     @Autowired
     private IODeviceService ioDeviceService;
+    @Autowired
+    private SiloWeighBoxSwitchService siloWeighBoxSwitchService;
 
     /**
      * 处理消息
@@ -169,16 +171,16 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result theFoodOutletIsFacingUpwards() {
-        log.info("出餐口向上");
-        //先打开盖板
-        this.coverOpen();
-        try {
-            Thread.sleep(5000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH);
-        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
+//        log.info("出餐口向上");
+//        //先打开盖板
+//        this.coverOpen();
+//        try {
+//            Thread.sleep(5000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH);
+//        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
         return Result.success();
     }
 
@@ -469,13 +471,10 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result vegetableMotor(Integer number) {
-        //打开震动
-
         int i = 0;
         switch (number) {
             case 1:
                 i = Constants.INGREDIENT_MOTOR1;
-                // TODO: 2024/11/1 打开1号门
                 break;
             case 2:
                 i = Constants.INGREDIENT_MOTOR2;
@@ -489,6 +488,7 @@ public class RelayDeviceService implements DeviceHandler {
             default:
 
         }
+        siloWeighBoxSwitchService.closeWeighBox(i);
         relayOpening(Constants.Y_CHU_WAN);
         relayOpening(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();
@@ -504,7 +504,6 @@ public class RelayDeviceService implements DeviceHandler {
         switch (number) {
             case 1:
                 i = Constants.INGREDIENT_MOTOR1;
-                // TODO: 2024/11/1 关闭1号门
                 break;
             case 2:
                 i = Constants.INGREDIENT_MOTOR2;
@@ -518,6 +517,7 @@ public class RelayDeviceService implements DeviceHandler {
             default:
 
         }
+        //打开震动盘
         relayClosing(Constants.Y_CHU_WAN);
         relayClosing(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();

@@ -35,7 +35,7 @@ public class Send485OrderService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("发送485指令返回的HEX消息: {}", message);
+//            log.info("发送485指令返回的HEX消息: {}", message);
         } else {
             log.info("发送485指令返回的普通消息: {}", message);
             // 在这里添加处理普通字符串消息的逻辑
