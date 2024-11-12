@@ -10,6 +10,7 @@ import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +32,9 @@ public class RelayDeviceService implements DeviceHandler {
     private IODeviceService ioDeviceService;
     @Autowired
     private SiloWeighBoxSwitchService siloWeighBoxSwitchService;
+    @Lazy
+    @Autowired
+    private RelayDeviceService relayDeviceService;
 
     /**
      * 处理消息
@@ -471,25 +475,21 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result vegetableMotor(Integer number) {
-        int i = 0;
         switch (number) {
             case 1:
-                i = Constants.INGREDIENT_MOTOR1;
+                relayDeviceService.firstBinOpen();
                 break;
             case 2:
-                i = Constants.INGREDIENT_MOTOR2;
+                relayDeviceService.secondBinOpen();
                 break;
             case 3:
-                i = Constants.INGREDIENT_MOTOR3;
-                break;
-            case 4:
-                i = Constants.INGREDIENT_MOTOR4;
+                relayDeviceService.thirdBinOpen();
                 break;
             default:
-
         }
-        siloWeighBoxSwitchService.closeWeighBox(i);
-        relayOpening(Constants.Y_CHU_WAN);
+
+        siloWeighBoxSwitchService.closeWeighBox(number);
+        relayOpening(Constants.Y_SHAKER_SWITCH_1);
         relayOpening(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();
     }
@@ -500,26 +500,39 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      */
     public Result vegetableMotorStop(Integer number) {
-        int i = 0;
         switch (number) {
             case 1:
-                i = Constants.INGREDIENT_MOTOR1;
+                relayDeviceService.firstBinClose();
                 break;
             case 2:
-                i = Constants.INGREDIENT_MOTOR2;
+                relayDeviceService.secondBinClose();
                 break;
             case 3:
-                i = Constants.INGREDIENT_MOTOR3;
+                relayDeviceService.thirdBinClose();
                 break;
             case 4:
-                i = Constants.INGREDIENT_MOTOR4;
                 break;
             default:
-
         }
         //打开震动盘
-        relayClosing(Constants.Y_CHU_WAN);
+        relayClosing(Constants.Y_SHAKER_SWITCH_1);
         relayClosing(Constants.Y_SHAKER_SWITCH_2);
+        siloWeighBoxSwitchService.openWeighBox(number);
+        try {
+            Thread.sleep(4000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Result.success();
+    }
+
+    /**
+     *
+     */
+    public Result closeWeighingBox(int number) {
+        siloWeighBoxSwitchService.closeWeighBox(number);
+        openClose(Constants.Y_SHAKER_SWITCH_1, 10);
+        openClose(Constants.Y_SHAKER_SWITCH_2, 10);
         return Result.success();
     }
 
@@ -530,12 +543,16 @@ public class RelayDeviceService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result vegetable1Motor(int i, Integer number) throws InterruptedException {
+    public Result vegetable1Motor(int i, Integer number) {
         //清零
         //02 06 00 26 00 01 A9 F2
 //        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
 //        Thread.sleep(Constants.SLEEP_TIME_MS);
-        vegetableMotor(i - 1);
+        //称重前准备
+        Result result = vegetableMotor(i);
+        if (result.getCode() != 200) {
+            return result;
+        }
         //查看是否够重量
         Boolean flag = true;
         while (flag) {
@@ -545,7 +562,16 @@ public class RelayDeviceService implements DeviceHandler {
                 flag = false;
             }
         }
-        vegetableMotorStop(i);
+        //停目
+        result = vegetableMotorStop(i);
+        if (result.getCode() != 200) {
+            return result;
+        }
+        //打开称重盒
+        result = closeWeighingBox(i);
+        if (result.getCode() != 200) {
+            return result;
+        }
         return Result.success();
     }
 
@@ -730,11 +756,11 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         //抽汤前先打开汤开关，防止水流
-        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE,  beefConfig.getSoupExtractionTime());
-        openClose(Constants.Y_SOUP_PUMP_SWITCH,  beefConfig.getSoupExtractionTime());
+        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, beefConfig.getSoupExtractionTime());
+        openClose(Constants.Y_SOUP_PUMP_SWITCH, beefConfig.getSoupExtractionTime());
         //加蒸汽完成后
         try {
-            Thread.sleep( beefConfig.getSoupExtractionTime() * 1000);
+            Thread.sleep(beefConfig.getSoupExtractionTime() * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

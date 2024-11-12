@@ -148,5 +148,9 @@ public class PubConfig {
      * 粉丝货道
      */
     public int currentFanBinNumber = 0;
+    /**
+     * 粉丝是否准备好
+     */
+    public Boolean areTheFansReady = false;
 
 }

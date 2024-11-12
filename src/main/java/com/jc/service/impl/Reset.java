@@ -28,7 +28,8 @@ public class Reset {
         }
         log.info("设备自检复位中……");
         //粉丝仓复位
-//        fansService.FanReset();
+        fansService.FanReset();
+        log.info("粉丝仓复位");
         //打开蒸汽发生器
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();

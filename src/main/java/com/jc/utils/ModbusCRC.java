@@ -7,7 +7,7 @@ public class ModbusCRC {
      */
     public static void main(String[] args) {
         // 原始十六进制字符串——09 DD 00 FF FF其中DD是位置，第一个FF是力矩，第二个FF是速度
-        String hexString = "09 10 03 E8 00 03 06 00 09 DD 00 FF FF";
+        String hexString = "09 10 03 E8 00 01 02 00 01";
         // 将字符串转换为字节数组
         String[] hexArray = hexString.split(" ");
         byte[] data = new byte[hexArray.length];

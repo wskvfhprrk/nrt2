@@ -102,6 +102,7 @@ pub:
   theServingWindowDidNotRise: ~
   theBowlWasNotTakenFromTheServingWindow: ~
   currentFanBinNumber: 0
+  areTheFansReady: false
 
 # 数据配置
 data:

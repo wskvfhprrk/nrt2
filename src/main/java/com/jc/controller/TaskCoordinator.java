@@ -71,6 +71,9 @@ public class TaskCoordinator {
         });
         log.info("开始称重第一种配菜");
         // TODO: 2024/11/8 开始称重第一种配菜
+        executorService.submit(() -> {
+            relayDeviceService.vegetable1Motor(1, 10);
+        });
         while (!pubConfig.getIsRobotStatus()) {
             try {
                 Thread.sleep(500L);
@@ -87,7 +90,8 @@ public class TaskCoordinator {
         robotService.robotPlaceBowl();
         //同时处理
         log.info("开始拿粉丝");
-        while (!pubConfig.getIsRobotStatus()) {
+        //必须机器人和粉丝准备到位才可以
+        while (!pubConfig.getIsRobotStatus() && pubConfig.getAreTheFansReady()) {
             try {
                 Thread.sleep(500L);
             } catch (InterruptedException e) {
@@ -100,9 +104,10 @@ public class TaskCoordinator {
             e.printStackTrace();
         }
         robotService.robotTakeFans();
-        log.info("开始菜勺到装菜位置");
-        log.info("开始称重第二种配菜");
-        log.info("开始处理订单");
+        log.info("开始取配菜");
+        robotService.robotTakeBasket();
+//        log.info("开始称重第二种配菜");
+//        log.info("开始处理订单");
         //制作汤
         log.info("开始倒菜");
         log.info("开始加蒸汽和水");

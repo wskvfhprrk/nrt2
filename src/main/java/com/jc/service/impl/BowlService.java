@@ -42,7 +42,7 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public Result spoonReset() {
-        log.info("装菜勺复位1");
+//        log.info("装菜勺复位1");
         //如果没有走完就不返回
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             //移到倒菜位置
@@ -53,11 +53,11 @@ public class BowlService implements DeviceHandler {
                 e.printStackTrace();
             }
         }
-        log.info("装菜勺复位2");
+//        log.info("装菜勺复位2");
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
         }
-        log.info("装菜勺复位3");
+//        log.info("装菜勺复位3");
         //先发送脉冲数，再发送指令
         String hex = "030600070480";
         send485OrderService.sendOrder(hex);

@@ -22,7 +22,7 @@ public class FanController {
     }
     @GetMapping("all")
     public Result all() throws InterruptedException {
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 4; i++) {
             i++;
             Result result = fansService.noodleBinDeliver();
             if(result.getCode()!=200){

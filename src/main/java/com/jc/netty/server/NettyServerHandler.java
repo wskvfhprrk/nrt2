@@ -94,7 +94,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 clientConfig.getRelayDevice();
         if (allDevicesConnected) {
             pubConfig.setAllDevicesConnectedStatus(true);
-//            reset.start();
+            reset.start();
         }
     }
 

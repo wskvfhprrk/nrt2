@@ -93,7 +93,7 @@ public class FansService {
 
         // 每50毫秒检查一次状态，超时6分钟退出
         while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
-            if (System.currentTimeMillis() - startTime > 10000) { // 10000
+            if (System.currentTimeMillis() - startTime > 60000) { // 10000
                 isTimedOut = true;
                 break;
             }
@@ -222,7 +222,7 @@ public class FansService {
 
         // 每50毫秒检查一次状态，超时6分钟退出
         while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
-            if (System.currentTimeMillis() - startTime > 10000) { // 1分钟超时
+            if (System.currentTimeMillis() - startTime > 60000) { // 1分钟超时
                 isTimedOut = true;
                 break;
             }
@@ -268,6 +268,37 @@ public class FansService {
             }
             return noodleBinReset(); // 粉丝仓复位
         }
+        long startTime = System.currentTimeMillis();
+        long timeoutMillis = 36000;
+        Boolean falg = false;
+
+        while (!isFansReset()) {
+            // 检查是否超过了超时时间
+            if (System.currentTimeMillis() - startTime >= timeoutMillis) {
+                log.error("复位超过了6分钟");
+                falg = true;
+                break;
+            }
+
+            try {
+                Thread.sleep(50L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                // 如果线程被中断，也可以选择跳出循环
+                break;
+            }
+        }
+        if (falg) {
+            return Result.error(500, "复位超过了6分钟");
+        }
+//        Result result = noodleBinDeliver();
+//        if (result.getCode() != 200) {
+//            return result;
+//        }
+//        result = pushRodOpen();
+//        if (result.getCode() != 200) {
+//            return result;
+//        }
         return Result.error(500, "未知错误"); // 返回未知错误
     }
 
@@ -277,6 +308,7 @@ public class FansService {
      * @return 执行结果
      */
     public Result takeFans() {
+        pubConfig.setAreTheFansReady(false);
         Boolean flag = determineFanStatus(); // 判断粉丝状态
         if (flag) {
             return Result.success(); // 如果感应到粉丝，返回成功
@@ -351,7 +383,11 @@ public class FansService {
      * @return 是否感应到粉丝
      */
     private Boolean determineFanStatus() {
-        return ioDeviceService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal() && !isFansReset();
+        boolean b = ioDeviceService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal() && !isFansReset();
+        if (b) {
+            pubConfig.setAreTheFansReady(true);
+        }
+        return b;
     }
 
     /**
