@@ -29,8 +29,6 @@ public class TaskCoordinator {
     @Autowired
     private RobotService robotService;
     @Autowired
-    private SoupHeatingManagement soupHeatingManagement;
-    @Autowired
     private FansService fansService;
     @Autowired
     private BeefConfig beefConfig;
@@ -40,8 +38,6 @@ public class TaskCoordinator {
     private RedisTemplate redisTemplate;
     @Autowired
     private RedisQueueService redisQueueService;
-    @Autowired
-    private IODeviceService iODeviceService;
 
     // 创建一个固定大小的线程池，线程池大小为 5
     ExecutorService executorService = Executors.newFixedThreadPool(5);
@@ -54,25 +50,36 @@ public class TaskCoordinator {
         //加入正在做的订单redis队列中
         order.setStatus(OrderStatus.PROCESSING);
         redisTemplate.opsForList().rightPush(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
-        //同时处理的事
+        //同时处理
+        log.info("开始开始汤加热");
+        new Thread(()-> relayDeviceService.soupHeatTo(beefConfig.getSoupHeatingTemperature())).run();
+        log.info("开始称重第一种配菜");
+        // TODO: 2024/11/8 开始称重第一种配菜
+        new Thread(()-> relayDeviceService.vegetable1Motor(1, 10)).run();
         log.info("开始取餐口复位关闭");
         // TODO: 2024/11/8 开始取餐口复位关闭
         log.info("开始粉丝出粉丝");
-        executorService.submit(() -> {
-            fansService.takeFans();
-        });
+        new Thread(()-> fansService.takeFans()).run();
+        log.info("开始拿粉丝");
+        //必须机器人和粉丝准备到位才可以
+        while (!pubConfig.getIsRobotStatus() || !pubConfig.getAreTheFansReady()) {
+            try {
+                Thread.sleep(500L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        robotService.robotTakeFans();
+        log.info("开始取配菜");
+        robotService.robotTakeBasket();
         log.info("开始机器人取碗");
         executorService.submit(() -> {
             robotService.robotTakeBowl();
-        });
-        log.info("开始开始汤加热");
-        executorService.submit(() -> {
-            relayDeviceService.soupHeatTo(beefConfig.getSoupHeatingTemperature());
-        });
-        log.info("开始称重第一种配菜");
-        // TODO: 2024/11/8 开始称重第一种配菜
-        executorService.submit(() -> {
-            relayDeviceService.vegetable1Motor(1, 10);
         });
         while (!pubConfig.getIsRobotStatus()) {
             try {
@@ -88,24 +95,6 @@ public class TaskCoordinator {
             e.printStackTrace();
         }
         robotService.robotPlaceBowl();
-        //同时处理
-        log.info("开始拿粉丝");
-        //必须机器人和粉丝准备到位才可以
-        while (!pubConfig.getIsRobotStatus() && pubConfig.getAreTheFansReady()) {
-            try {
-                Thread.sleep(500L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        robotService.robotTakeFans();
-        log.info("开始取配菜");
-        robotService.robotTakeBasket();
 //        log.info("开始称重第二种配菜");
 //        log.info("开始处理订单");
         //制作汤

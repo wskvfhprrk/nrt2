@@ -383,7 +383,8 @@ public class FansService {
      * @return 是否感应到粉丝
      */
     private Boolean determineFanStatus() {
-        boolean b = ioDeviceService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal() && !isFansReset();
+        boolean b = ioDeviceService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal()
+                && ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal();
         if (b) {
             pubConfig.setAreTheFansReady(true);
         }

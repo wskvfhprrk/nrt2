@@ -384,6 +384,7 @@ public class RelayDeviceService implements DeviceHandler {
 //            if (soupTemperatureValue >= beefConfig.getSoupHeatingTemperature()) {
 //                pubConfig.setIsAddingBowlCompleted(true);
 //            }
+            //如果温度大于等于设定温度时就关闭
             if (soupTemperatureValue >= number) {
                 flag = false;
                 relayClosing(Constants.Y_SOUP_STEAM_SOLENOID_VALVE);
@@ -403,7 +404,7 @@ public class RelayDeviceService implements DeviceHandler {
     public Result readTemperature() {
         nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
         try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
+            Thread.sleep(Constants.SLEEP_TIME_MS * 5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
