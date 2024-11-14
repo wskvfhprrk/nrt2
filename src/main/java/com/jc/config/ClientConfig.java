@@ -15,4 +15,5 @@ public class ClientConfig {
     private Boolean receive485Singal;
     private Boolean iOdevice;
     private Boolean relayDevice;
+    private Boolean siloWeighBoxIp;
 }

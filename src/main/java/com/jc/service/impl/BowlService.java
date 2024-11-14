@@ -1,5 +1,6 @@
 package com.jc.service.impl;
 
+import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
@@ -19,6 +20,8 @@ public class BowlService implements DeviceHandler {
     private Send485OrderService send485OrderService;
     @Autowired
     private IODeviceService ioDeviceService;
+    @Autowired
+    private PubConfig pubConfig;
 
     /**
      * 处理消息
@@ -42,7 +45,11 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public Result spoonReset() {
-//        log.info("装菜勺复位1");
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal() &&
+                ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()
+        ) {
+            return Result.success();
+        }
         //如果没有走完就不返回
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             //移到倒菜位置
@@ -78,6 +85,23 @@ public class BowlService implements DeviceHandler {
             hex = "030600000001";
             send485OrderService.sendOrder(hex);
         }
+        Long beging = System.currentTimeMillis();
+        Boolean flag = false;
+        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - beging >= 60000) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            log.error("菜勺超过10分钟还没有复位");
+            return Result.error("菜勺超过10分钟还没有复位");
+        }
         return Result.success();
     }
 
@@ -104,6 +128,7 @@ public class BowlService implements DeviceHandler {
      */
     public Result spoonPour() {
         log.info("装菜勺倒菜");
+        pubConfig.setServingDishesCompleted(false);
         //如果没有到达位置倒菜勺——汤右限位
         while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             moveToDishDumpingPosition();
@@ -129,6 +154,24 @@ public class BowlService implements DeviceHandler {
             e.printStackTrace();
         }
         this.spoonReset();
+        Long begin = System.currentTimeMillis();
+        Boolean flag = false;
+        while (!pubConfig.getServingDishesCompleted()) {
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - begin > 600000) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            log.error("10分钟倒菜未成功能");
+            return Result.error("10分钟倒菜未成功能");
+        }
+        pubConfig.setServingDishesCompleted(true);
         return Result.success();
     }
 
@@ -140,7 +183,13 @@ public class BowlService implements DeviceHandler {
     public Result spoonLoad() throws InterruptedException {
         //如果碗没有复位不行
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
-            return Result.error(500, "菜勺没有复位！");
+            Result result = spoonReset();
+            if (result.getCode() != 200) {
+                return result;
+            }
+        }
+        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            return Result.success();
         }
         //先发送脉冲数，再发送指令
         String hex = "020600070000";
@@ -156,6 +205,19 @@ public class BowlService implements DeviceHandler {
         Thread.sleep(2000L);
         hex = "020600050055";
         send485OrderService.sendOrder(hex);
+        Long begin = System.currentTimeMillis();
+        Boolean flag = false;
+        while (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+            if (System.currentTimeMillis() - begin > 600000) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            log.error("超过10分钟菜勺没有到装菜位置！");
+            return Result.error("超过10分钟菜勺没有到装菜位置！");
+        }
         return Result.success();
     }
 }

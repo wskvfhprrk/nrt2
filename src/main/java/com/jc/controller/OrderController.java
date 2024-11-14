@@ -141,7 +141,7 @@ public class OrderController {
 
         } catch (Exception e) {
             // 如果发生异常，返回错误信息
-            return Result.error(500, "获取订单数据失败");
+            return Result.error("获取订单数据失败");
         }
     }
 

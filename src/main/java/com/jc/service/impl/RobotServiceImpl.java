@@ -45,7 +45,7 @@ public class RobotServiceImpl implements RobotService {
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500, "机器人未复位！");
+            return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
         try {
@@ -83,7 +83,7 @@ public class RobotServiceImpl implements RobotService {
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500, "机器人未复位！");
+            return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
         try {
@@ -100,7 +100,7 @@ public class RobotServiceImpl implements RobotService {
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500, "机器人未复位！");
+            return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
         try {
@@ -117,7 +117,7 @@ public class RobotServiceImpl implements RobotService {
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500, "机器人未复位！");
+            return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
         try {
@@ -135,7 +135,7 @@ public class RobotServiceImpl implements RobotService {
         //检测机器人是否加home点
         if (!pubConfig.getIsRobotStatus()) {
             log.error("机器人未复位");
-            return Result.error(500, "机器人未复位！");
+            return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
         try {

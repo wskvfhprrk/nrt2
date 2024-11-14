@@ -27,9 +27,6 @@ public class Reset {
             return;
         }
         log.info("设备自检复位中……");
-        //粉丝仓复位
-        fansService.FanReset();
-        log.info("粉丝仓复位");
         //打开蒸汽发生器
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();
@@ -45,6 +42,9 @@ public class Reset {
         robotService.robotReset();
         //出汤口复位
         log.info("出汤口复位");
+        //粉丝仓复位
+        fansService.FanReset();
+        log.info("粉丝仓复位");
 //        relayDeviceService.theFoodOutletIsFacingUpwards();
         //设备自检完成
 //        while (!pubConfig.getIsRobotStatus()) {

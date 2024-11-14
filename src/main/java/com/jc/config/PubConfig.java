@@ -152,5 +152,12 @@ public class PubConfig {
      * 粉丝是否准备好
      */
     public Boolean areTheFansReady = false;
-
+    /**
+     * 菜准备好
+     */
+    public Boolean dishesAreReady = false;
+    /**
+     * 倒菜完成
+     */
+    public Boolean servingDishesCompleted = false;
 }

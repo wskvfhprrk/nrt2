@@ -26,7 +26,7 @@ public class SiloWeighBoxSwitchService {
         StringBuffer sb=new StringBuffer("000700000006010500");
         sb.append(String.format("%02d", number-1));
         sb.append("FF00");
-        nettyServerHandler.sendMessageToClient(ipConfig.getSiloWeighBox(),sb.toString(),true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSiloWeighBoxIp(),sb.toString(),true);
         return Result.success();
     }
     /**
@@ -37,7 +37,7 @@ public class SiloWeighBoxSwitchService {
         StringBuffer sb=new StringBuffer("000700000006010500");
         sb.append(String.format("%02d", number-1));
         sb.append("0000");
-        nettyServerHandler.sendMessageToClient(ipConfig.getSiloWeighBox(),sb.toString(),true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSiloWeighBoxIp(),sb.toString(),true);
         return Result.success();
     }
 

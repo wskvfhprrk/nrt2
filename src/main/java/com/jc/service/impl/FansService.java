@@ -74,7 +74,7 @@ public class FansService {
      *
      * @return 执行结果
      */
-    public Result noodleBinDeliver() {
+    public synchronized Result noodleBinDeliver() {
         log.info("推杆向前推送");
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
             return Result.success();
@@ -106,7 +106,7 @@ public class FansService {
 
         if (isTimedOut) {
             log.error("推杆前推时，粉丝推杆伺服在1分钟后仍未工作");
-            return Result.error(500, "推杆在1分钟后仍未复位");
+            return Result.error("推杆在1分钟后仍未复位");
         }
         //伺服要等2秒钟后才会停
         try {
@@ -135,7 +135,7 @@ public class FansService {
         }
 //        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
 //            log.error("没有拉开推拉杆");
-//            return Result.error(500, "没有拉开推拉杆");
+//            return Result.error("没有拉开推拉杆");
 //        }
         Result result = this.noodleBinReset(); // 粉丝仓复位操作
         if (result.getCode() == 200) {
@@ -191,7 +191,7 @@ public class FansService {
                     log.info("执行到达第 {} 粉丝仓位", i);
                     break;
                 default:
-                    return Result.error(500, "只有1-4"); // 返回错误，输入超出范围
+                    return Result.error("只有1-4"); // 返回错误，输入超出范围
             }
         }
         pubConfig.setCurrentFanBinNumber(i); // 设置当前仓位号
@@ -203,7 +203,8 @@ public class FansService {
      *
      * @return 执行结果
      */
-    public Result pushRodOpen() {
+    public synchronized Result pushRodOpen() {
+
         log.info("推杆向后拉");
         if ((ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal())) {
             return Result.success();
@@ -235,7 +236,7 @@ public class FansService {
 
         if (isTimedOut) {
             log.error("推杆后拉时，粉丝推杆伺服在1分钟后仍未工作");
-            return Result.error(500, "推杆在1分钟后仍未复位");
+            return Result.error("推杆在1分钟后仍未复位");
         }
         //伺服要等2秒钟后才会停
         try {
@@ -289,7 +290,7 @@ public class FansService {
             }
         }
         if (falg) {
-            return Result.error(500, "复位超过了6分钟");
+            return Result.error("复位超过了6分钟");
         }
 //        Result result = noodleBinDeliver();
 //        if (result.getCode() != 200) {
@@ -299,7 +300,7 @@ public class FansService {
 //        if (result.getCode() != 200) {
 //            return result;
 //        }
-        return Result.error(500, "未知错误"); // 返回未知错误
+        return Result.error("未知错误"); // 返回未知错误
     }
 
     /**
@@ -335,7 +336,7 @@ public class FansService {
         }
 
         takeFans(); // 递归调用取粉丝操作
-        return null;
+        return Result.success();
     }
 
     /**
@@ -344,7 +345,8 @@ public class FansService {
     private Result moveToNextOne() {
         if (pubConfig.getCurrentFanBinNumber() == 4) {
             noodleBinReset(); // 如果当前仓是4，执行复位操作
-            return Result.error(500, "没有粉丝了！"); // 返回错误提示
+            log.error("没有粉丝了！");
+            return Result.error("没有粉丝了！"); // 返回错误提示
         }
         moveFanBin(pubConfig.getCurrentFanBinNumber() + 1); // 移动到下一个仓
         return Result.success();

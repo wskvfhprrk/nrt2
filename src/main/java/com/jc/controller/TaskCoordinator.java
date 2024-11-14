@@ -41,9 +41,11 @@ public class TaskCoordinator {
 
     // 创建一个固定大小的线程池，线程池大小为 5
     ExecutorService executorService = Executors.newFixedThreadPool(5);
+    @Autowired
+    private BowlService bowlService;
 
 
-    public void executeTasks() throws Exception {
+    public Result executeTasks() throws Exception {
         log.info("开始处理订单");
         Order order = redisQueueService.dequeue();
         String orderJson = JSON.toJSONString(order);
@@ -51,66 +53,123 @@ public class TaskCoordinator {
         order.setStatus(OrderStatus.PROCESSING);
         redisTemplate.opsForList().rightPush(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
         //同时处理
-        log.info("开始开始汤加热");
-        new Thread(()-> relayDeviceService.soupHeatTo(beefConfig.getSoupHeatingTemperature())).run();
-        log.info("开始称重第一种配菜");
-        // TODO: 2024/11/8 开始称重第一种配菜
-        new Thread(()-> relayDeviceService.vegetable1Motor(1, 10)).run();
-        log.info("开始取餐口复位关闭");
-        // TODO: 2024/11/8 开始取餐口复位关闭
+        // 取粉丝
         log.info("开始粉丝出粉丝");
-        new Thread(()-> fansService.takeFans()).run();
-        log.info("开始拿粉丝");
+        Result result = fansService.takeFans();
+        if (result.getCode() != 200) {
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
+        //第一种配菜
+        pubConfig.setDishesAreReady(false);
+        executorService.submit(() -> {
+            log.info("开始称重第一种配菜");
+            relayDeviceService.vegetable1Motor(1, 10);
+        });
+        executorService.submit(() -> {
+            log.info("开始开始汤加热");
+            relayDeviceService.soupHeatTo(beefConfig.getSoupHeatingTemperature());
+        });
         //必须机器人和粉丝准备到位才可以
         while (!pubConfig.getIsRobotStatus() || !pubConfig.getAreTheFansReady()) {
-            try {
-                Thread.sleep(500L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(500L);
         }
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        log.info("开始拿粉丝");
+        result = robotService.robotTakeFans();
+        if (result.getCode() != 200) {
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
         }
-        robotService.robotTakeFans();
+        //倒菜蓝
+        while (!pubConfig.getIsRobotStatus() || !pubConfig.getDishesAreReady()) {
+            Thread.sleep(500L);
+        }
         log.info("开始取配菜");
-        robotService.robotTakeBasket();
-        log.info("开始机器人取碗");
-        executorService.submit(() -> {
-            robotService.robotTakeBowl();
-        });
+        result = robotService.robotTakeBasket();
+        if (result.getCode() != 200) {
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
+        //开始机器人取碗
         while (!pubConfig.getIsRobotStatus()) {
-            try {
-                Thread.sleep(500L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(500L);
         }
+        log.info("开始机器人取碗");
+        result = robotService.robotTakeBowl();
+        if (result.getCode() != 200) {
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
+        //开始放碗
+        while (!pubConfig.getIsRobotStatus()) {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        }
+        Thread.sleep(2000L);
         log.info("开始放碗……");
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        result = robotService.robotPlaceBowl();
+        if(result.getCode()!=200){
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
         }
-        robotService.robotPlaceBowl();
-//        log.info("开始称重第二种配菜");
-//        log.info("开始处理订单");
-        //制作汤
-        log.info("开始倒菜");
-        log.info("开始加蒸汽和水");
+        //开始倒菜
+        while (!pubConfig.getIsRobotStatus()) {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        }
+        log.info("到复位位置");
+        // TODO: 2024/11/14
+        log.info("加蒸汽");
+        // TODO: 2024/11/14
+        log.info("倒菜");
+        pubConfig.setServingDishesCompleted(false);
+        result = bowlService.spoonPour();
+        if(result.getCode()!=200){
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
+        log.info("装菜");
+        result = bowlService.spoonLoad();
+        if (result.getCode() != 200) {
+            return result;
+        }
+        log.info("开始加水");
+        // TODO: 2024/11/14  
+        //到达了装菜位置才下指令
+        result = relayDeviceService.steamAndSoupAdd();
+        if (result.getCode() != 200) {
+            return result;
+        }
+        while (!pubConfig.getIsRobotStatus()) {
+            Thread.sleep(500L);
+        }
+        log.info("开始出餐");
+        robotService.robotDeliverMeal();
         //从正在做的队列中取出放到已经完成的
         order.setStatus(OrderStatus.PROCESSING);
+        //从队列中取出
         redisTemplate.opsForList().leftPop(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
+        //放进做完队列中
         order.setStatus(OrderStatus.COMPLETED);
         orderJson = JSON.toJSONString(order);
         redisTemplate.opsForList().rightPush(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY, orderJson);
-        Thread.sleep(2000L);
         //出汤
         log.info("开始出汤");
         log.info("开始出餐口打开出餐");
         //从已经完成队列中移除
         redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
+        return Result.success();
+    }
+
+    /**
+     * 处理故障订单
+     *
+     * @param order
+     */
+    private void handleFaultyOrder(Order order) {
     }
 }

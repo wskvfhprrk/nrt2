@@ -84,7 +84,7 @@ public class RelayDeviceService implements DeviceHandler {
     public Result relayClosing(int no) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return Result.error(500, "编号继电器不存在"); // 添加return，防止继续执行
+            return Result.error("编号继电器不存在"); // 添加return，防止继续执行
         }
         // 将编号转换为16进制字符串
         String hexString = Integer.toHexString(no).toUpperCase();
@@ -110,11 +110,11 @@ public class RelayDeviceService implements DeviceHandler {
     public Result openClose(int no, int second) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return Result.error(500, "编号继电器不存在"); // 添加return，防止继续执行
+            return Result.error( "编号继电器不存在"); // 添加return，防止继续执行
         }
         if (second <= 0 || second > 177777) {
             log.error("时间值不能限定", second);
-            return Result.error(500, "时间值不能限定"); // 添加return，防止继续执行
+            return Result.error("时间值不能限定"); // 添加return，防止继续执行
         }
         // 将编号转换为16进制字符串
         String hexString = Integer.toHexString(no).toUpperCase();
@@ -545,6 +545,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result vegetable1Motor(int i, Integer number) {
+        pubConfig.setDishesAreReady(false);
         //清零
         //02 06 00 26 00 01 A9 F2
 //        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
@@ -573,6 +574,8 @@ public class RelayDeviceService implements DeviceHandler {
         if (result.getCode() != 200) {
             return result;
         }
+        pubConfig.setDishesAreReady(true);
+        log.info("第{}个配菜已经配好{}g", i, number);
         return Result.success();
     }
 
@@ -636,7 +639,7 @@ public class RelayDeviceService implements DeviceHandler {
     public Result deliverBowl() {
         if (ioDeviceService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL) == SignalLevel.LOW.ordinal()) {
             log.error("没有碗了！");
-            return Result.error(500, "没有碗了！");
+            return Result.error("没有碗了！");
         }
         relayOpening(Constants.Y_CHU_WAN);
         return Result.success();
@@ -716,7 +719,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result soupSteamCoverDown() {
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            return Result.error(500, "菜勺还在倒菜位置上！");
+            return Result.error("菜勺还在倒菜位置上！");
         }
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子开关通电
@@ -741,6 +744,11 @@ public class RelayDeviceService implements DeviceHandler {
         //盖子开关通电
         openClose(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL, 9);
         //无需要停止
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return Result.success();
     }
 
@@ -766,8 +774,7 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         //盖子上升
-        this.soupSteamCoverUp();
-        return Result.success();
+        return this.soupSteamCoverUp();
     }
 
 }

@@ -14,10 +14,10 @@ public class IpConfig {
     private int nettyPort;
     private String io;
     private String relay;
-    private String siloWeighBox;
     private String send485Order;
     private String receive485Signal;
     private String ducuIp;
+    private String siloWeighBoxIp;
     private int ducuPort;
 
 }
