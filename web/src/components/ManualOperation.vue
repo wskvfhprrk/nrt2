@@ -123,43 +123,45 @@ export default {
       buttonsGroup3: [
         {id: 16, name: "蒸汽打开"},
         {id: 17, name: "蒸汽关闭"},
-        {id: 18, name: "加汤蒸汤盖下降"},
-        {id: 19, name: "加汤蒸汤盖上升"},
-        {id: 20, name: "关汤蒸汽阀"},
-        {id: 21, name: "加汤（秒）"},
-        {id: 22, name: "汤管排气（秒）"},
-        {id: 23, name: "汤加热至（度）"},
-        {id: 24, name: "加蒸汽（秒）"},
-        {id: 25, name: "加蒸汽和汤"}
+        {id: 18, name: "加蒸汽盖下降"},
+        {id: 19, name: "加汤盖下降"},
+        {id: 20, name: "加汤蒸汤盖上升"},
+        {id: 21, name: "关汤蒸汽阀"},
+        {id: 22, name: "加汤（秒）"},
+        {id: 23, name: "汤管排气（秒）"},
+        {id: 24, name: "汤加热至（度）"},
+        {id: 25, name: "加蒸汽（秒）"},
+        {id: 26, name: "加蒸汽和汤"}
       ],
 
       buttonsGroup4: [
-        {id: 26, name: "后箱风扇开"},
-        {id: 27, name: "后箱风扇关"},
-        {id: 28, name: "震动器1（秒）"},
-        {id: 29, name: "震动器2（秒）"},
-        {id: 30, name: "出料3（秒）"}
+        {id: 27, name: "后箱风扇开"},
+        {id: 28, name: "后箱风扇关"},
+        {id: 29, name: "震动器1（秒）"},
+        {id: 30, name: "震动器2（秒）"},
+        {id: 31, name: "出料3（秒）"}
       ],
 
       buttonsGroup5: [
-        {id: 31, name: "一号配菜（g）"},
-        {id: 32, name: "二号配菜（g）"},
-        {id: 33, name: "三号配菜（g）"},
-        {id: 34, name: "四号配菜（g）"},
-        {id: 35, name: "称重全部清0"},
-        {id: 36, name: "标重500g（编号）"},
-        {id: 37, name: "打开称重盒（编号）"},
-        {id: 38, name: "关闭称重盒（编号）"}
+        {id: 32, name: "一号配菜（g）"},
+        {id: 33, name: "二号配菜（g）"},
+        {id: 34, name: "三号配菜（g）"},
+        {id: 35, name: "四号配菜（g）"},
+        {id: 36, name: "称重全部清0"},
+        {id: 37, name: "标重500g（编号）"},
+        {id: 38, name: "打开称重盒（编号）"},
+        {id: 39, name: "关闭称重盒（编号）"}
       ],
 
       buttonsGroup6: [
-        {id: 39, name: "一号料仓打开"},
-        {id: 40, name: "一号料仓关闭"},
-        {id: 41, name: "二号料仓打开"},
-        {id: 42, name: "二号料仓关闭"},
-        {id: 43, name: "三号料仓打开"},
-        {id: 44, name: "三号料仓关闭"}
+        {id: 40, name: "一号料仓打开"},
+        {id: 41, name: "一号料仓关闭"},
+        {id: 42, name: "二号料仓打开"},
+        {id: 43, name: "二号料仓关闭"},
+        {id: 44, name: "三号料仓打开"},
+        {id: 45, name: "三号料仓关闭"}
       ],
+
 
       dialogVisible: false,
       parameter: '',

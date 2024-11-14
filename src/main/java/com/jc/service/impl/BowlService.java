@@ -22,6 +22,8 @@ public class BowlService implements DeviceHandler {
     private IODeviceService ioDeviceService;
     @Autowired
     private PubConfig pubConfig;
+    @Autowired
+    private RelayDeviceService relayDeviceService;
 
     /**
      * 处理消息
@@ -45,7 +47,7 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public Result spoonReset() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal() &&
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() &&
                 ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()
         ) {
             return Result.success();
@@ -53,18 +55,14 @@ public class BowlService implements DeviceHandler {
         //如果没有走完就不返回
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             //移到倒菜位置
-            moveToDishDumpingPosition();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            Result result = moveToDishDumpingPosition();
+            if (result.getCode() != 200) {
+                return result;
             }
         }
-//        log.info("装菜勺复位2");
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
         }
-//        log.info("装菜勺复位3");
         //先发送脉冲数，再发送指令
         String hex = "030600070480";
         send485OrderService.sendOrder(hex);
@@ -110,7 +108,7 @@ public class BowlService implements DeviceHandler {
      */
     private Result moveToDishDumpingPosition() {
         //先发送脉冲数，再发送指令
-        String hex = "0206000703e8";
+        String hex = "020600070000";
         send485OrderService.sendOrder(hex);
         //速度
         hex = "020600050055";
@@ -118,6 +116,22 @@ public class BowlService implements DeviceHandler {
         //先发送脉冲数，再发送指令
         hex = "020600010001";
         send485OrderService.sendOrder(hex);
+        Long begin = System.currentTimeMillis();
+        boolean flag = false;
+        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - begin > 180000) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            return Result.error("移动装菜位超过3分钟");
+        }
         return Result.success();
     }
 
@@ -131,12 +145,15 @@ public class BowlService implements DeviceHandler {
         pubConfig.setServingDishesCompleted(false);
         //如果没有到达位置倒菜勺——汤右限位
         while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
-            moveToDishDumpingPosition();
-            try {
-                Thread.sleep(2000l);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            Result result = moveToDishDumpingPosition();
+            if (result.getCode() != 200) {
+                return result;
             }
+        }
+        //需要2次向上，不然的话达不到最顶端
+        Result result = relayDeviceService.soupSteamCoverUp();
+        if (result.getCode() != 200) {
+            return result;
         }
         //先发送脉冲数，再发送指令
         String hex = "030600070480";

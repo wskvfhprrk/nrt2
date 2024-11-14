@@ -116,7 +116,7 @@ public class IODeviceService implements DeviceHandler {
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽限上位停止
-        if (i == Constants.X_STEAM_UPPER_LIMIT && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_STEAM_UPPER_LIMIT && pubConfig.getAddSteam()) {
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }

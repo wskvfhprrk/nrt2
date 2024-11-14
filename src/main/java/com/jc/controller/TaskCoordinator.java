@@ -121,9 +121,19 @@ public class TaskCoordinator {
             Thread.sleep(Constants.SLEEP_TIME_MS);
         }
         log.info("到复位位置");
-        // TODO: 2024/11/14
+        result = bowlService.spoonReset();
+        if(result.getCode()!=200){
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
         log.info("加蒸汽");
-        // TODO: 2024/11/14
+        result = relayDeviceService.bowlSteamAdd(beefConfig.getBowlSteamTime());
+        if(result.getCode()!=200){
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
         log.info("倒菜");
         pubConfig.setServingDishesCompleted(false);
         result = bowlService.spoonPour();
@@ -137,8 +147,13 @@ public class TaskCoordinator {
         if (result.getCode() != 200) {
             return result;
         }
-        log.info("开始加水");
-        // TODO: 2024/11/14  
+        log.info("开始加汤");
+        result = relayDeviceService.soupAdd(beefConfig.getSoupExtractionTime());
+        if(result.getCode()!=200){
+            //处理故障订单
+            handleFaultyOrder(order);
+            return result;
+        }
         //到达了装菜位置才下指令
         result = relayDeviceService.steamAndSoupAdd();
         if (result.getCode() != 200) {

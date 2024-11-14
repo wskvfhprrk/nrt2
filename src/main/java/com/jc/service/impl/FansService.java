@@ -270,13 +270,13 @@ public class FansService {
             return noodleBinReset(); // 粉丝仓复位
         }
         long startTime = System.currentTimeMillis();
-        long timeoutMillis = 36000;
+        long timeoutMillis = 600000;
         Boolean falg = false;
 
         while (!isFansReset()) {
             // 检查是否超过了超时时间
-            if (System.currentTimeMillis() - startTime >= timeoutMillis) {
-                log.error("复位超过了6分钟");
+            if (System.currentTimeMillis() - startTime >timeoutMillis) {
+                log.error("复位超过了10分钟");
                 falg = true;
                 break;
             }

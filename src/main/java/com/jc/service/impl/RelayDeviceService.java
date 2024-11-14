@@ -110,7 +110,7 @@ public class RelayDeviceService implements DeviceHandler {
     public Result openClose(int no, int second) {
         if (no <= 0 || no > 32) {
             log.error("编号{}继电器不存在！", no);
-            return Result.error( "编号继电器不存在"); // 添加return，防止继续执行
+            return Result.error("编号继电器不存在"); // 添加return，防止继续执行
         }
         if (second <= 0 || second > 177777) {
             log.error("时间值不能限定", second);
@@ -271,13 +271,11 @@ public class RelayDeviceService implements DeviceHandler {
 
         openClose(Constants.Y_SOUP_PUMP_SWITCH, seconds);
         //加蒸汽完成后
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         //盖子上升
-        this.soupSteamCoverUp();
+        result = this.soupSteamCoverUp();
+        if(result.getCode()!=200){
+            return result;
+        }
         return Result.success();
     }
 
@@ -587,7 +585,10 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result bowlSteamAdd(int number) {
         //盖子方向向下
-        this.soupSteamCoverDown();
+        Result result = this.lowerSteamCover();
+        if (result.getCode() != 200) {
+            return result;
+        }
         //加蒸汽
         openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, number);
         openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, number);
@@ -598,7 +599,10 @@ public class RelayDeviceService implements DeviceHandler {
             e.printStackTrace();
         }
         //盖子方向向上
-        this.soupSteamCoverUp();
+        result = this.soupSteamCoverUp();
+        if (result.getCode() != 200) {
+            return result;
+        }
         return Result.success();
     }
 
@@ -713,7 +717,29 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 加汤蒸汤盖下降
+     * 加蒸汽盖下降
+     *
+     * @return
+     */
+    public Result lowerSteamCover() {
+        if (ioDeviceService.getStatus(Constants.X_STEAM_UPPER_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            return Result.error("菜勺还在倒菜位置上！");
+        }
+        pubConfig.setAddSteam(true);
+        relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
+        //盖子开关通电
+        relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //停止靠io传感器信号变化停止
+        return Result.success();
+    }
+
+    /**
+     * 加汤蒸盖下降
      *
      * @return
      */
@@ -721,6 +747,7 @@ public class RelayDeviceService implements DeviceHandler {
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             return Result.error("菜勺还在倒菜位置上！");
         }
+        pubConfig.setAddSteam(false);
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子开关通电
         relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
@@ -745,7 +772,7 @@ public class RelayDeviceService implements DeviceHandler {
         openClose(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL, 9);
         //无需要停止
         try {
-            Thread.sleep(5000L);
+            Thread.sleep(3000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
