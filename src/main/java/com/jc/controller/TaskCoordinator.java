@@ -135,7 +135,7 @@ public class TaskCoordinator {
             return result;
         }
         log.info("倒菜");
-        pubConfig.setServingDishesCompleted(false);
+//        pubConfig.setServingDishesCompleted(false);
         result = bowlService.spoonPour();
         if(result.getCode()!=200){
             //处理故障订单
@@ -155,13 +155,13 @@ public class TaskCoordinator {
             return result;
         }
         //到达了装菜位置才下指令
-        result = relayDeviceService.steamAndSoupAdd();
-        if (result.getCode() != 200) {
-            return result;
-        }
-        while (!pubConfig.getIsRobotStatus()) {
-            Thread.sleep(500L);
-        }
+//        result = relayDeviceService.steamAndSoupAdd();
+//        if (result.getCode() != 200) {
+//            return result;
+//        }
+//        while (!pubConfig.getIsRobotStatus()) {
+//            Thread.sleep(500L);
+//        }
         log.info("开始出餐");
         robotService.robotDeliverMeal();
         //从正在做的队列中取出放到已经完成的

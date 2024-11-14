@@ -175,6 +175,13 @@ public class IODeviceService implements DeviceHandler {
         return ioStatus;
     }
 
+    /**
+     * 发起主动查询
+     */
+    public void sendSearch(){
+        nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
+    }
+
     public int getStatus(int i) {
         String[] split = getStatus().split(",");
         String str = split[i - 1];

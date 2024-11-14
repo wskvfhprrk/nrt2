@@ -255,6 +255,14 @@ public class FansService {
      * @return 执行结果
      */
     public Result FanReset() {
+
+        // 发送查询感器状态的信息
+        ioDeviceService.sendSearch();
+        try {
+            Thread.sleep(Constants.SLEEP_TIME_MS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         boolean b = ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal();
         if (isFansReset() && b) {
             return Result.success(); // 如果已复位且左限位信号高，返回成功
@@ -314,27 +322,22 @@ public class FansService {
         if (flag) {
             return Result.success(); // 如果感应到粉丝，返回成功
         }
-
         Result result = resendFromCurrentPush(); // 推杆推送当前仓位
         if (result.getCode() != 200) {
             return result; // 推送失败返回错误
         }
-
         flag = determineFanStatus(); // 再次判断粉丝状态
         if (flag) {
             return Result.success(); // 如果感应到粉丝，返回成功
         }
-
         result = pushRodOpen(); // 推杆后拉
         if (result.getCode() != 200) {
             return result; // 推送失败返回错误
         }
-
         result = moveToNextOne(); // 移动到下一个粉丝仓
         if (result.getCode() != 200) {
             return result; // 移动失败返回错误
         }
-
         takeFans(); // 递归调用取粉丝操作
         return Result.success();
     }

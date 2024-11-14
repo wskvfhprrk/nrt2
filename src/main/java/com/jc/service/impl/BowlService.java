@@ -173,7 +173,7 @@ public class BowlService implements DeviceHandler {
         this.spoonReset();
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
-        while (!pubConfig.getServingDishesCompleted()) {
+        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -217,15 +217,15 @@ public class BowlService implements DeviceHandler {
         //先发送脉冲数，再发送指令
         hex = "020600000001";
         send485OrderService.sendOrder(hex);
-        hex = "0206000503E8";
-        send485OrderService.sendOrder(hex);
-        Thread.sleep(2000L);
-        hex = "020600050055";
-        send485OrderService.sendOrder(hex);
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
         while (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
             Thread.sleep(Constants.SLEEP_TIME_MS);
+//            if ((System.currentTimeMillis() - begin) % 310000 == 0) {
+//                //发送指令
+//                hex = "020600000001";
+//                send485OrderService.sendOrder(hex);
+//            }
             if (System.currentTimeMillis() - begin > 600000) {
                 flag = true;
                 break;

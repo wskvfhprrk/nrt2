@@ -98,7 +98,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             pubConfig.setAllDevicesConnectedStatus(true);
             //阻塞一段时间后再初始化——让机器运行一下再说
             try {
-                Thread.sleep(180000L);//3分钟
+                Thread.sleep(60000L);//1分钟
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -268,9 +268,12 @@ public class RelayDeviceService implements DeviceHandler {
         //抽汤前先打开汤开关，防止水流
         openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, seconds);
         log.info("打开抽汤{}秒钟", seconds);
-
         openClose(Constants.Y_SOUP_PUMP_SWITCH, seconds);
-        //加蒸汽完成后
+        try {
+            Thread.sleep((seconds+1)*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //盖子上升
         result = this.soupSteamCoverUp();
         if(result.getCode()!=200){
@@ -585,7 +588,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result bowlSteamAdd(int number) {
         //盖子方向向下
-        Result result = this.lowerSteamCover();
+        Result result = lowerSteamCover();
         if (result.getCode() != 200) {
             return result;
         }
@@ -722,9 +725,9 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result lowerSteamCover() {
-        if (ioDeviceService.getStatus(Constants.X_STEAM_UPPER_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            return Result.error("菜勺还在倒菜位置上！");
-        }
+//        if (ioDeviceService.getStatus(Constants.X_STEAM_UPPER_LIMIT) == SignalLevel.HIGH.ordinal()) {
+//            return Result.error("菜勺还在倒菜位置上！");
+//        }
         pubConfig.setAddSteam(true);
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子开关通电
