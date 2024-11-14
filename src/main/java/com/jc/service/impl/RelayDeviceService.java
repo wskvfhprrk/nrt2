@@ -260,7 +260,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @param seconds 多少秒关闭
      */
     public Result soupAdd(int seconds) {
-        //盖子下降
+        //盖子下降——两次命令
         Result result = this.soupSteamCoverDown();
         if (result.getCode() == 500) {
             return result;
@@ -268,9 +268,12 @@ public class RelayDeviceService implements DeviceHandler {
         //抽汤前先打开汤开关，防止水流
         openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, seconds);
         log.info("打开抽汤{}秒钟", seconds);
-
         openClose(Constants.Y_SOUP_PUMP_SWITCH, seconds);
-        //加蒸汽完成后
+        try {
+            Thread.sleep((seconds+1)*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //盖子上升
         result = this.soupSteamCoverUp();
         if(result.getCode()!=200){
@@ -585,7 +588,7 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result bowlSteamAdd(int number) {
         //盖子方向向下
-        Result result = this.lowerSteamCover();
+        Result result = lowerSteamCover();
         if (result.getCode() != 200) {
             return result;
         }
@@ -594,7 +597,7 @@ public class RelayDeviceService implements DeviceHandler {
         openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, number);
         //加蒸汽完成后
         try {
-            Thread.sleep(number * 1000);
+            Thread.sleep((number+2) * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -722,9 +725,6 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result lowerSteamCover() {
-        if (ioDeviceService.getStatus(Constants.X_STEAM_UPPER_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            return Result.error("菜勺还在倒菜位置上！");
-        }
         pubConfig.setAddSteam(true);
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子开关通电
@@ -772,7 +772,7 @@ public class RelayDeviceService implements DeviceHandler {
         openClose(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL, 9);
         //无需要停止
         try {
-            Thread.sleep(3000L);
+            Thread.sleep(1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

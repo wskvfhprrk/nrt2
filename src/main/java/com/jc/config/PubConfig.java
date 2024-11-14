@@ -164,4 +164,8 @@ public class PubConfig {
      * 加蒸汽
      */
     public Boolean addSteam = true;
+    /**
+     * 配菜完成
+     */
+    public Boolean sideDishesCompleted = false;
 }

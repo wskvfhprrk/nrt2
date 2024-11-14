@@ -34,9 +34,14 @@ public class DocuService implements DeviceHandler {
         if (message.replaceAll(" ","").equals(Constants.ROBOT_HOME)) {
             pubConfig.setIsRobotStatus(true);
         }
+        //配菜完成
+        if (message.replaceAll(" ","").equals(Constants.PEI_CAI)) {
+            pubConfig.setSideDishesCompleted(true);
+        }
         //出餐完成
         if (message.replaceAll(" ","").equals(Constants.SERVING_COMPLETED)) {
             pubConfig.setIsServingCompleted(true);
         }
+
     }
 }

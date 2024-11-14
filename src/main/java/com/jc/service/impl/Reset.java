@@ -43,8 +43,10 @@ public class Reset {
         //出汤口复位
         log.info("出汤口复位");
         //粉丝仓复位
-        fansService.FanReset();
         log.info("粉丝仓复位");
+        fansService.resendFromCurrentPush();
+        log.info("菜勺移动到装菜位置");
+        bowlService.spoonLoad();
 //        relayDeviceService.theFoodOutletIsFacingUpwards();
         //设备自检完成
 //        while (!pubConfig.getIsRobotStatus()) {

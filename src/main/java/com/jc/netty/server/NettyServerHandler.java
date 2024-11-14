@@ -96,12 +96,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 clientConfig.getRelayDevice()&& clientConfig.getSiloWeighBoxIp();
         if (allDevicesConnected) {
             pubConfig.setAllDevicesConnectedStatus(true);
-            //阻塞一段时间后再初始化——让机器运行一下再说
-            try {
-                Thread.sleep(180000L);//3分钟
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            //阻塞一段时间后再初始化——让机器运行一下再说
+//            try {
+//                Thread.sleep(60000L);//1分钟
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
             reset.start();
         }
     }

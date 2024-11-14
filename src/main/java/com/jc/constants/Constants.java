@@ -303,6 +303,10 @@ public class Constants {
      */
     public static final String ROBOT_HOME = "686F6D65";
     /**
+     * 机器人酸菜完成到达发送指令
+     */
+    public static final String PEI_CAI = "706569636169";
+    /**
      * 读取汤温度指令
      */
     public static final String READ_SOUP_TEMPERATURE_COMMAND = "01 03 00 04 00 01 C5 CB";
