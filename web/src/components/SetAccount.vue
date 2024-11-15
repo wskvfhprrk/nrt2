@@ -3,7 +3,7 @@
   <el-main>
     <div class="form">
       <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-form">
-        <el-form-item label="本机机器码" prop="code" style="font-size: 15px;">
+        <el-form-item label="本机机器码" prop="code" >
           <el-input v-model.number="form.code" readonly></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">

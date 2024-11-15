@@ -270,13 +270,13 @@ public class RelayDeviceService implements DeviceHandler {
         log.info("打开抽汤{}秒钟", seconds);
         openClose(Constants.Y_SOUP_PUMP_SWITCH, seconds);
         try {
-            Thread.sleep((seconds+1)*1000);
+            Thread.sleep((seconds + 1) * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         //盖子上升
         result = this.soupSteamCoverUp();
-        if(result.getCode()!=200){
+        if (result.getCode() != 200) {
             return result;
         }
         return Result.success();
@@ -587,6 +587,7 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result bowlSteamAdd(int number) {
+        pubConfig.setFinishAddingSteam(false);
         //盖子方向向下
         Result result = lowerSteamCover();
         if (result.getCode() != 200) {
@@ -597,7 +598,7 @@ public class RelayDeviceService implements DeviceHandler {
         openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, number);
         //加蒸汽完成后
         try {
-            Thread.sleep((number+2) * 1000);
+            Thread.sleep((number + 2) * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -606,6 +607,7 @@ public class RelayDeviceService implements DeviceHandler {
         if (result.getCode() != 200) {
             return result;
         }
+        pubConfig.setFinishAddingSteam(true);
         return Result.success();
     }
 

@@ -168,4 +168,8 @@ public class PubConfig {
      * 配菜完成
      */
     public Boolean sideDishesCompleted = false;
+    /**
+     * 加完蒸汽
+     */
+    public Boolean finishAddingSteam = false;
 }

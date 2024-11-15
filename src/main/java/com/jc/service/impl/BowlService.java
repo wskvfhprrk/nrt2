@@ -173,7 +173,7 @@ public class BowlService implements DeviceHandler {
         this.spoonReset();
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
-        while (!pubConfig.getServingDishesCompleted()) {
+        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR)==SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {

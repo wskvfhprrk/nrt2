@@ -117,8 +117,8 @@ public class TaskCoordinator {
         if (result.getCode() != 200) {
             return result;
         }
-        //开始倒菜
-        while (!pubConfig.getIsRobotStatus()) {
+        //等加完蒸汽和机器人停止状态
+        while (!pubConfig.getIsRobotStatus() || !pubConfig.getFinishAddingSteam()) {
             Thread.sleep(Constants.SLEEP_TIME_MS);
         }
         log.info("倒菜");
@@ -126,6 +126,13 @@ public class TaskCoordinator {
         if (result.getCode() != 200) {
             return result;
         }
+
+        log.info("移到装菜");
+        result = bowlService.spoonLoad();
+        if (result.getCode() != 200) {
+            return result;
+        }
+
         log.info("开始加汤");
         result = relayDeviceService.soupAdd(beefConfig.getSoupExtractionTime());
         if (result.getCode() != 200) {
@@ -182,12 +189,6 @@ public class TaskCoordinator {
         }
         log.info("加蒸汽");
         result = relayDeviceService.bowlSteamAdd(beefConfig.getBowlSteamTime());
-        if (result.getCode() != 200) {
-            return result;
-        }
-        //移动到装菜位置
-        log.info("装菜");
-        result = bowlService.spoonLoad();
         if (result.getCode() != 200) {
             return result;
         }
