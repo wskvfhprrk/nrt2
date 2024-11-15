@@ -262,7 +262,7 @@ public class RelayDeviceService implements DeviceHandler {
     public Result soupAdd(int seconds) {
         //盖子下降——两次命令
         Result result = this.soupSteamCoverDown();
-        if (result.getCode() == 500) {
+        if (result.getCode() != 200) {
             return result;
         }
         //抽汤前先打开汤开关，防止水流
