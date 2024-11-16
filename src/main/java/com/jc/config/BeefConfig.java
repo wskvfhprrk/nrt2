@@ -45,6 +45,10 @@ public class BeefConfig {
      */
     private int soupHeatingTemperature;
     /**
+     * 汤加保温温度
+     */
+    private int soupInsulationTemperature;
+    /**
      * 碗蒸汽时间
      */
     private int bowlSteamTime;

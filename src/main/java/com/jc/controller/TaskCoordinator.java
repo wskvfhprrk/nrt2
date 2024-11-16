@@ -197,7 +197,7 @@ public class TaskCoordinator {
     }
 
     /**
-     * 处理故障订单
+     * 处理异常订单
      */
     private void handleFaultyOrder() {
         //删除缓存中的正在做的数据

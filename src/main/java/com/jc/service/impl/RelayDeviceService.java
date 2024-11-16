@@ -382,9 +382,6 @@ public class RelayDeviceService implements DeviceHandler {
             //发送温度
             readTemperature();
             Double soupTemperatureValue = pubConfig.getSoupTemperatureValue();
-//            if (soupTemperatureValue >= beefConfig.getSoupHeatingTemperature()) {
-//                pubConfig.setIsAddingBowlCompleted(true);
-//            }
             //如果温度大于等于设定温度时就关闭
             if (soupTemperatureValue >= number) {
                 flag = false;
@@ -392,7 +389,6 @@ public class RelayDeviceService implements DeviceHandler {
             } else {
                 relayOpening(Constants.Y_SOUP_STEAM_SOLENOID_VALVE);
             }
-
         }
         return Result.success();
     }
@@ -412,63 +408,7 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success(pubConfig.getSoupTemperatureValue());
     }
 
-    /**
-     * 配菜称重盒打开（编号）
-     *
-     * @param number
-     * @return
-     */
-    public Result openWeighingBox(Integer number) throws InterruptedException {
-        int i = 0;
-        switch (number) {
-            case 1:
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_2);
-                break;
-            case 2:
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_2);
-                break;
-            case 3:
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayOpening(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_2);
-                break;
-            default:
-        }
-        return Result.success();
-    }
 
-    /**
-     * 配菜称重盒关闭（编号）
-     *
-     * @param number
-     * @return
-     */
-    public Result closeWeighingBox(Integer number) throws InterruptedException {
-        int i = 0;
-        switch (number) {
-            case 1:
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH1_2);
-                break;
-            case 2:
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH2_2);
-                break;
-            case 3:
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_1);
-                Thread.sleep(Constants.SLEEP_TIME_MS);
-                relayClosing(Constants.SIDE_DISH_WEIGHING_BOX_SWITCH3_2);
-                break;
-            default:
-        }
-        return Result.success();
-    }
 
     /**
      * 配菜称重盒关闭打开（编号）

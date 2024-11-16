@@ -2,6 +2,10 @@ package com.jc.service.impl;
 
 import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
+import com.jc.config.Result;
+import com.jc.constants.Constants;
+import com.jc.enums.SignalLevel;
+import jdk.nashorn.internal.objects.AccessorPropertyDescriptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,8 @@ public class Reset {
     private BeefConfig beefConfig;
     @Autowired
     private FansService fansService;
+    @Autowired
+    private IODeviceService iODeviceService;
 
     public void start() {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
@@ -47,15 +53,48 @@ public class Reset {
         fansService.resendFromCurrentPush();
         log.info("菜勺移动到装菜位置");
         bowlService.spoonLoad();
-//        relayDeviceService.theFoodOutletIsFacingUpwards();
-        //设备自检完成
-//        while (!pubConfig.getIsRobotStatus()) {
-//            try {
-//                Thread.sleep(500L);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        log.info("蒸汽给汤加热至保温温度");
+        Result result = relayDeviceService.soupHeatTo(beefConfig.getSoupInsulationTemperature());
+        if(result.getCode()!=200){
+            log.error("汤加热时出现了问题！");
+            return;
+        }
+        //等待几个参数完成才算自检完成
+        //1、机器人复位
+        pubConfig.getIsRobotStatus();
+        //2、检测汤温度到达保温温度
+         result = relayDeviceService.readTemperature();
+        Boolean checkSoupTemperatureReachedInsulationTemperature = (int) result.getData() >= beefConfig.getSoupInsulationTemperature();
+        //3、粉丝仓传感器到低电平
+        Boolean fanBinSensor = iODeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal();
+        //4、菜勺到达装菜位置
+        Boolean ladleReachedDishLoadingPosition = iODeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal();
+        //达不到条件阻塞进行检测
+        while (!pubConfig.getIsRobotStatus() ||
+                !checkSoupTemperatureReachedInsulationTemperature ||
+                !fanBinSensor ||
+                !ladleReachedDishLoadingPosition
+        ) {
+            //如果机器人不重置发送重置指令
+            if (!pubConfig.getIsRobotStatus()) {
+                log.error("机器人未重置，重新重置");
+                robotService.robotReset();
+            }
+            if( !checkSoupTemperatureReachedInsulationTemperature){
+                log.error("汤加热的温度达不到保温");
+            }
+            if( !fanBinSensor){
+                log.error("粉丝仓未重置，请检查");
+            }
+            if( !checkSoupTemperatureReachedInsulationTemperature){
+                log.error("装菜勺未到达装菜位置，请检查");
+            }
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS * 10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         log.info("自检完成！");
         pubConfig.setDeviceSelfCheckComplete(true);
         /**

@@ -116,6 +116,7 @@ data:
   soupExtractionTime: 8
   vibratorTime: 5
   soupHeatingTemperature: 120
+  soupInsulationTemperature: 90
   bowlSteamTime: 12
   shakerSwitchTime: 5
   theFoodOutletIsFacingDownwardsTime: 18
