@@ -64,4 +64,16 @@ public class BeefConfig {
      * 抽汤排气时间
      */
     public int soupExhaustTime;
+    /**
+     * 菜勺走动距离值
+     */
+    public int ladleWalkingDistanceValue ;
+    /**
+     * 菜勺倒菜转动值
+     */
+    public int ladleDishDumpingRotationValue ;
+    /**
+     * 粉丝推杆推动距离值
+     */
+    public int fanPushRodThrustDistanceValue ;
 }

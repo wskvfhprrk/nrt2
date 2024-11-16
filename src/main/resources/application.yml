@@ -122,4 +122,11 @@ data:
   theFoodOutletIsFacingDownwardsTime: 18
   turntableSpeed: 25
   soupExhaustTime: 10
+  #菜勺走动距离值
+  ladleWalkingDistanceValue: 1900
+  #菜勺倒菜转动值
+  ladleDishDumpingRotationValue: 1300
+  #粉丝推杆推动距离值
+  fanPushRodThrustDistanceValue: 1000
+
 

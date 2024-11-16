@@ -1,10 +1,12 @@
 package com.jc.service.impl;
 
+import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.service.DeviceHandler;
+import com.jc.utils.DecimalToHexConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class BowlService implements DeviceHandler {
     private PubConfig pubConfig;
     @Autowired
     private RelayDeviceService relayDeviceService;
+    @Autowired
+    private BeefConfig beefConfig;
 
     /**
      * 处理消息
@@ -70,7 +74,7 @@ public class BowlService implements DeviceHandler {
         hex = "030600050090";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
-        hex = "030600000001";
+        hex = "030600010001";
         send485OrderService.sendOrder(hex);
         //如果转动后还没有在位置上就让其慢转到原点
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
@@ -108,7 +112,7 @@ public class BowlService implements DeviceHandler {
      */
     private synchronized  Result moveToDishDumpingPosition() {
         //先发送脉冲数，再发送指令
-        String hex = "02060007076C";
+        String hex = "02060007"+ DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
         send485OrderService.sendOrder(hex);
         //速度
         hex = "020600055000";
@@ -156,20 +160,36 @@ public class BowlService implements DeviceHandler {
             return result;
         }
         //先发送脉冲数，再发送指令
-        String hex = "030600070480";
+        String hex = "03060007"+DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
         send485OrderService.sendOrder(hex);
         //倒菜时速度
-        hex = "030600050090";
+        hex = "030600053000";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "030600000001";
         send485OrderService.sendOrder(hex);
-        //倒完复位——阻塞2秒,等倒完再下一个复位指令
         try {
-            Thread.sleep(2000l);
+            Thread.sleep(3000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //倒转复位
+        //先发送脉冲数，再发送指令
+//        hex = "03060007"+DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
+//        send485OrderService.sendOrder(hex);
+//        //倒菜时速度
+//        hex = "030600053000";
+//        send485OrderService.sendOrder(hex);
+//        //先发送脉冲数，再发送指令
+//        hex = "03060000001";
+//        send485OrderService.sendOrder(hex);
+        //倒完复位——阻塞2秒,等倒完再下一个复位指令
+//        try {
+//            Thread.sleep(500l);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        //复位
         this.spoonReset();
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
@@ -198,6 +218,10 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public synchronized Result spoonLoad()  {
+        //如果在装菜位直接返回
+        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            return Result.success();
+        }
         //如果碗没有复位不行
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             Result result = spoonReset();
@@ -205,11 +229,8 @@ public class BowlService implements DeviceHandler {
                 return result;
             }
         }
-        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
-            return Result.success();
-        }
         //先发送脉冲数，再发送指令
-        String hex = "02060007076C";
+        String hex = "02060007"+ DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());;
         send485OrderService.sendOrder(hex);
         //速度
         hex = "020600055000";

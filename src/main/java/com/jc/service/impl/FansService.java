@@ -1,9 +1,11 @@
 package com.jc.service.impl;
 
+import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
+import com.jc.utils.DecimalToHexConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,10 @@ public class FansService {
 
     // 当前粉丝仓是否复位的标志
     private boolean isFansReset = false;
+    @Autowired
+    private BeefConfig beefConfig;
+    @Autowired
+    private BowlService bowlService;
 
     /**
      * 粉丝仓复位——移动至第一个仓
@@ -82,7 +88,7 @@ public class FansService {
         String hex = "0106000503E8"; // 发送速度指令
         send485OrderService.sendOrder(hex);
 
-        hex = "0106000703E8"; // 发送脉冲数指令
+        hex = "01060007" + DecimalToHexConverter.decimalToHex(beefConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
         send485OrderService.sendOrder(hex);
 
         hex = "010600000001"; // 发送开始指令
@@ -126,6 +132,8 @@ public class FansService {
      * @return 执行结果
      */
     public Result moveFanBin(int i) {
+        //推杆再次向上
+        bowlService.spoonPour();
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
 //            log.warn("推杆没有复位");
             Result result = pushRodOpen(); // 推杆复位操作
@@ -133,10 +141,10 @@ public class FansService {
                 return result; // 如果推杆复位失败，返回错误
             }
         }
-//        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
-//            log.error("没有拉开推拉杆");
-//            return Result.error("没有拉开推拉杆");
-//        }
+        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
+            log.error("没有拉开推拉杆");
+            return Result.error("没有拉开推拉杆");
+        }
         Result result = this.noodleBinReset(); // 粉丝仓复位操作
         if (result.getCode() == 200) {
             try {
@@ -212,7 +220,7 @@ public class FansService {
         String hex = "0106000503E8"; // 发送速度指令
         send485OrderService.sendOrder(hex);
 
-        hex = "0106000703E8"; // 发送脉冲数指令
+        hex = "01060007" + DecimalToHexConverter.decimalToHex(beefConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
         send485OrderService.sendOrder(hex);
 
         hex = "010600010001"; // 发送开始指令

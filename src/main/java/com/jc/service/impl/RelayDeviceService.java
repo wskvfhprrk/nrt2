@@ -709,9 +709,9 @@ public class RelayDeviceService implements DeviceHandler {
      */
     public Result soupSteamCoverUp() {
 
-        openClose(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL, 9);
+        relayOpening(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         //盖子开关通电
-        openClose(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL, 9);
+        relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         //无需要停止
         try {
             Thread.sleep(1000L);
