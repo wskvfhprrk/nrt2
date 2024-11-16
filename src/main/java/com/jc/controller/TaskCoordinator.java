@@ -85,6 +85,9 @@ public class TaskCoordinator {
             Thread.sleep(500L);
         }
         log.info("机器人拿粉丝");
+        while (pubConfig.getCurrentFanBinNumber() > 4 || pubConfig.getCurrentFanBinNumber() < 0) {
+            Thread.sleep(500L);
+        }
         result = robotService.robotTakeFans();
         if (result.getCode() != 200) {
             return result;
