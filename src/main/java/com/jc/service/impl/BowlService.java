@@ -46,7 +46,7 @@ public class BowlService implements DeviceHandler {
      *
      * @return
      */
-    public Result spoonReset() {
+    public synchronized Result spoonReset() {
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() &&
                 ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()
         ) {
@@ -106,7 +106,7 @@ public class BowlService implements DeviceHandler {
     /**
      * 伺服电机移到倒菜位置
      */
-    private Result moveToDishDumpingPosition() {
+    private synchronized  Result moveToDishDumpingPosition() {
         //先发送脉冲数，再发送指令
         String hex = "02060007076C";
         send485OrderService.sendOrder(hex);
@@ -140,7 +140,7 @@ public class BowlService implements DeviceHandler {
      *
      * @return
      */
-    public Result spoonPour() {
+    public synchronized Result spoonPour() {
         log.info("装菜勺倒菜");
         pubConfig.setServingDishesCompleted(false);
         //如果没有到达位置倒菜勺——汤右限位
@@ -197,7 +197,7 @@ public class BowlService implements DeviceHandler {
      *
      * @return
      */
-    public Result spoonLoad()  {
+    public synchronized Result spoonLoad()  {
         //如果碗没有复位不行
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             Result result = spoonReset();
@@ -212,20 +212,16 @@ public class BowlService implements DeviceHandler {
         String hex = "020600070000";
         send485OrderService.sendOrder(hex);
         //速度
-        hex = "020600050055";
+        hex = "020600055000";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "020600000001";
-        send485OrderService.sendOrder(hex);
-        hex = "0206000503E8";
         send485OrderService.sendOrder(hex);
         try {
             Thread.sleep(2000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        hex = "020600050055";
-        send485OrderService.sendOrder(hex);
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
         while (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
