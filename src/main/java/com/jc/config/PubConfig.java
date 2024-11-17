@@ -35,10 +35,6 @@ public class PubConfig {
     public Boolean isRobotExecutionNaming = false;
 
     /**
-     * 转台当前工位数
-     */
-    private int turntableNumber = 0;
-    /**
      * 有多少个未做订单
      */
     private int orderNumber = 0;
@@ -106,22 +102,6 @@ public class PubConfig {
      * 机器人出餐完成——松开夹手
      */
     private Boolean isServingCompleted = false;
-    /**
-     * 有碗工位号
-     */
-    private String bowlStationNumber;
-    /**
-     * 订单完成状态
-     */
-    private Boolean orderCompletedStatus = false;
-    /**
-     * 蒸汽发生器当前状态：1表示保湿状态、2表示蒸汽状态
-     */
-    private int steamGeneratorCurrentState = SteamGeneratorState.HUMIDIFYING.getValue();
-    /**
-     * 蒸汽发生器是否有水
-     */
-    private Boolean steamGeneratorWaterStatus = false;
     /**
      * 所有设备连接状态
      */

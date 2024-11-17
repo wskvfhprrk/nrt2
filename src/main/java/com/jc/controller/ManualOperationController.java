@@ -149,7 +149,7 @@ public class ManualOperationController {
                 break;
             case 25:
                 actionResult = "加蒸汽";
-                result = relayDeviceService.bowlSteamAdd(number != null ? number : beefConfig.getBowlSteamTime());
+                result = relayDeviceService.bowlSteamAdd(number != null ? number : beefConfig.getSteamAdditionTimeSeconds());
                 break;
             case 26:
                 actionResult = "加蒸汽和汤";

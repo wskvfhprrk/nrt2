@@ -49,17 +49,9 @@ public class BeefConfig {
      */
     private int soupInsulationTemperature;
     /**
-     * 碗蒸汽时间
+     * 加蒸汽时间（秒）
      */
-    private int bowlSteamTime;
-    /**
-     * 出汤时间
-     */
-    private int theFoodOutletIsFacingDownwardsTime;
-    /**
-     * 转台速度
-     */
-    private int turntableSpeed;
+    private int steamAdditionTimeSeconds;
     /**
      * 抽汤排气时间
      */

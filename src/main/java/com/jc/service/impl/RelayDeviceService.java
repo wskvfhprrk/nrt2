@@ -725,11 +725,11 @@ public class RelayDeviceService implements DeviceHandler {
         //盖子方向向下
         this.soupSteamCoverDown();
         //加蒸汽
-        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, beefConfig.getBowlSteamTime());
-        openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, beefConfig.getBowlSteamTime());
+        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, beefConfig.getSteamAdditionTimeSeconds());
+        openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, beefConfig.getSteamAdditionTimeSeconds());
         //加蒸汽完成后
         try {
-            Thread.sleep(beefConfig.getBowlSteamTime() * 1000);
+            Thread.sleep(beefConfig.getSteamAdditionTimeSeconds() * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

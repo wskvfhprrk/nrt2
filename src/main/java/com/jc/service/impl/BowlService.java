@@ -110,9 +110,9 @@ public class BowlService implements DeviceHandler {
     /**
      * 伺服电机移到倒菜位置
      */
-    private synchronized  Result moveToDishDumpingPosition() {
+    private synchronized Result moveToDishDumpingPosition() {
         //先发送脉冲数，再发送指令
-        String hex = "02060007"+ DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
+        String hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
         send485OrderService.sendOrder(hex);
         //速度
         hex = "020600055000";
@@ -160,7 +160,7 @@ public class BowlService implements DeviceHandler {
             return result;
         }
         //先发送脉冲数，再发送指令
-        String hex = "03060007"+DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
+        String hex = "03060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
         send485OrderService.sendOrder(hex);
         //倒菜时速度
         hex = "030600053000";
@@ -173,27 +173,11 @@ public class BowlService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //倒转复位
-        //先发送脉冲数，再发送指令
-//        hex = "03060007"+DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
-//        send485OrderService.sendOrder(hex);
-//        //倒菜时速度
-//        hex = "030600053000";
-//        send485OrderService.sendOrder(hex);
-//        //先发送脉冲数，再发送指令
-//        hex = "03060000001";
-//        send485OrderService.sendOrder(hex);
-        //倒完复位——阻塞2秒,等倒完再下一个复位指令
-//        try {
-//            Thread.sleep(500l);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         //复位
         this.spoonReset();
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
-        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR)==SignalLevel.LOW.ordinal()) {
+        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -217,23 +201,27 @@ public class BowlService implements DeviceHandler {
      *
      * @return
      */
-    public synchronized Result spoonLoad()  {
+    public synchronized Result spoonLoad() {
         //如果在装菜位直接返回
         if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            log.info("在装菜位");
             return Result.success();
         }
         //如果碗没有复位不行
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             Result result = spoonReset();
             if (result.getCode() != 200) {
+                log.error(result.getMessage());
                 return result;
             }
         }
         //先发送脉冲数，再发送指令
-        String hex = "02060007"+ DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());;
-        send485OrderService.sendOrder(hex);
+        log.info("发送装菜指令");
         //速度
-        hex = "020600055000";
+        String hex = "020600055000";
+        send485OrderService.sendOrder(hex);
+        hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
+        ;
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "020600000001";
@@ -243,22 +231,15 @@ public class BowlService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Long begin = System.currentTimeMillis();
-        Boolean flag = false;
-        while (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.SLEEP_TIME_MS * 50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (System.currentTimeMillis() - begin > 600000) {
-                flag = true;
-                break;
+            if ((ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal())) {
+                spoonLoad();
             }
-        }
-        if (flag) {
-            log.error("超过10分钟菜勺没有到装菜位置！");
-            return Result.error("超过10分钟菜勺没有到装菜位置！");
         }
         return Result.success();
     }

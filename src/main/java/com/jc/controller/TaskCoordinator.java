@@ -10,7 +10,6 @@ import com.jc.enums.OrderStatus;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -191,7 +190,7 @@ public class TaskCoordinator {
             return result;
         }
         log.info("加蒸汽");
-        result = relayDeviceService.bowlSteamAdd(beefConfig.getBowlSteamTime());
+        result = relayDeviceService.bowlSteamAdd(beefConfig.getSteamAdditionTimeSeconds());
         if (result.getCode() != 200) {
             return result;
         }
