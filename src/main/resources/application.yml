@@ -40,8 +40,8 @@ ip:
   siloWeighBoxIp: 192.168.1.7 # 称重箱设备 IP
   send485Order: 192.168.1.5 # 发送 485 命令设备 IP
   receive485Signal: 192.168.1.6 # 接收 485 信号设备 IP
-  ducuIp: 192.168.1.10 # DUCU 设备 IP
-  ducuPort: 2000 # DUCU 设备端口
+  ducuIp: 192.168.1.10 # DUCU机器人 设备 IP
+  ducuPort: 2000 # DUCU机器人 设备端口
 
 # 机器人状态配置
 robot:
@@ -93,6 +93,6 @@ data:
   soupInsulationTemperature: 80 # 汤保温温度（℃）
   steamAdditionTimeSeconds: 10 # 加蒸汽时间（秒）
   soupExhaustTime: 10 # 汤排气时间（秒）
-  ladleWalkingDistanceValue: 1900 # 菜勺走动距离值
-  ladleDishDumpingRotationValue: 1300 # 菜勺倒菜转动值
-  fanPushRodThrustDistanceValue: 1000 # 粉丝推杆推动距离值
+  ladleWalkingDistanceValue: 1900 # 菜勺走动距离值（脉冲值）
+  ladleDishDumpingRotationValue: 1300 # 菜勺倒菜转动值（脉冲值）
+  fanPushRodThrustDistanceValue: 1000 # 粉丝推杆推动距离值（脉冲值）
