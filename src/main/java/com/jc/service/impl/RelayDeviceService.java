@@ -534,7 +534,6 @@ public class RelayDeviceService implements DeviceHandler {
             return result;
         }
         //加蒸汽
-        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, number);
         openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, number);
         //加蒸汽完成后
         try {
