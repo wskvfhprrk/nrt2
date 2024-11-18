@@ -127,7 +127,7 @@ public class PubConfig {
     /**
      * 粉丝货道
      */
-    public int currentFanBinNumber = 0;
+    public int currentFanBinNumber = 1;
     /**
      * 粉丝是否准备好
      */

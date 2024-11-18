@@ -28,7 +28,7 @@ public class Receive485SignalService implements DeviceHandler {
      */
     @Override
     public void handle(String message, boolean isHex) {
-        if(message==null)return;
+        if (message == null || message.equals("null") || message.length() == 0) return;
         if (isHex) {
 //            log.info("收到485信号——HEX: {}", message);
             try {

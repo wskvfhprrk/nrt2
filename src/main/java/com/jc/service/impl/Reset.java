@@ -3,9 +3,6 @@ package com.jc.service.impl;
 import com.jc.config.BeefConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
-import com.jc.constants.Constants;
-import com.jc.enums.SignalLevel;
-import jdk.nashorn.internal.objects.AccessorPropertyDescriptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +52,17 @@ public class Reset {
             log.error(result.getMessage());
             return;
         }
+        result = fansService.moveFanBin(2);
+        if (result.getCode() != 200) {
+            log.error(result.getMessage());
+            return;
+        }
+        result = fansService.fanReset();
+        if (result.getCode() != 200) {
+            log.error(result.getMessage());
+            return;
+        }
+
         log.info("菜勺移动到装菜位置");
         result = bowlService.spoonLoad();
         if (result.getCode() != 200) {

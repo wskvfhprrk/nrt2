@@ -87,8 +87,13 @@ public class TaskCoordinator {
         while (pubConfig.getCurrentFanBinNumber() > 4 || pubConfig.getCurrentFanBinNumber() < 0) {
             Thread.sleep(500L);
         }
+        while (pubConfig.getCurrentFanBinNumber()<1||pubConfig.getCurrentFanBinNumber()>5){
+            log.error("粉丝仓没有出粉丝");
+            Thread.sleep(500L);
+        }
         result = robotService.robotTakeFans();
         if (result.getCode() != 200) {
+            log.error(result.getMessage());
             return result;
         }
         //倒菜蓝

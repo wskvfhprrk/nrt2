@@ -7,6 +7,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // 读取服务端响应
-        ByteBuf buf = (ByteBuf) msg;
         try {
+            ByteBuf buf = (ByteBuf) msg;
             byte[] data = new byte[buf.readableBytes()];
             buf.readBytes(data);
             String response = new String(data);
@@ -41,7 +42,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 //            pubConfig.setRobotExecutionNaming(false);
             ctx.close(); // 关闭连接}
         } finally {
-            buf.release();
+            // 确保释放 msg——否则内存泄漏
+            ReferenceCountUtil.release(msg);
         }
 
     }

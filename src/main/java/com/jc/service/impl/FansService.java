@@ -132,8 +132,6 @@ public class FansService {
      * @return 执行结果
      */
     public Result moveFanBin(int i) {
-        //推杆再次向上
-        bowlService.spoonPour();
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
 //            log.warn("推杆没有复位");
             Result result = pushRodOpen(); // 推杆复位操作
@@ -262,7 +260,7 @@ public class FansService {
      *
      * @return 执行结果
      */
-    public Result FanReset() {
+    public Result fanReset() {
         // 发送查询感器状态的信息
         ioDeviceService.sendSearch();
         try {

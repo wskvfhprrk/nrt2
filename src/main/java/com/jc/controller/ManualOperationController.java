@@ -87,7 +87,7 @@ public class ManualOperationController {
                 break;
             case 10:
                 actionResult = "粉丝仓复位";
-                result = fansService.FanReset();
+                result = fansService.fanReset();
                 break;
             case 11:
                 actionResult = "移动粉丝仓";
