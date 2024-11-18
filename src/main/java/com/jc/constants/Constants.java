@@ -119,15 +119,15 @@ public class Constants {
     public static final int X_PLACE_BOWL_SIGNAL = 11;
 
     /**
-     * 汤左限位
+     * 汤左限位——装菜位
      */
     public static final int X_SOUP_LEFT_LIMIT = 12;
     /**
-     * 汤右限位
+     * 汤右限位——蒸汽位
      */
     public static final int X_SOUP_RIGHT_LIMIT = 13;
     /**
-     * 汤原点
+     * 汤原点——倒菜位置
      */
     public static final int X_SOUP_ORIGIN = 14;
     /**

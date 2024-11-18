@@ -34,7 +34,7 @@ public class Reset {
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();
         log.info("抽汤排气");
-        new Thread(() -> relayDeviceService.soupPipeExhaust(beefConfig.soupExhaustTime)).start();
+        new Thread(() -> relayDeviceService.soupPipeExhaust(beefConfig.getSoupInsulationTemperature())).start();
         //机器人复位
         log.info("机器人复位");
         try {

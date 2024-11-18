@@ -59,12 +59,12 @@ public class BowlService implements DeviceHandler {
         //如果没有走完就不返回
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             //移到倒菜位置
-            Result result = moveToDishDumpingPosition();
+            Result result = servoMotorToSteamPosition();
             if (result.getCode() != 200) {
                 return result;
             }
         }
-        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
+        if(ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()){
             return Result.success();
         }
         //先发送脉冲数，再发送指令
@@ -74,7 +74,7 @@ public class BowlService implements DeviceHandler {
         hex = "030600050090";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
-        hex = "030600010001";
+        hex = "030600000001";
         send485OrderService.sendOrder(hex);
         //如果转动后还没有在位置上就让其慢转到原点
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
@@ -108,21 +108,83 @@ public class BowlService implements DeviceHandler {
     }
 
     /**
-     * 伺服电机移到倒菜位置
+     * 伺服电机移到蒸汽位置
      */
-    private synchronized Result moveToDishDumpingPosition() {
-        //先发送脉冲数，再发送指令
-        String hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
-        send485OrderService.sendOrder(hex);
-        //速度
-        hex = "020600055000";
-        send485OrderService.sendOrder(hex);
-        //先发送脉冲数，再发送指令
-        hex = "020600010001";
-        send485OrderService.sendOrder(hex);
+    private synchronized Result servoMotorToSteamPosition() {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            return Result.success();
+        } else if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            //先发送脉冲数，再发送指令
+            String hex = "02060007" + DecimalToHexConverter.decimalToHex(
+                    beefConfig.getLadleWalkingDistanceValue() - beefConfig.getLadleDishDumpingDistancePulseValue());
+            send485OrderService.sendOrder(hex);
+            //速度
+            hex = "020600055000";
+            send485OrderService.sendOrder(hex);
+            //先发送脉冲数，再发送指令
+            hex = "020600010001";
+            send485OrderService.sendOrder(hex);
+        } else if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            //先发送脉冲数，再发送指令
+            String hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
+            send485OrderService.sendOrder(hex);
+            //速度
+            hex = "020600055000";
+            send485OrderService.sendOrder(hex);
+            //先发送脉冲数，再发送指令
+            hex = "020600010001";
+            send485OrderService.sendOrder(hex);
+        }
         Long begin = System.currentTimeMillis();
         boolean flag = false;
         while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            try {
+                Thread.sleep(Constants.SLEEP_TIME_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - begin > 180000) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            return Result.error("移动加蒸汽位超过3分钟");
+        }
+        return Result.success();
+    }
+
+    /**
+     * 伺服电机移到倒菜位置
+     */
+    private synchronized Result servoMotorMoveToDumpPosition() {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            return Result.success();
+        } else if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            //先发送脉冲数，再发送指令
+            String hex = "02060007" + DecimalToHexConverter.decimalToHex(
+                    beefConfig.getLadleWalkingDistanceValue() - beefConfig.getLadleDishDumpingDistancePulseValue());
+            send485OrderService.sendOrder(hex);
+            //速度
+            hex = "020600055000";
+            send485OrderService.sendOrder(hex);
+            //先发送脉冲数，再发送指令
+            hex = "020600000001";
+            send485OrderService.sendOrder(hex);
+        } else if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            //先发送脉冲数，再发送指令
+            String hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingDistancePulseValue());
+            send485OrderService.sendOrder(hex);
+            //速度
+            hex = "020600055000";
+            send485OrderService.sendOrder(hex);
+            //先发送脉冲数，再发送指令
+            hex = "020600010001";
+            send485OrderService.sendOrder(hex);
+        }
+        Long begin = System.currentTimeMillis();
+        boolean flag = false;
+        while (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -148,8 +210,8 @@ public class BowlService implements DeviceHandler {
         log.info("装菜勺倒菜");
         pubConfig.setServingDishesCompleted(false);
         //如果没有到达位置倒菜勺——汤右限位
-        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
-            Result result = moveToDishDumpingPosition();
+        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
+            Result result = servoMotorMoveToDumpPosition();
             if (result.getCode() != 200) {
                 return result;
             }
@@ -166,7 +228,7 @@ public class BowlService implements DeviceHandler {
         hex = "030600053000";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
-        hex = "030600000001";
+        hex = "030600010001";
         send485OrderService.sendOrder(hex);
         try {
             Thread.sleep(3000L);
@@ -203,7 +265,7 @@ public class BowlService implements DeviceHandler {
      */
     public synchronized Result spoonLoad() {
         //如果在装菜位直接返回
-        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             log.info("在装菜位");
             return Result.success();
         }
@@ -220,8 +282,12 @@ public class BowlService implements DeviceHandler {
         //速度
         String hex = "020600055000";
         send485OrderService.sendOrder(hex);
-        hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
-        ;
+        //根据不同位置进行判断
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
+        } else if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingDistancePulseValue());
+        }
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "020600000001";

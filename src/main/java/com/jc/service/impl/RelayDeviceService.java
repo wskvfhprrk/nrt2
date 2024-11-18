@@ -263,6 +263,7 @@ public class RelayDeviceService implements DeviceHandler {
         //盖子下降——两次命令
         Result result = this.soupSteamCoverDown();
         if (result.getCode() != 200) {
+            log.error(result.getMessage());
             return result;
         }
         //抽汤前先打开汤开关，防止水流
@@ -685,8 +686,10 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result soupSteamCoverDown() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            return Result.error("菜勺还在倒菜位置上！");
+        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()
+            ||ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()
+        ) {
+            return Result.error("菜勺没在装菜位置上，加汤蒸盖无法下降！");
         }
         pubConfig.setAddSteam(false);
         relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);

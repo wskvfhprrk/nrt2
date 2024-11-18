@@ -87,12 +87,13 @@ data:
   beef20: 20 # 牛肉 20 克
   cilantro: 10 # 香菜克数
   choppedGreenOnion: 10 # 葱花克数
-  soupExtractionTime: 8 # 汤提取时间（秒）
+  soupExtractionTime: 13 # 抽汤时间（秒）
   vibratorTime: 5 # 振动器工作时间（秒）
   soupHeatingTemperature: 120 # 汤加热温度（℃）
   soupInsulationTemperature: 80 # 汤保温温度（℃）
-  steamAdditionTimeSeconds: 10 # 加蒸汽时间（秒）
+  steamAdditionTimeSeconds: 15 # 加蒸汽时间（秒）
   soupExhaustTime: 10 # 汤排气时间（秒）
   ladleWalkingDistanceValue: 1900 # 菜勺走动距离值（脉冲值）
+  ladleDishDumpingDistancePulseValue: 1320 #菜勺倒菜距离（脉冲值）
   ladleDishDumpingRotationValue: 1300 # 菜勺倒菜转动值（脉冲值）
   fanPushRodThrustDistanceValue: 1000 # 粉丝推杆推动距离值（脉冲值）

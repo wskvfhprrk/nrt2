@@ -148,7 +148,7 @@ public class IODeviceService implements DeviceHandler {
             send485OrderService.sendOrder(hex);
         }
         //倒菜伺服到位——汤左限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "020600020001";
             send485OrderService.sendOrder(hex);
