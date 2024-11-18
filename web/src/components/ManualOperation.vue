@@ -235,7 +235,7 @@ export default {
 }
 
 .button-group {
-  height: 600px;
+  height: 650px;
   width: 300px;
   display: flex;
   flex-direction: column;

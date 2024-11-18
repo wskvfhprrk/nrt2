@@ -2,7 +2,7 @@
 <template>
   <el-main>
     <div class="form">
-      <el-form :model="form" status-icon :rules="rules" ref="form" label-width="100px" class="demo-form">
+      <el-form :model="form" status-icon :rules="rules" ref="form" label-width="200px" class="demo-form">
         <el-form-item label="本机机器码" prop="code" >
           <el-input v-model.number="form.code" readonly></el-input>
         </el-form-item>
