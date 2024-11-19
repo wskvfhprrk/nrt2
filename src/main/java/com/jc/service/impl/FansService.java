@@ -116,7 +116,7 @@ public class FansService {
         }
         //伺服要等2秒钟后才会停
         try {
-            Thread.sleep(2000L);
+            Thread.sleep(3000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -246,7 +246,7 @@ public class FansService {
         }
         //伺服要等2秒钟后才会停
         try {
-            Thread.sleep(2000L);
+            Thread.sleep(3000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

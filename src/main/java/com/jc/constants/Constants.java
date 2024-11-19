@@ -150,65 +150,9 @@ public class Constants {
 
     /** 32位继电器 */
     /**
-     * 出餐口向下——电推杆
-     */
-    public static final int THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH = 1;
-    /**
-     * 出餐口向上——电推杆
-     */
-    public static final int THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH = 2;
-    /**
-     * 出料开仓出料——电推杆
-     */
-    public static final int DISCHARGING_FROM_WAREHOUSE_SWITCH = 3;
-    /**
-     * 出料关仓禁止出料——电推杆
-     */
-    public static final int DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH = 4;
-    /**
-     * 蒸汽盖——电推杆
-     */
-    public static final int STEAM_COVER_1 = 5;
-    /**
-     * 蒸汽盖——电推杆
-     */
-    public static final int STEAM_COVER_2 = 6;
-    /**
-     * 柜体排气扇
-     */
-    public static final int CABINET_EXHAUST_FAN_SWITCH = 6;
-    /**
      * 蒸汽发生器继电器
      */
     public static final int Y_STEAM_SWITCH = 20;
-    /**
-     * 后箱风扇
-     */
-    public static final int REAR_BOX_FAN = 8;
-    /**
-     * 配菜称重盒开关1-1
-     */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_1 = 9;
-    /**
-     * 配菜称重盒开关1-2
-     */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH1_2 = 10;
-    /**
-     * 配菜称重盒开关2-1
-     */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_1 = 11;
-    /**
-     * 配菜称重盒开关2-2
-     */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH2_2 = 12;
-    /**
-     * 配菜称重盒开关3-1
-     */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_1 = 13;
-    /**
-     * 配菜称重盒开关3-2
-     */
-    public static final int SIDE_DISH_WEIGHING_BOX_SWITCH3_2 = 14;
     /**
      * 待用
      */

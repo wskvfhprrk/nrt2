@@ -64,38 +64,6 @@ public class RelayController {
     }
 
     /**
-     * 出餐口向下出虎
-     */
-    @GetMapping("theFoodOutletIsFacingDownwards")
-    public void theFoodOutletIsFacingDownwards() {
-        relayDeviceService.theFoodOutletIsFacingDownwards();
-    }
-
-    /**
-     * 出餐口向上复位
-     */
-    @GetMapping("theFoodOutletIsFacingUpwards")
-    public void theFoodOutletIsFacingUpwards() {
-        relayDeviceService.theFoodOutletIsFacingUpwards();
-    }
-
-    /**
-     * 盖板关闭
-     */
-    @GetMapping("coverClosed")
-    public void coverClosed() {
-        relayDeviceService.coverClosed();
-    }
-
-    /**
-     * 盖板打开
-     */
-    @GetMapping("coverOpen")
-    public void coverOpen() {
-        relayDeviceService.coverOpen();
-    }
-
-    /**
      * 关仓餐口——在取餐口向下时关闭出餐口完全下到位才关仓门
      */
     @GetMapping("dischargingIsProhibitedAfterClosingTheWarehouse")

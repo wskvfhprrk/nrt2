@@ -34,14 +34,14 @@ public class Reset {
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();
         log.info("抽汤排气");
-        new Thread(() -> relayDeviceService.soupPipeExhaust(beefConfig.getSoupInsulationTemperature())).start();
+        relayDeviceService.soupPipeExhaust(beefConfig.getSoupExhaustTime());
         //机器人复位
         log.info("机器人复位");
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(3000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         robotService.robotReset();
         //出汤口复位
         log.info("出汤口复位");
