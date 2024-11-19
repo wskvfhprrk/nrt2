@@ -87,7 +87,7 @@ data:
   beef20: 20 # 牛肉 20 克
   cilantro: 10 # 香菜克数
   choppedGreenOnion: 10 # 葱花克数
-  soupExtractionTime: 13 # 抽汤时间（秒）
+  soupExtractionTime: 10 # 抽汤时间（秒）
   vibratorTime: 5 # 振动器工作时间（秒）
   soupHeatingTemperature: 120 # 汤加热温度（℃）
   soupInsulationTemperature: 80 # 汤保温温度（℃）

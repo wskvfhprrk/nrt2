@@ -71,7 +71,7 @@ public class BowlService implements DeviceHandler {
         String hex = "030600070480";
         send485OrderService.sendOrder(hex);
         //速度
-        hex = "030600050090";
+        hex = "030600050050";
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "030600000001";

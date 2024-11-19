@@ -127,19 +127,20 @@ public class IODeviceService implements DeviceHandler {
         }
         //粉丝仓左限位
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            log.info("粉丝仓左限位");
-            //设置原点为1仓
-            pubConfig.setCurrentFanBinNumber(1);
             //停止
             String hex = "040600020001";
             send485OrderService.sendOrder(hex);
+            log.info("粉丝仓左限位");
+
+            //设置原点为1仓
+            pubConfig.setCurrentFanBinNumber(1);
         }
         //粉丝仓右限位
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            log.info("粉丝仓右限位");
             //停止
             String hex = "040600020001";
             send485OrderService.sendOrder(hex);
+            log.info("粉丝仓右限位");
         }
         //倒菜伺服到位——汤右限位
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
