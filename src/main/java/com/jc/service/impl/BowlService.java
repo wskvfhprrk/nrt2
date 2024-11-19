@@ -67,16 +67,6 @@ public class BowlService implements DeviceHandler {
         if(ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()){
             return Result.success();
         }
-//        //先发送脉冲数，再发送指令
-//        String hex = "03060007"+ DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
-//        send485OrderService.sendOrder(hex);
-//        //速度
-//        hex = "030600050050";
-//        send485OrderService.sendOrder(hex);
-//        //先发送脉冲数，再发送指令
-//        hex = "030600000001";
-//        send485OrderService.sendOrder(hex);
-        //如果转动后还没有在位置上就让其慢转到原点
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "030600070000";
