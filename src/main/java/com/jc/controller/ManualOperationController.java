@@ -159,11 +159,11 @@ public class ManualOperationController {
             // Group 4: 风扇和震动测试
             case 27:
                 actionResult = "后箱风扇开";
-//                result = relayDeviceService.rearFanOpen();
+                result = relayDeviceService.rearFanOpen();
                 break;
             case 28:
                 actionResult = "后箱风扇关";
-//                result = relayDeviceService.rearFanClose();
+                result = relayDeviceService.rearFanClose();
                 break;
             case 29:
                 actionResult = "震动器1测试";

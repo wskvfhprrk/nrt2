@@ -2,7 +2,7 @@ package com.jc.constants;
 
 public class Constants {
     /**
-     * 重置命令
+     * 重置命令——查询传感器io数据
      */
     public static final String RESET_COMMAND = "48 3A 01 52 00 00 00 00 00 00 00 00 D5 45 44";
     /**
@@ -20,59 +20,6 @@ public class Constants {
 
 
     /** 传感器的值 */
-    /**
-     * 转盘复位传感器X1
-     */
-    public static final int ROTARY_TABLE_RESET_SENSOR = 0;
-    /**
-     * 转盘工位传感器X2
-     */
-    public static final int ROTARY_TABLE_STATION_SENSOR = 1;
-    /**
-     * 碗下限位传感器X3
-     */
-    public static final int BOWL_LOWER_LIMIT_SENSOR = 2;
-    /**
-     * 碗上限位传感器X4
-     */
-    public static final int BOWL_UPPER_LIMIT_SENSOR = 3;
-    /**
-     * 自动升碗到位传感器X5
-     */
-    public static final int AUTO_BOWL_LIFT_POSITION_SENSOR = 4;
-    /**
-     * 机器人放空碗传感器X6
-     */
-    public static final int ROBOT_EMPTY_BOWL_SENSOR = 5;
-    /**
-     * 出餐口复位感器X7
-     */
-    public static final int SERVING_WINDOW_RESET_SENSOR = 6;
-    /**
-     * 出餐口感器X8
-     */
-    public static final int SERVING_WINDOW_SENSOR = 7;
-    /**
-     * 取餐完成传感器X9
-     */
-    public static final int PICKUP_COMPLETION_SENSOR = 8;
-    /**
-     * 汤桶最低传感器X10
-     */
-    public static final int SOUP_BUCKET_LOWEST_SENSOR = 9;
-    /**
-     * 汤液位传感器X12
-     */
-    public static final int SOUP_LEVEL_SENSOR = 11;
-    /**
-     * 货道对射传感器X13
-     */
-    public static final int GOODS_AISLE_PHOTOELECTRIC_SENSOR = 17;
-
-
-    /**
-     * 重新定义
-     */
     /**
      * 粉丝仓一
      */
@@ -153,10 +100,10 @@ public class Constants {
      * 蒸汽发生器继电器
      */
     public static final int Y_STEAM_SWITCH = 20;
-    /**
-     * 待用
-     */
-    public static final int TO_BE_USED = 15;
+//    /**
+//     * 待用
+//     */
+//    public static final int TO_BE_USED = 15;
     /**
      * 抽汤泵
      */
@@ -181,30 +128,30 @@ public class Constants {
      * 震动器
      */
     public static final int Y_SHAKER_SWITCH_1 = 17;
-    /**
-     * 配料电机4
-     */
-    public static final int INGREDIENT_MOTOR4 = 27;
-    /**
-     * 配料电机3
-     */
-    public static final int INGREDIENT_MOTOR3 = 28;
-    /**
-     * 配料电机2
-     */
-    public static final int INGREDIENT_MOTOR2 = 29;
-    /**
-     * 配料电机1
-     */
-    public static final int INGREDIENT_MOTOR1 = 30;
-    /**
-     * 碗交流电机N极
-     */
-    public static final int BOWL_N_SWITCH = 31;
-    /**
-     * 碗交流电机L极
-     */
-    public static final int BOWL_L_SWITCH = 32;
+//    /**
+//     * 配料电机4
+//     */
+//    public static final int INGREDIENT_MOTOR4 = 27;
+//    /**
+//     * 配料电机3
+//     */
+//    public static final int INGREDIENT_MOTOR3 = 28;
+//    /**
+//     * 配料电机2
+//     */
+//    public static final int INGREDIENT_MOTOR2 = 29;
+//    /**
+//     * 配料电机1
+//     */
+//    public static final int INGREDIENT_MOTOR1 = 30;
+//    /**
+//     * 碗交流电机N极
+//     */
+//    public static final int BOWL_N_SWITCH = 31;
+//    /**
+//     * 碗交流电机L极
+//     */
+//    public static final int BOWL_L_SWITCH = 32;
 
 
     /** 485设备指令 */
@@ -230,10 +177,10 @@ public class Constants {
     public static final int WEIGHT_SENSOR_ONE_TO_FOUR = 2;
 
 
-    /**
-     * 转台工位总数
-     */
-    public static final int WORKSTATION_NUMBER = 6;
+//    /**
+//     * 转台工位总数
+//     */
+//    public static final int WORKSTATION_NUMBER = 6;
     /**
      * 蒸汽发生器保温状态
      */

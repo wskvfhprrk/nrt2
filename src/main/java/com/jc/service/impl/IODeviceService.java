@@ -96,7 +96,7 @@ public class IODeviceService implements DeviceHandler {
 
     private void passdata(int i, String s, String s1) {
         //有碗信号感应到时
-        if (i == Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_PLACE_BOWL_SIGNAL) {
             relayDeviceService.chuWanStop();
         }
         //如果碗报警信号
@@ -176,7 +176,7 @@ public class IODeviceService implements DeviceHandler {
     /**
      * 发起主动查询
      */
-    public void sendSearch(){
+    public void sendSearch() {
         nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
     }
 
@@ -215,20 +215,6 @@ public class IODeviceService implements DeviceHandler {
         sb.append((firstChar == '4' || firstChar == '5') ? SignalLevel.HIGH.getValue() : SignalLevel.LOW.getValue()).append(",");
 
         return sb;
-    }
-
-    /**
-     * 处理传感器指令
-     *
-     * @param sb 传感器状态信息
-     */
-    private void sensorInstructionProcessing(StringBuffer sb) {
-        String[] split = sb.toString().split(",");
-        // 如果碗的极限传感器高电平，要停止碗步进电机
-        if (split[Constants.BOWL_LOWER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue()) || split[Constants.BOWL_UPPER_LIMIT_SENSOR].equals(SignalLevel.HIGH.getValue())) {
-            log.info("到达限位点，停止碗升降的步进电机");
-            relayDeviceService.stopBowl();
-        }
     }
 
 }

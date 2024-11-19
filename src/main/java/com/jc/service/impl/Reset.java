@@ -22,8 +22,6 @@ public class Reset {
     private DataConfig dataConfig;
     @Autowired
     private FansService fansService;
-    @Autowired
-    private IODeviceService iODeviceService;
 
     public void start() {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
@@ -37,11 +35,6 @@ public class Reset {
         relayDeviceService.soupPipeExhaust(dataConfig.getSoupExhaustTime());
         //机器人复位
         log.info("机器人复位");
-//        try {
-//            Thread.sleep(3000L);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         robotService.robotReset();
         //出汤口复位
         log.info("出汤口复位");
@@ -75,35 +68,6 @@ public class Reset {
             log.error(result.getMessage());
             return;
         }
-//        //等待几个参数完成才算自检完成
-//        //1、机器人复位
-//        //2、检测汤温度到达保温温度
-//        //3、粉丝仓传感器到低电平
-//        Boolean fanBinSensor = iODeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal();
-//        //4、菜勺到达装菜位置
-//        Boolean ladleReachedDishLoadingPosition = iODeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal();
-        //达不到条件阻塞进行检测
-//        while (!pubConfig.getIsRobotStatus() ||
-//                !fanBinSensor ||
-//                !ladleReachedDishLoadingPosition
-//        ) {
-//            //如果机器人不重置发送重置指令
-//            if (!pubConfig.getIsRobotStatus()) {
-//                log.error("机器人未重置，重新重置");
-//                robotService.robotReset();
-//            }
-//            if( !fanBinSensor){
-//                log.error("粉丝仓未重置，请检查");
-//            }
-//            if( !ladleReachedDishLoadingPosition){
-//                log.error("装菜勺未到达装菜位置，请检查");
-//            }
-//            try {
-//                Thread.sleep(Constants.SLEEP_TIME_MS * 10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
         log.info("自检完成！");
         pubConfig.setDeviceSelfCheckComplete(true);
         /**

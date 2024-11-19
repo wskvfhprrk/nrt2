@@ -156,103 +156,6 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-//    /**
-//     * 出餐口向下
-//     *
-//     * @return
-//     */
-//    public Result theFoodOutletIsFacingDownwards() {
-//        log.info("出餐口向下");
-//        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH);
-//        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH, 15);
-//        this.coverClosed();
-//        return Result.success();
-//    }
-
-//    /**
-//     * 出餐口向上
-//     *
-//     * @return
-//     */
-//    public Result theFoodOutletIsFacingUpwards() {
-//        log.info("出餐口向上");
-//        //先打开盖板
-//        this.coverOpen();
-//        try {
-//            Thread.sleep(5000L);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        relayClosing(Constants.THE_FOOD_OUTLET_IS_FACING_DOWNWARDS_SWITCH);
-//        openClose(Constants.THE_FOOD_OUTLET_IS_FACING_UPWARDS_SWITCH, 15);
-//        return Result.success();
-//    }
-
-//    /**
-//     * 出料开仓出料
-//     *
-//     * @return
-//     */
-//    public String coverOpen() {
-//        log.info("出料开仓出料");
-//        relayClosing(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH);
-//        try {
-//            Thread.sleep(50L);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        openClose(Constants.DISCHARGING_FROM_WAREHOUSE_SWITCH, 15);
-//        return "ok";
-//    }
-
-//    /**
-//     * 出料关仓禁止出料
-//     *
-//     * @return
-//     */
-//    public String coverClosed() {
-//        log.info("出料关仓禁止出料");
-//        relayClosing(Constants.DISCHARGING_FROM_WAREHOUSE_SWITCH);
-//        try {
-//            Thread.sleep(50L);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        openClose(Constants.DISCHARGING_IS_PROHIBITED_AFTER_CLOSING_THE_WAREHOUSE_SWITCH, 15);
-//        return "ok";
-//    }
-
-    /**
-     * 停止碗开关
-     */
-    public void stopBowl() {
-        log.info("停止碗开关");
-        relayClosing(Constants.BOWL_L_SWITCH);
-    }
-
-    /**
-     * 打碗开关
-     */
-    public void openBowl() {
-        log.info("打碗开关");
-        relayOpening(Constants.BOWL_L_SWITCH);
-    }
-
-    /**
-     * 碗上升
-     */
-    public void bowlRise() {
-        log.info("碗上升");
-        relayOpening(Constants.BOWL_N_SWITCH);
-    }
-
-    /**
-     * 碗下降
-     */
-    public void bowlDrop() {
-        log.info("碗下降");
-        relayClosing(Constants.BOWL_N_SWITCH);
-    }
 
     /**
      * 打开抽汤泵到液位后多少秒关闭——至少1秒
@@ -313,25 +216,25 @@ public class RelayDeviceService implements DeviceHandler {
         return Result.success();
     }
 
-//    /**
-//     * 打开风扇
-//     *
-//     * @return
-//     */
-//    public Result rearFanOpen() {
+    /**
+     * 打开风扇
+     *
+     * @return
+     */
+    public Result rearFanOpen() {
 //        relayOpening(Constants.REAR_BOX_FAN);
-//        return Result.success();
-//    }
-//
-//    /**
-//     * 关闭风扇
-//     *
-//     * @return
-//     */
-//    public Result rearFanClose() {
+        return Result.success();
+    }
+
+    /**
+     * 关闭风扇
+     *
+     * @return
+     */
+    public Result rearFanClose() {
 //        relayClosing(Constants.REAR_BOX_FAN);
-//        return Result.success();
-//    }
+        return Result.success();
+    }
 
     /**
      * 震动器测试1（秒）
@@ -550,15 +453,6 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
 
-//    /**
-//     * 汤开关关
-//     *
-//     * @return
-//     */
-//    public Result soupSteamValveClose() {
-//        relayClosing(Constants.Y_SOUP_SWITCH);
-//        return Result.success();
-//    }
 
     /**
      * 打开蒸汽发生器
