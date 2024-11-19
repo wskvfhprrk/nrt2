@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class Reset {
     @Autowired
     private PubConfig pubConfig;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
     @Autowired
     private FansService fansService;
     @Autowired
@@ -34,7 +34,7 @@ public class Reset {
         log.info("打开蒸汽发生器");
         relayDeviceService.openSteamGenerator();
         log.info("抽汤排气");
-        relayDeviceService.soupPipeExhaust(beefConfig.getSoupExhaustTime());
+        relayDeviceService.soupPipeExhaust(dataConfig.getSoupExhaustTime());
         //机器人复位
         log.info("机器人复位");
 //        try {
@@ -70,7 +70,7 @@ public class Reset {
             return;
         }
         log.info("蒸汽给汤加热至保温温度");
-        result = relayDeviceService.soupHeatTo(beefConfig.getSoupInsulationTemperature());
+        result = relayDeviceService.soupHeatTo(dataConfig.getSoupInsulationTemperature());
         if (result.getCode() != 200) {
             log.error(result.getMessage());
             return;

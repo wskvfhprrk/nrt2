@@ -1,6 +1,6 @@
 package com.jc.controller;
 
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
@@ -21,7 +21,7 @@ public class SoupHeatingManagement {
     @Autowired
     private RelayDeviceService relayDeviceService;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
     @Autowired
     private PubConfig pubConfig;
 

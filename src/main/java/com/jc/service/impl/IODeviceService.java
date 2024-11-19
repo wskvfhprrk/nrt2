@@ -1,16 +1,13 @@
 package com.jc.service.impl;
 
-import com.jc.config.BeefConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
-import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 

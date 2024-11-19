@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "data")
 @Data
-public class BeefConfig {
+public class DataConfig {
     /**
      * 10元牛肉
      */

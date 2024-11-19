@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
@@ -27,7 +27,7 @@ public class BowlService implements DeviceHandler {
     @Autowired
     private RelayDeviceService relayDeviceService;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
 
     /**
      * 处理消息
@@ -116,7 +116,7 @@ public class BowlService implements DeviceHandler {
         } else if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "02060007" + DecimalToHexConverter.decimalToHex(
-                    beefConfig.getLadleWalkingDistanceValue() - beefConfig.getLadleDishDumpingDistancePulseValue());
+                    dataConfig.getLadleWalkingDistanceValue() - dataConfig.getLadleDishDumpingDistancePulseValue());
             send485OrderService.sendOrder(hex);
             //速度
             hex = "020600055000";
@@ -126,7 +126,7 @@ public class BowlService implements DeviceHandler {
             send485OrderService.sendOrder(hex);
         } else if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
-            String hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
+            String hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleWalkingDistanceValue());
             send485OrderService.sendOrder(hex);
             //速度
             hex = "020600055000";
@@ -163,7 +163,7 @@ public class BowlService implements DeviceHandler {
         } else if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "02060007" + DecimalToHexConverter.decimalToHex(
-                    beefConfig.getLadleWalkingDistanceValue() - beefConfig.getLadleDishDumpingDistancePulseValue());
+                    dataConfig.getLadleWalkingDistanceValue() - dataConfig.getLadleDishDumpingDistancePulseValue());
             send485OrderService.sendOrder(hex);
             //速度
             hex = "020600055000";
@@ -173,7 +173,7 @@ public class BowlService implements DeviceHandler {
             send485OrderService.sendOrder(hex);
         } else if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
-            String hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingDistancePulseValue());
+            String hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingDistancePulseValue());
             send485OrderService.sendOrder(hex);
             //速度
             hex = "020600055000";
@@ -222,7 +222,7 @@ public class BowlService implements DeviceHandler {
             return result;
         }
         //先发送脉冲数，再发送指令
-        String hex = "03060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingRotationValue());
+        String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue());
         send485OrderService.sendOrder(hex);
         //倒菜时速度
         hex = "030600053000";
@@ -284,9 +284,9 @@ public class BowlService implements DeviceHandler {
         send485OrderService.sendOrder(hex);
         //根据不同位置进行判断
         if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleWalkingDistanceValue());
+            hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleWalkingDistanceValue());
         } else if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
-            hex = "02060007" + DecimalToHexConverter.decimalToHex(beefConfig.getLadleDishDumpingDistancePulseValue());
+            hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingDistancePulseValue());
         }
         send485OrderService.sendOrder(hex);
         //先发送脉冲数，再发送指令

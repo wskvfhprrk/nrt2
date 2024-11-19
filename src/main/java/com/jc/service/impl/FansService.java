@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
@@ -27,7 +27,7 @@ public class FansService {
     // 当前粉丝仓是否复位的标志
     private boolean isFansReset = false;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
     @Autowired
     private BowlService bowlService;
 
@@ -88,7 +88,7 @@ public class FansService {
         String hex = "0106000503E8"; // 发送速度指令
         send485OrderService.sendOrder(hex);
 
-        hex = "01060007" + DecimalToHexConverter.decimalToHex(beefConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
+        hex = "01060007" + DecimalToHexConverter.decimalToHex(dataConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
         send485OrderService.sendOrder(hex);
 
         hex = "010600000001"; // 发送开始指令
@@ -218,7 +218,7 @@ public class FansService {
         String hex = "0106000503E8"; // 发送速度指令
         send485OrderService.sendOrder(hex);
 
-        hex = "01060007" + DecimalToHexConverter.decimalToHex(beefConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
+        hex = "01060007" + DecimalToHexConverter.decimalToHex(dataConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
         send485OrderService.sendOrder(hex);
 
         hex = "010600010001"; // 发送开始指令

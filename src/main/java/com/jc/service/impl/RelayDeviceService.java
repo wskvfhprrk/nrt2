@@ -1,6 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
@@ -27,7 +27,7 @@ public class RelayDeviceService implements DeviceHandler {
     @Autowired
     private IpConfig ipConfig;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
     @Autowired
     private IODeviceService ioDeviceService;
     @Autowired
@@ -729,19 +729,19 @@ public class RelayDeviceService implements DeviceHandler {
         //盖子方向向下
         this.soupSteamCoverDown();
         //加蒸汽
-        openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, beefConfig.getSteamAdditionTimeSeconds());
+        openClose(Constants.Y_BATCHING_STEAM_SOLENOID_VALVE, dataConfig.getSteamAdditionTimeSeconds());
         //加蒸汽完成后
         try {
-            Thread.sleep(beefConfig.getSteamAdditionTimeSeconds() * 1000);
+            Thread.sleep(dataConfig.getSteamAdditionTimeSeconds() * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         //抽汤前先打开汤开关，防止水流
-        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, beefConfig.getSoupExtractionTime());
-        openClose(Constants.Y_SOUP_PUMP_SWITCH, beefConfig.getSoupExtractionTime());
+        openClose(Constants.Y_BOWL_STEAM_SOLENOID_VALVE, dataConfig.getSoupExtractionTime());
+        openClose(Constants.Y_SOUP_PUMP_SWITCH, dataConfig.getSoupExtractionTime());
         //加蒸汽完成后
         try {
-            Thread.sleep(beefConfig.getSoupExtractionTime() * 1000);
+            Thread.sleep(dataConfig.getSoupExtractionTime() * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

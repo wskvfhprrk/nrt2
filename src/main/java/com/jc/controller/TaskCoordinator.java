@@ -1,7 +1,7 @@
 package com.jc.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
@@ -31,7 +31,7 @@ public class TaskCoordinator {
     @Autowired
     private FansService fansService;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
     @Autowired
     private RelayDeviceService relayDeviceService;
     @Autowired
@@ -77,7 +77,7 @@ public class TaskCoordinator {
         });
         executorService.submit(() -> {
             log.info("开始开始汤加热");
-            relayDeviceService.soupHeatTo(beefConfig.getSoupHeatingTemperature());
+            relayDeviceService.soupHeatTo(dataConfig.getSoupHeatingTemperature());
         });
         //必须机器人和粉丝准备到位才可以
         while (!pubConfig.getIsRobotStatus() || !pubConfig.getAreTheFansReady()) {
@@ -141,7 +141,7 @@ public class TaskCoordinator {
         }
 
         log.info("开始加汤");
-        result = relayDeviceService.soupAdd(beefConfig.getSoupExtractionTime());
+        result = relayDeviceService.soupAdd(dataConfig.getSoupExtractionTime());
         if (result.getCode() != 200) {
             return result;
         }
@@ -195,7 +195,7 @@ public class TaskCoordinator {
             return result;
         }
         log.info("加蒸汽");
-        result = relayDeviceService.bowlSteamAdd(beefConfig.getSteamAdditionTimeSeconds());
+        result = relayDeviceService.bowlSteamAdd(dataConfig.getSteamAdditionTimeSeconds());
         if (result.getCode() != 200) {
             return result;
         }

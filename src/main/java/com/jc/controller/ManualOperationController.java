@@ -1,6 +1,6 @@
 package com.jc.controller;
 
-import com.jc.config.BeefConfig;
+import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
@@ -31,7 +31,7 @@ public class ManualOperationController {
     @Autowired
     private WeightService weightService;
     @Autowired
-    private BeefConfig beefConfig;
+    private DataConfig dataConfig;
     @Autowired
     private FansService fansService;
     @Autowired
@@ -137,19 +137,19 @@ public class ManualOperationController {
                 break;
             case 22:
                 actionResult = "加汤";
-                result = relayDeviceService.soupAdd(number != null ? number : beefConfig.getSoupExtractionTime());
+                result = relayDeviceService.soupAdd(number != null ? number : dataConfig.getSoupExtractionTime());
                 break;
             case 23:
                 actionResult = "汤管排气";
-                result = relayDeviceService.soupPipeExhaust(number != null ? number : beefConfig.getSoupExhaustTime());
+                result = relayDeviceService.soupPipeExhaust(number != null ? number : dataConfig.getSoupExhaustTime());
                 break;
             case 24:
                 actionResult = "汤加热至";
-                result = relayDeviceService.soupHeatTo(number != null ? number : (int) beefConfig.getSoupHeatingTemperature());
+                result = relayDeviceService.soupHeatTo(number != null ? number : (int) dataConfig.getSoupHeatingTemperature());
                 break;
             case 25:
                 actionResult = "加蒸汽";
-                result = relayDeviceService.bowlSteamAdd(number != null ? number : beefConfig.getSteamAdditionTimeSeconds());
+                result = relayDeviceService.bowlSteamAdd(number != null ? number : dataConfig.getSteamAdditionTimeSeconds());
                 break;
             case 26:
                 actionResult = "加蒸汽和汤";
@@ -167,33 +167,33 @@ public class ManualOperationController {
                 break;
             case 29:
                 actionResult = "震动器1测试";
-                result = relayDeviceService.vibrator1Test(number != null ? number : beefConfig.getVibratorTime());
+                result = relayDeviceService.vibrator1Test(number != null ? number : dataConfig.getVibratorTime());
                 break;
             case 30:
                 actionResult = "震动器2测试";
-                result = relayDeviceService.vibrator2Test(number != null ? number : beefConfig.getVibratorTime());
+                result = relayDeviceService.vibrator2Test(number != null ? number : dataConfig.getVibratorTime());
                 break;
             case 31:
                 actionResult = "出料3测试";
-                result = relayDeviceService.DischargeBin3Test(number != null ? number : beefConfig.getVibratorTime());
+                result = relayDeviceService.DischargeBin3Test(number != null ? number : dataConfig.getVibratorTime());
                 break;
 
             // Group 5: 配菜操作
             case 32:
                 actionResult = "一号配菜";
-                result = relayDeviceService.vegetable1Motor(1, number != null ? number : beefConfig.getBeef10());
+                result = relayDeviceService.vegetable1Motor(1, number != null ? number : dataConfig.getBeef10());
                 break;
             case 33:
                 actionResult = "二号配菜";
-                result = relayDeviceService.vegetable1Motor(2, number != null ? number : beefConfig.getCilantro());
+                result = relayDeviceService.vegetable1Motor(2, number != null ? number : dataConfig.getCilantro());
                 break;
             case 34:
                 actionResult = "三号配菜";
-                result = relayDeviceService.vegetable1Motor(3, number != null ? number : beefConfig.getChoppedGreenOnion());
+                result = relayDeviceService.vegetable1Motor(3, number != null ? number : dataConfig.getChoppedGreenOnion());
                 break;
             case 35:
                 actionResult = "四号配菜";
-                result = relayDeviceService.vegetable1Motor(4, number != null ? number : beefConfig.getChoppedGreenOnion());
+                result = relayDeviceService.vegetable1Motor(4, number != null ? number : dataConfig.getChoppedGreenOnion());
                 break;
             case 36:
                 actionResult = "称重全部清0";
