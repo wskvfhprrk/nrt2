@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class SeasoningMachineService {
 
     @Autowired
-    private Send485OrderService send485OrderService;
+    private StepServoDriverGatewayService stepServoDriverGatewayService;
     @Autowired
     private RobotConfig robotConfig;
 
@@ -56,7 +56,7 @@ public class SeasoningMachineService {
             String datastr="0001";
             String order = addressCoding + functionCode + startAddress + datastr;
             String modbusrtuString = CRC16.getModbusrtuString(order);
-            send485OrderService.sendOrder(order+modbusrtuString);
+            stepServoDriverGatewayService.sendOrder(order+modbusrtuString);
             log.info("询问调味机是否出料完成！");
             try {
                 Thread.sleep(1000L);
@@ -78,7 +78,7 @@ public class SeasoningMachineService {
         String datastr="FF00";
         String order = addressCoding + functionCode + startAddress + datastr;
         String modbusrtuString = CRC16.getModbusrtuString(order);
-        send485OrderService.sendOrder(order+modbusrtuString);
+        stepServoDriverGatewayService.sendOrder(order+modbusrtuString);
         log.info("置位指令发送完毕！");
     }
     //发送复位指令
@@ -93,7 +93,7 @@ public class SeasoningMachineService {
         String datastr="0000";
         String order = addressCoding + functionCode + startAddress + datastr;
         String modbusrtuString = CRC16.getModbusrtuString(order);
-        send485OrderService.sendOrder(order+modbusrtuString);
+        stepServoDriverGatewayService.sendOrder(order+modbusrtuString);
         log.info("复位指令发送完毕！");
     }
     //发送配方指令
@@ -108,7 +108,7 @@ public class SeasoningMachineService {
         String datastr=String.format("%04X", formula);
         String order = addressCoding + functionCode + startAddress + datastr;
         String modbusrtuString = CRC16.getModbusrtuString(order);
-        send485OrderService.sendOrder(order+modbusrtuString);
+        stepServoDriverGatewayService.sendOrder(order+modbusrtuString);
         log.info("配方：{}发送完毕",formula);
     }
 

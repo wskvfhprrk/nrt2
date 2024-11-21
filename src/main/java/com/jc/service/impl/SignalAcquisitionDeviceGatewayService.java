@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class IODeviceService implements DeviceHandler {
+public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
 
     @Autowired
     @Lazy
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
     @Autowired
     private NettyServerHandler nettyServerHandler;
     @Autowired
@@ -33,9 +33,9 @@ public class IODeviceService implements DeviceHandler {
     private String ioStatus = null;
     @Lazy
     @Autowired
-    private IODeviceService ioDeviceService;
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
     @Autowired
-    private Send485OrderService send485OrderService;
+    private StepServoDriverGatewayService stepServoDriverGatewayService;
     @Autowired
     private PubConfig pubConfig;
 
@@ -97,7 +97,7 @@ public class IODeviceService implements DeviceHandler {
     private void passdata(int i, String s, String s1) {
         //有碗信号感应到时
         if (i == Constants.X_PLACE_BOWL_SIGNAL) {
-            relayDeviceService.chuWanStop();
+            relay1DeviceGatewayService.chuWanStop();
         }
         //如果碗报警信号
         if (i == Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")) {
@@ -106,51 +106,51 @@ public class IODeviceService implements DeviceHandler {
         }
         //蒸汽原位停止
         if (i == Constants.X_STEAM_ORIGIN && s.equals("0") && s1.equals("1")) {
-            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+            relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽下限位停止
         if (i == Constants.X_STEAM_LOWER_LIMIT && s.equals("0") && s1.equals("1")) {
-            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+            relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽限上位停止
         if (i == Constants.X_STEAM_UPPER_LIMIT && pubConfig.getAddSteam()) {
-            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
-            relayDeviceService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
+            relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
+            relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }
-        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "030600020001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
         //粉丝仓左限位
         log.info("检测粉丝仓是否在左限位");
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "040600020001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             log.info("粉丝仓左限位");
 
             //设置原点为1仓
             pubConfig.setCurrentFanBinNumber(1);
         }
         //粉丝仓右限位
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "040600020001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             log.info("粉丝仓右限位");
         }
         //倒菜伺服到位——汤右限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "020600020001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
         //倒菜伺服到位——汤左限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "020600020001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
     }
 
@@ -163,7 +163,7 @@ public class IODeviceService implements DeviceHandler {
         while (ioStatus == null) {
             log.info("没有io信号，主动发送指令");
             // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
+            nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
             try {
                 // 等待指定时间，确保传感器完成重置——时间不能太短，太短不行
                 Thread.sleep( 10000L);
@@ -178,7 +178,7 @@ public class IODeviceService implements DeviceHandler {
      * 发起主动查询
      */
     public void sendSearch() {
-        nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
+        nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
     }
 
     public int getStatus(int i) {
@@ -217,4 +217,45 @@ public class IODeviceService implements DeviceHandler {
         return sb;
     }
 
+    //    /**
+//     * 配菜电机（KG）
+//     *
+//     * @param i
+//     * @param number
+//     * @return
+//     */
+//    public Result vegetable1Motor(int i, Integer number) {
+//        pubConfig.setDishesAreReady(false);
+//        //清零
+//        //02 06 00 26 00 01 A9 F2
+////        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
+////        Thread.sleep(Constants.SLEEP_TIME_MS);
+//        //称重前准备
+//        Result result = vegetableMotor(i);
+//        if (result.getCode() != 200) {
+//            return result;
+//        }
+//        //查看是否够重量
+//        Boolean flag = true;
+//        while (flag) {
+//            //发送称重指令
+//            sendOrder(Constants.READ_WEIGHT_VALUE);
+//            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i - 1] >= number) {
+//                flag = false;
+//            }
+//        }
+//        //停目
+//        result = vegetableMotorStop(i);
+//        if (result.getCode() != 200) {
+//            return result;
+//        }
+//        //打开称重盒
+//        result = closeWeighingBox(i);
+//        if (result.getCode() != 200) {
+//            return result;
+//        }
+//        pubConfig.setDishesAreReady(true);
+//        log.info("第{}个配菜已经配好{}g", i, number);
+//        return Result.success();
+//    }
 }

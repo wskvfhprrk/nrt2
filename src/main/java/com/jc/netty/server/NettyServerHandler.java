@@ -3,10 +3,8 @@ package com.jc.netty.server;
 import com.jc.config.ClientConfig;
 import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
-import com.jc.constants.Constants;
-import com.jc.service.impl.RelayDeviceService;
+import com.jc.service.impl.Relay1DeviceGatewayService;
 import com.jc.service.impl.Reset;
-import com.jc.service.impl.RobotServiceImpl;
 import com.jc.utils.HexConvert;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -47,7 +45,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private PubConfig pubConfig;
     @Autowired
     @Lazy
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
     @Autowired
     @Lazy
     private Reset reset;
@@ -74,21 +72,21 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @param flag
      */
     private void updateClientConfig(InetSocketAddress clientAddress, Boolean flag) {
-        if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
+        if (ipConfig.getRelay1DeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setRelayDevice(flag);
             log.info("打开蒸汽发生器");
 //            relayDeviceService.openSteamGenerator();
-        } else if (ipConfig.getSend485Order().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getStepServoDriverGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setSend485Order(flag);
-        } else if (ipConfig.getReceive485Signal().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getTemperatureWeighingGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setReceive485Singal(flag);
         } else if (ipConfig.getDucuIp().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setDocuOnLine(flag);
-        } else if (ipConfig.getIo().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getSignalAcquisitionDeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setIOdevice(flag);
-        } else if (ipConfig.getSiloWeighBoxIp().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getRelay2DeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setSiloWeighBoxIp(flag);
-        } else if (ipConfig.getRelay().equals(clientAddress.getAddress().getHostAddress())) {
+        } else if (ipConfig.getRelay1DeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setRelayDevice(flag);
         }
         boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
@@ -201,11 +199,11 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     public void sendMessageToClient(String clientIp, String message, Boolean hex) {
         log.info("向：{} 发送指令：{}",clientIp,message);
         //停一下防止多条造成混乱
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(Constants.SLEEP_TIME_MS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         for (Map.Entry<String, Channel> entry : clientMap.entrySet()) {
             String address = entry.getKey();
             if (address.equals(clientIp)) {

@@ -33,19 +33,20 @@ public class TaskCoordinator {
     @Autowired
     private DataConfig dataConfig;
     @Autowired
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
     @Autowired
     private RedisTemplate redisTemplate;
     @Autowired
     private RedisQueueService redisQueueService;
+    @Autowired
+    private BowlService bowlService;
+    @Autowired
+    private TemperatureWeighingGatewayService temperatureWeightReadingService;
 
     // 创建一个固定大小的线程池，线程池大小为 5
     ExecutorService executorService = Executors.newFixedThreadPool(5);
-    @Autowired
-    private BowlService bowlService;
 
-
-    public Result executeTasks() throws Exception {
+    public Result executeOrder() throws Exception {
         log.info("开始处理订单");
         // TODO: 2024/11/15 先把上一次未处理完的订单作为异常订单处理退款
         Long size = redisTemplate.opsForList().size(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
@@ -69,7 +70,7 @@ public class TaskCoordinator {
         pubConfig.setDishesAreReady(false);
         executorService.submit(() -> {
             log.info("开始称重第一种配菜");
-            relayDeviceService.vegetable1Motor(1, 10);
+            temperatureWeightReadingService.vegetable1Motor(1, 10);
         });
         //加蒸汽
         executorService.submit(() -> {
@@ -77,7 +78,7 @@ public class TaskCoordinator {
         });
         executorService.submit(() -> {
             log.info("开始开始汤加热");
-            relayDeviceService.soupHeatTo(dataConfig.getSoupHeatingTemperature());
+            temperatureWeightReadingService.soupHeatTo(dataConfig.getSoupHeatingTemperature());
         });
         //必须机器人和粉丝准备到位才可以
         while (!pubConfig.getIsRobotStatus() || !pubConfig.getAreTheFansReady()) {
@@ -141,7 +142,7 @@ public class TaskCoordinator {
         }
 
         log.info("开始加汤");
-        result = relayDeviceService.soupAdd(dataConfig.getSoupExtractionTime());
+        result = relay1DeviceGatewayService.soupAdd(dataConfig.getSoupExtractionTime());
         if (result.getCode() != 200) {
             return result;
         }
@@ -195,7 +196,7 @@ public class TaskCoordinator {
             return result;
         }
         log.info("加蒸汽");
-        result = relayDeviceService.bowlSteamAdd(dataConfig.getSteamAdditionTimeSeconds());
+        result = relay1DeviceGatewayService.bowlSteamAdd(dataConfig.getSteamAdditionTimeSeconds());
         if (result.getCode() != 200) {
             return result;
         }

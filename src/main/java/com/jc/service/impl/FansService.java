@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 public class FansService {
 
     @Autowired
-    private Send485OrderService send485OrderService; // 发送指令服务
+    private StepServoDriverGatewayService stepServoDriverGatewayService; // 发送指令服务
     @Autowired
-    private IODeviceService ioDeviceService; // IO设备服务
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService; // IO设备服务
     @Autowired
     private PubConfig pubConfig; // 公共配置
 
@@ -46,25 +46,25 @@ public class FansService {
         }
 
         // 检查左限位信号是否高电平
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             pubConfig.setCurrentFanBinNumber(1); // 设置当前仓编号为1
             return Result.success(); // 返回成功
         }
 
         // 如果左限位信号是低电平，发指令进行移动
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
             String hex = "040600050015"; // 发送速度指令
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
 
             hex = "040600070000"; // 发送脉冲数指令
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
 
             hex = "040600000001"; // 发送开始指令
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
 
         // 阻塞线程，直到检测到高电平（左限位信号）
-        while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(50L); // 每500ms检查一次
             } catch (InterruptedException e) {
@@ -82,23 +82,23 @@ public class FansService {
      */
     public synchronized Result noodleBinDeliver() {
         log.info("推杆向前推送");
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
             return Result.success();
         }
         String hex = "0106000503E8"; // 发送速度指令
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
 
         hex = "01060007" + DecimalToHexConverter.decimalToHex(dataConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
 
         hex = "010600000001"; // 发送开始指令
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
 
         long startTime = System.currentTimeMillis();
         boolean isTimedOut = false;
 
         // 每50毫秒检查一次状态，超时6分钟退出
-        while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             if (System.currentTimeMillis() - startTime > 60000) { // 10000
                 isTimedOut = true;
                 break;
@@ -132,14 +132,14 @@ public class FansService {
      * @return 执行结果
      */
     public Result moveFanBin(int i) {
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
 //            log.warn("推杆没有复位");
             Result result = pushRodOpen(); // 推杆复位操作
             if (result.getCode() != 200) {
                 return result; // 如果推杆复位失败，返回错误
             }
         }
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
             log.error("没有拉开推拉杆");
             return Result.error("没有拉开推拉杆");
         }
@@ -156,11 +156,11 @@ public class FansService {
                     break;
                 case 2:
                     String hex = "0406000503E8"; // 发送转向指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     hex = "040600070180"; // 发送脉冲数指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     hex = "040600010001"; // 发送速度指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     try {
                         Thread.sleep(2000L); // 等待2秒
                     } catch (InterruptedException e) {
@@ -170,11 +170,11 @@ public class FansService {
                     break;
                 case 3:
                     hex = "0406000503E8"; // 发送转向指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     hex = "040600070300"; // 发送脉冲数指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     hex = "040600010001"; // 发送速度指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     try {
                         Thread.sleep(1000L); // 等待2秒
                     } catch (InterruptedException e) {
@@ -184,11 +184,11 @@ public class FansService {
                     break;
                 case 4:
                     hex = "0406000503E8"; // 发送转向指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     hex = "040600070480"; // 发送脉冲数指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     hex = "040600010001"; // 发送速度指令
-                    send485OrderService.sendOrder(hex);
+                    stepServoDriverGatewayService.sendOrder(hex);
                     try {
                         Thread.sleep(3000L); // 等待3秒
                     } catch (InterruptedException e) {
@@ -212,23 +212,23 @@ public class FansService {
     public synchronized Result pushRodOpen() {
 
         log.info("推杆向后拉");
-        if ((ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal())) {
+        if ((signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal())) {
             return Result.success();
         }
         String hex = "0106000503E8"; // 发送速度指令
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
 
         hex = "01060007" + DecimalToHexConverter.decimalToHex(dataConfig.getFanPushRodThrustDistanceValue()); // 发送脉冲数指令
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
 
         hex = "010600010001"; // 发送开始指令
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
 
         long startTime = System.currentTimeMillis();
         boolean isTimedOut = false;
 
         // 每50毫秒检查一次状态，超时6分钟退出
-        while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
             if (System.currentTimeMillis() - startTime > 60000) { // 1分钟超时
                 isTimedOut = true;
                 break;
@@ -262,13 +262,13 @@ public class FansService {
      */
     public Result fanReset() {
         // 发送查询感器状态的信息
-        ioDeviceService.sendSearch();
+        signalAcquisitionDeviceGatewayService.sendSearch();
         try {
             Thread.sleep(Constants.SLEEP_TIME_MS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        boolean b = ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal();
+        boolean b = signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal();
         if (isFansReset() && b) {
             return Result.success(); // 如果已复位且左限位信号高，返回成功
         }
@@ -286,7 +286,7 @@ public class FansService {
         long timeoutMillis = 600000;
         Boolean falg = false;
 
-        while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT)==SignalLevel.HIGH.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT)==SignalLevel.HIGH.ordinal()) {
             // 检查是否超过了超时时间
             if (System.currentTimeMillis() - startTime > timeoutMillis) {
                 log.error("复位超过了10分钟");
@@ -367,8 +367,8 @@ public class FansService {
      */
     public Result resendFromCurrentPush() {
         log.info("进入resendFromCurrentPush()方法");
-        log.info("高低电平值：{}",ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN));
-        if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        log.info("高低电平值：{}", signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN));
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             log.info("推杆高电平");
             Result result = noodleBinDeliver(); // 如果已复位，直接推送
             if (result.getCode() != 200) {
@@ -396,8 +396,8 @@ public class FansService {
      * @return 是否感应到粉丝
      */
     private Boolean determineFanStatus() {
-        boolean b = ioDeviceService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal()
-                && ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal();
+        boolean b = signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FANS_WAREHOUSE_1) == SignalLevel.LOW.ordinal()
+                && signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal();
         if (b) {
             pubConfig.setAreTheFansReady(true);
         }
@@ -410,6 +410,6 @@ public class FansService {
      * @return 是否已复位
      */
     private Boolean isFansReset() {
-        return isFansReset || ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal();
+        return isFansReset || signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal();
     }
 }

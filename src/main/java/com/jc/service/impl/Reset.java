@@ -15,13 +15,15 @@ public class Reset {
     @Autowired
     private BowlService bowlService;
     @Autowired
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
     @Autowired
     private PubConfig pubConfig;
     @Autowired
     private DataConfig dataConfig;
     @Autowired
     private FansService fansService;
+    @Autowired
+    private TemperatureWeighingGatewayService temperatureWeightReadingService;
 
     public void start() {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
@@ -49,7 +51,7 @@ public class Reset {
             return;
         }
         log.info("抽汤排气");
-        result = relayDeviceService.soupPipeExhaust(dataConfig.getSoupExhaustTime());
+        result = relay1DeviceGatewayService.soupPipeExhaust(dataConfig.getSoupExhaustTime());
         if (result.getCode() != 200) {
             log.error(result.getMessage());
             return;
@@ -67,7 +69,7 @@ public class Reset {
             return;
         }
         log.info("蒸汽给汤加热至保温温度");
-        result = relayDeviceService.soupHeatTo(dataConfig.getSoupInsulationTemperature());
+        result = temperatureWeightReadingService.soupHeatTo(dataConfig.getSoupInsulationTemperature());
         if (result.getCode() != 200) {
             log.error(result.getMessage());
             return;

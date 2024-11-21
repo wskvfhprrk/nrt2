@@ -33,7 +33,7 @@ public class OrderQueueListener {
         //取出订单时机——有订单并且在编号为1或4工位时 并且机器人复位情况下才可以
         if (redisQueueService.getQueueSize() > 0) {
             try {
-                taskCoordinator.executeTasks();
+                taskCoordinator.executeOrder();
             } catch (Exception e) {
                 e.printStackTrace();
             }

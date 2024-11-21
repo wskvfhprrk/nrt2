@@ -10,16 +10,15 @@ import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
- * 继电器设备处理类
+ * 继电器1设备处理类
  * 实现了DeviceHandler接口，提供了继电器的打开、关闭及定时关闭功能
  */
 @Service
 @Slf4j
-public class RelayDeviceService implements DeviceHandler {
+public class Relay1DeviceGatewayService implements DeviceHandler {
     @Autowired
     private NettyServerHandler nettyServerHandler;
     @Autowired
@@ -29,12 +28,9 @@ public class RelayDeviceService implements DeviceHandler {
     @Autowired
     private DataConfig dataConfig;
     @Autowired
-    private IODeviceService ioDeviceService;
-    @Autowired
-    private SiloWeighBoxSwitchService siloWeighBoxSwitchService;
-    @Lazy
-    @Autowired
-    private RelayDeviceService relayDeviceService;
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
+    //发送中状态——true正在发送中——不允许再次发送指令，等待其返回值后才可发送，false已经有返回值
+    private Boolean sendHexStatus = false;
 
     /**
      * 处理消息
@@ -44,17 +40,29 @@ public class RelayDeviceService implements DeviceHandler {
      */
     @Override
     public void handle(String message, boolean isHex) {
-        if (isHex) {
-//            log.info("继电器设备——HEX消息: {}", message);
-        } else {
-            log.info("继电器设备——普通消息: {}", message);
-
-            // 在这里添加处理普通字符串消息的逻辑
-        }
+        sendHexStatus = false;
+        log.info("继电器设备接收到HEX消息: {}", message);
     }
 
     /**
+     * 发送modbus指令
      *
+     * @param s
+     */
+    private void sendOrder(String s) {
+        while (sendHexStatus) {
+            try {
+                Thread.sleep(100L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        log.info("继电器设备发送HEX消息: {}", s);
+        sendHexStatus = true;
+        nettyServerHandler.sendMessageToClient(ipConfig.getRelay1DeviceGateway(), s, true);
+    }
+
+    /**
      * 根据编号打开继电器
      *
      * @param no 继电器编号，范围为1-32
@@ -75,7 +83,7 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(hexString);
         sb.append(" 01 00 00 45 44");
         // 发送指令
-        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
+        sendOrder(sb.toString());
     }
 
     /**
@@ -99,9 +107,10 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(hexString);
         sb.append(" 00 00 00 45 44");
         // 发送指令
-        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
+        sendOrder(sb.toString());
         return Result.success();
     }
+
 
     /**
      * 继电器打开一段时间后自动关
@@ -133,7 +142,7 @@ public class RelayDeviceService implements DeviceHandler {
         sb.append(hexTime);
         sb.append(" 45 44");
         // 发送指令
-        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), sb.toString(), true);
+        sendOrder(sb.toString());
         return Result.success();
     }
 
@@ -143,20 +152,20 @@ public class RelayDeviceService implements DeviceHandler {
     public Result closeAll() {
         log.info("关闭所有继电器");
         // 发送关闭所有继电器的指令
-        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44", true);
+        sendOrder("48 3A 01 57 00 00 00 00 00 00 00 00 DA 45 44");
         steamOpen();
         return Result.success();
     }
 
-    /**
-     * 打开所有继电器
-     */
-    public Result openAll() {
-        log.info("打开所有继电器");
-        // 发送打开所有继电器的指令
-        nettyServerHandler.sendMessageToClient(ipConfig.getRelay(), "48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44", true);
-        return Result.success();
-    }
+//    /**
+//     * 打开所有继电器
+//     */
+//    public Result openAll() {
+//        log.info("打开所有继电器");
+//        // 发送打开所有继电器的指令
+//        sendOrder("48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44");
+//        return Result.success();
+//    }
 
 
     /**
@@ -272,160 +281,6 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     /**
-     * 汤加热多少（度）
-     *
-     * @param number
-     * @return
-     */
-    public Result soupHeatTo(Integer number) {
-        //初始化温度
-        pubConfig.setSoupTemperatureValue(0.0);
-        //发送查询温度指令
-        Boolean flag = true;
-        while (flag) {
-            //发送温度
-            readTemperature();
-            Double soupTemperatureValue = pubConfig.getSoupTemperatureValue();
-            //如果温度大于等于设定温度时就关闭
-            if (soupTemperatureValue >= number) {
-                flag = false;
-                relayClosing(Constants.Y_SOUP_STEAM_SOLENOID_VALVE);
-            } else {
-                relayOpening(Constants.Y_SOUP_STEAM_SOLENOID_VALVE);
-            }
-        }
-        return Result.success();
-    }
-
-    /**
-     * 读取汤的温度值
-     *
-     * @return
-     */
-    public Result readTemperature() {
-        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_SOUP_TEMPERATURE_COMMAND, true);
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS * 5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return Result.success(pubConfig.getSoupTemperatureValue());
-    }
-
-
-
-    /**
-     * 配菜称重盒关闭打开（编号）
-     *
-     * @param number
-     * @return
-     */
-    public Result vegetableMotor(Integer number) {
-        switch (number) {
-            case 1:
-                relayDeviceService.firstBinOpen();
-                break;
-            case 2:
-                relayDeviceService.secondBinOpen();
-                break;
-            case 3:
-                relayDeviceService.thirdBinOpen();
-                break;
-            default:
-        }
-
-        siloWeighBoxSwitchService.closeWeighBox(number);
-        relayOpening(Constants.Y_SHAKER_SWITCH_1);
-        relayOpening(Constants.Y_SHAKER_SWITCH_2);
-        return Result.success();
-    }
-
-    /**
-     * 配菜称重盒关闭关闭（编号）
-     *
-     * @param number
-     */
-    public Result vegetableMotorStop(Integer number) {
-        switch (number) {
-            case 1:
-                relayDeviceService.firstBinClose();
-                break;
-            case 2:
-                relayDeviceService.secondBinClose();
-                break;
-            case 3:
-                relayDeviceService.thirdBinClose();
-                break;
-            case 4:
-                break;
-            default:
-        }
-        //打开震动盘
-        relayClosing(Constants.Y_SHAKER_SWITCH_1);
-        relayClosing(Constants.Y_SHAKER_SWITCH_2);
-        siloWeighBoxSwitchService.openWeighBox(number);
-        try {
-            Thread.sleep(4000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return Result.success();
-    }
-
-    /**
-     *
-     */
-    public Result closeWeighingBox(int number) {
-        siloWeighBoxSwitchService.closeWeighBox(number);
-        openClose(Constants.Y_SHAKER_SWITCH_1, 10);
-        openClose(Constants.Y_SHAKER_SWITCH_2, 10);
-        return Result.success();
-    }
-
-    /**
-     * 配菜电机（KG）
-     *
-     * @param i
-     * @param number
-     * @return
-     */
-    public Result vegetable1Motor(int i, Integer number) {
-        pubConfig.setDishesAreReady(false);
-        //清零
-        //02 06 00 26 00 01 A9 F2
-//        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
-//        Thread.sleep(Constants.SLEEP_TIME_MS);
-        //称重前准备
-        Result result = vegetableMotor(i);
-        if (result.getCode() != 200) {
-            return result;
-        }
-        //查看是否够重量
-        Boolean flag = true;
-        while (flag) {
-            //发送称重指令
-            nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.READ_WEIGHT_VALUE, true);
-            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i - 1] >= number) {
-                flag = false;
-            }
-        }
-        //停目
-        result = vegetableMotorStop(i);
-        if (result.getCode() != 200) {
-            return result;
-        }
-        //打开称重盒
-        result = closeWeighingBox(i);
-        if (result.getCode() != 200) {
-            return result;
-        }
-        pubConfig.setDishesAreReady(true);
-        log.info("第{}个配菜已经配好{}g", i, number);
-        return Result.success();
-    }
-
-
-    /**
      * 碗蒸汽加热（秒）
      *
      * @return
@@ -455,15 +310,6 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
 
-
-    /**
-     * 打开蒸汽发生器
-     */
-    public Result openSteamGenerator() {
-        relayOpening(Constants.Y_STEAM_SWITCH);
-        return Result.success();
-    }
-
     /**
      * 抽汤排气
      *
@@ -480,7 +326,7 @@ public class RelayDeviceService implements DeviceHandler {
     }
 
     public Result deliverBowl() {
-        if (ioDeviceService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL) == SignalLevel.LOW.ordinal()) {
             log.error("没有碗了！");
             return Result.error("没有碗了！");
         }
@@ -580,8 +426,8 @@ public class RelayDeviceService implements DeviceHandler {
      * @return
      */
     public Result soupSteamCoverDown() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()
-            ||ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()
+                || signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()
         ) {
             return Result.error("菜勺没在装菜位置上，加汤蒸盖无法下降！");
         }
@@ -619,6 +465,7 @@ public class RelayDeviceService implements DeviceHandler {
 
     /**
      * 加蒸汽和汤
+     *
      * @return
      */
     public Result steamAndSoupAdd() {

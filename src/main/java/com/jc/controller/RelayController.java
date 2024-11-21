@@ -1,7 +1,6 @@
 package com.jc.controller;
 
-import com.jc.config.Result;
-import com.jc.service.impl.RelayDeviceService;
+import com.jc.service.impl.Relay1DeviceGatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RelayController {
 
     @Autowired
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
 
     /**
      * 关闭所有继电器
      */
     @GetMapping("closeAll")
     public void closeAll() {
-        relayDeviceService.closeAll();
+        relay1DeviceGatewayService.closeAll();
     }
 
     /**
@@ -31,7 +30,7 @@ public class RelayController {
      */
     @GetMapping("open")
     public void open(@RequestParam int i) {
-        relayDeviceService.relayOpening(i);
+        relay1DeviceGatewayService.relayOpening(i);
     }
 
     /**
@@ -41,16 +40,16 @@ public class RelayController {
      */
     @GetMapping("close")
     public void close(@RequestParam int i) {
-        relayDeviceService.relayClosing(i);
+        relay1DeviceGatewayService.relayClosing(i);
     }
 
-    /**
-     * 打开所有继电器
-     */
-    @GetMapping("openAll")
-    public void openAll() {
-        relayDeviceService.openAll();
-    }
+//    /**
+//     * 打开所有继电器
+//     */
+//    @GetMapping("openAll")
+//    public void openAll() {
+//        relay1DeviceGatewayService.openAll();
+//    }
 
     /**
      * 打开指定编号的继电器一段时间后自动关闭
@@ -60,7 +59,7 @@ public class RelayController {
      */
     @GetMapping("openClose")
     public void openClose(@RequestParam int no, @RequestParam int second) {
-        relayDeviceService.openClose(no, second);
+        relay1DeviceGatewayService.openClose(no, second);
     }
 
     /**
@@ -74,7 +73,7 @@ public class RelayController {
 
     @GetMapping("openVibrator")
     public void openVibrator() {
-        relayDeviceService.openVibrator();
+        relay1DeviceGatewayService.openVibrator();
     }
 
 }

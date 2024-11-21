@@ -17,19 +17,21 @@ import org.springframework.stereotype.Service;
 public class FicationProcessing {
 
     @Autowired
-    private IODeviceService ioDeviceService; // IO设备处理器
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService; // 信号设备处理器
     @Autowired
     private IpConfig ipConfig;
     @Autowired
     @Lazy
-    private RelayDeviceService relayDeviceService; // 继电器设备处理器
+    private Relay1DeviceGatewayService relay1DeviceGatewayService; // 继电器设备处理器
     @Autowired
     @Lazy
-    private Relay1DeviceService relay1DeviceService; // 继电器设备处理器
+    private Relay2DeviceGatewayService relay2DeviceGatewayService; // 继电器2设备处理器
     @Autowired
-    private Send485OrderService send485OrderService;
+    private StepServoDriverGatewayService stepServoDriverGatewayService;
     @Autowired
-    private Receive485SignalService receive485SignalService;
+    private TemperatureWeighingGatewayService temperatureWeighingGatewayService;
+    @Autowired
+    private SignalAcquisitionDeviceGatewayService temperatureWeightReadingService;
     @Autowired
     private DocuService docuService;
 
@@ -42,17 +44,18 @@ public class FicationProcessing {
      */
     public void classificationProcessing(String clientIp, boolean flag, String message) {
         // 根据客户端IP地址分类处理消息到对应的设备处理器
-        if (clientIp.equals(ipConfig.getIo())) {
-            // 如果客户端IP地址匹配IO设备IP地址，则交由IO设备处理器处理消息
-            ioDeviceService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getRelay())) {
-            relayDeviceService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getSiloWeighBoxIp())) {
-            relay1DeviceService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getSend485Order())) {
-            send485OrderService.handle(message, flag);
-        } else if (clientIp.equals(ipConfig.getReceive485Signal())) {
-            receive485SignalService.handle(message, flag);
+        if (clientIp.equals(ipConfig.getSignalAcquisitionDeviceGateway())) {
+            signalAcquisitionDeviceGatewayService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getRelay1DeviceGateway())) {
+            relay1DeviceGatewayService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getSignalAcquisitionDeviceGateway())) {
+            temperatureWeightReadingService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getRelay2DeviceGateway())) {
+            relay2DeviceGatewayService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getStepServoDriverGateway())) {
+            stepServoDriverGatewayService.handle(message, flag);
+        } else if (clientIp.equals(ipConfig.getTemperatureWeighingGateway())) {
+            temperatureWeighingGatewayService.handle(message, flag);
         } else if (clientIp.equals(ipConfig.getDucuIp())) {
             docuService.handle(message, flag);
         } else {

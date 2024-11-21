@@ -19,13 +19,13 @@ import org.springframework.stereotype.Service;
 public class BowlService implements DeviceHandler {
 
     @Autowired
-    private Send485OrderService send485OrderService;
+    private StepServoDriverGatewayService stepServoDriverGatewayService;
     @Autowired
-    private IODeviceService ioDeviceService;
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
     @Autowired
     private PubConfig pubConfig;
     @Autowired
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
     @Autowired
     private DataConfig dataConfig;
 
@@ -51,35 +51,35 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public synchronized Result spoonReset() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() &&
-                ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() &&
+                signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()
         ) {
             return Result.success();
         }
         //如果没有走完就不返回
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             //移到倒菜位置
             Result result = servoMotorToSteamPosition();
             if (result.getCode() != 200) {
                 return result;
             }
         }
-        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
         }
-        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "030600070000";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             hex = "030600050050";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //先发送脉冲数，再发送指令
             hex = "030600000001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
         Long beging = System.currentTimeMillis();
         Boolean flag = false;
-        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -101,33 +101,33 @@ public class BowlService implements DeviceHandler {
      * 伺服电机移到蒸汽位置
      */
     private synchronized Result servoMotorToSteamPosition() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
-        } else if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        } else if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "02060007" + DecimalToHexConverter.decimalToHex(
                     dataConfig.getLadleWalkingDistanceValue() - dataConfig.getLadleDishDumpingDistancePulseValue());
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //速度
             hex = "020600055000";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //先发送脉冲数，再发送指令
             hex = "020600010001";
-            send485OrderService.sendOrder(hex);
-        } else if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            stepServoDriverGatewayService.sendOrder(hex);
+        } else if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleWalkingDistanceValue());
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //速度
             hex = "020600055000";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //先发送脉冲数，再发送指令
             hex = "020600010001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
         Long begin = System.currentTimeMillis();
         boolean flag = false;
-        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -148,33 +148,33 @@ public class BowlService implements DeviceHandler {
      * 伺服电机移到倒菜位置
      */
     private synchronized Result servoMotorMoveToDumpPosition() {
-        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
-        } else if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        } else if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "02060007" + DecimalToHexConverter.decimalToHex(
                     dataConfig.getLadleWalkingDistanceValue() - dataConfig.getLadleDishDumpingDistancePulseValue());
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //速度
             hex = "020600055000";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //先发送脉冲数，再发送指令
             hex = "020600000001";
-            send485OrderService.sendOrder(hex);
-        } else if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            stepServoDriverGatewayService.sendOrder(hex);
+        } else if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //先发送脉冲数，再发送指令
             String hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingDistancePulseValue());
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //速度
             hex = "020600055000";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //先发送脉冲数，再发送指令
             hex = "020600010001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
         }
         Long begin = System.currentTimeMillis();
         boolean flag = false;
-        while (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -200,26 +200,26 @@ public class BowlService implements DeviceHandler {
         log.info("装菜勺倒菜");
         pubConfig.setServingDishesCompleted(false);
         //如果没有到达位置倒菜勺——汤右限位
-        if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
             Result result = servoMotorMoveToDumpPosition();
             if (result.getCode() != 200) {
                 return result;
             }
         }
         //需要2次向上，不然的话达不到最顶端
-        Result result = relayDeviceService.soupSteamCoverUp();
+        Result result = relay1DeviceGatewayService.soupSteamCoverUp();
         if (result.getCode() != 200) {
             return result;
         }
         //发送脉冲数
         String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue());
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //倒菜时速度
         hex = "030600055000";
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //发送转动指令
         hex = "030600010001";
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         try {
             Thread.sleep(3000L);
         } catch (InterruptedException e) {
@@ -227,26 +227,26 @@ public class BowlService implements DeviceHandler {
         }
         //先发送脉冲数，再发送指令
         hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue() - 500);
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //倒菜时速度
         hex = "030600053000";
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //倒转
         hex = "030600010001";
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //复位
 //        this.spoonReset();
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
-        while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             //先发送脉冲数，再发送指令
             hex = "030600070000";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             hex = "030600050050";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             //先发送脉冲数，再发送指令
             hex = "030600010001";
-            send485OrderService.sendOrder(hex);
+            stepServoDriverGatewayService.sendOrder(hex);
             try {
                 Thread.sleep(8000L);
             } catch (InterruptedException e) {
@@ -272,12 +272,12 @@ public class BowlService implements DeviceHandler {
      */
     public synchronized Result spoonLoad() {
         //如果在装菜位直接返回
-        if (ioDeviceService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             log.info("在装菜位");
             return Result.success();
         }
         //如果碗没有复位不行
-        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             Result result = spoonReset();
             if (result.getCode() != 200) {
                 log.error(result.getMessage());
@@ -288,29 +288,29 @@ public class BowlService implements DeviceHandler {
         log.info("发送装菜指令");
         //速度
         String hex = "020600055000";
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //根据不同位置进行判断
-        if (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleWalkingDistanceValue());
-        } else if (ioDeviceService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+        } else if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             hex = "02060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingDistancePulseValue());
         }
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         //先发送脉冲数，再发送指令
         hex = "020600000001";
-        send485OrderService.sendOrder(hex);
+        stepServoDriverGatewayService.sendOrder(hex);
         try {
             Thread.sleep(2000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        while (ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             try {
                 Thread.sleep(Constants.SLEEP_TIME_MS * 50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if ((ioDeviceService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal())) {
+            if ((signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal())) {
                 spoonLoad();
             }
         }

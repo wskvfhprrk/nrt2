@@ -22,7 +22,7 @@ public class DocuService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         if (isHex) {
-            log.info("HEX消息: {}", message);
+            log.info("机器人HEX消息: {}", message);
             //判断是否到了home点
             isHome(message);
         } else {

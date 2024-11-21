@@ -1,12 +1,9 @@
 package com.jc.service.impl;
 
-import com.jc.config.IpConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
-import com.jc.enums.SignalLevel;
 import com.jc.netty.client.NettyClientConfig;
-import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.RobotService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,7 @@ public class RobotServiceImpl implements RobotService {
     private PubConfig pubConfig;
     private int takeBowlNumber = 0;
     @Autowired
-    private RelayDeviceService relayDeviceService;
+    private Relay1DeviceGatewayService relay1DeviceGatewayService;
     @Autowired
     private FansService fansService;
 
@@ -63,7 +60,7 @@ public class RobotServiceImpl implements RobotService {
             e.printStackTrace();
         }
         //出碗指令
-        Result result = relayDeviceService.deliverBowl();
+        Result result = relay1DeviceGatewayService.deliverBowl();
         if (result.getCode() == 200) {
             try {
                 Thread.sleep(1000L);

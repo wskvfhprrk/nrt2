@@ -100,10 +100,6 @@ public class Constants {
      * 蒸汽发生器继电器
      */
     public static final int Y_STEAM_SWITCH = 20;
-//    /**
-//     * 待用
-//     */
-//    public static final int TO_BE_USED = 15;
     /**
      * 抽汤泵
      */
@@ -128,30 +124,6 @@ public class Constants {
      * 震动器
      */
     public static final int Y_SHAKER_SWITCH_1 = 17;
-//    /**
-//     * 配料电机4
-//     */
-//    public static final int INGREDIENT_MOTOR4 = 27;
-//    /**
-//     * 配料电机3
-//     */
-//    public static final int INGREDIENT_MOTOR3 = 28;
-//    /**
-//     * 配料电机2
-//     */
-//    public static final int INGREDIENT_MOTOR2 = 29;
-//    /**
-//     * 配料电机1
-//     */
-//    public static final int INGREDIENT_MOTOR1 = 30;
-//    /**
-//     * 碗交流电机N极
-//     */
-//    public static final int BOWL_N_SWITCH = 31;
-//    /**
-//     * 碗交流电机L极
-//     */
-//    public static final int BOWL_L_SWITCH = 32;
 
 
     /** 485设备指令 */
@@ -177,10 +149,6 @@ public class Constants {
     public static final int WEIGHT_SENSOR_ONE_TO_FOUR = 2;
 
 
-//    /**
-//     * 转台工位总数
-//     */
-//    public static final int WORKSTATION_NUMBER = 6;
     /**
      * 蒸汽发生器保温状态
      */
