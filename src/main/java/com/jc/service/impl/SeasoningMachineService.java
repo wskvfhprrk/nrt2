@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * 调味机按配方出料
+ * 调味机按配方出料——暂时不用，以后再用
  */
 @Service
 @Slf4j
