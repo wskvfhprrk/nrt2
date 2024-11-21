@@ -48,7 +48,7 @@ public class RobotServiceImpl implements RobotService {
         try {
             nettyClientConfig.connectAndSendData("run(bowl/getBowl.jspf)");
             if (!pubConfig.getIsRobotStatus()) {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(200L);
             }
             log.info("机器人复位自检成功");
         } catch (InterruptedException e) {

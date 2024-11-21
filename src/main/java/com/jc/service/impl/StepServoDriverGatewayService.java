@@ -1,6 +1,7 @@
 package com.jc.service.impl;
 
 import com.jc.config.IpConfig;
+import com.jc.constants.Constants;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
 import com.jc.utils.CRC16;
@@ -48,7 +49,7 @@ public class StepServoDriverGatewayService implements DeviceHandler {
         hexStr = hexStr + modbusrtuString;
         while (sendHexStatus) {
             try {
-                Thread.sleep(100L);
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

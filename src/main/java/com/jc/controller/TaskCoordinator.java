@@ -117,7 +117,7 @@ public class TaskCoordinator {
         }
         //开始放碗
         while (!pubConfig.getIsRobotStatus()) {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
+            Thread.sleep(200L);
         }
         Thread.sleep(2000L);
         log.info("开始放碗……");
@@ -127,7 +127,7 @@ public class TaskCoordinator {
         }
         //等加完蒸汽和机器人停止状态
         while (!pubConfig.getIsRobotStatus() || !pubConfig.getFinishAddingSteam()) {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
+            Thread.sleep(200L);
         }
         log.info("倒菜");
         result = bowlService.spoonPour();
@@ -177,7 +177,7 @@ public class TaskCoordinator {
         //当配菜弄完时开始加蒸汽
         while (!pubConfig.getSideDishesCompleted()) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(200L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

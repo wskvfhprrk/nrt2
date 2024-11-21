@@ -81,7 +81,7 @@ public class BowlService implements DeviceHandler {
         Boolean flag = false;
         while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(200L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -129,7 +129,7 @@ public class BowlService implements DeviceHandler {
         boolean flag = false;
         while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(200L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -176,7 +176,7 @@ public class BowlService implements DeviceHandler {
         boolean flag = false;
         while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME * 20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -306,7 +306,7 @@ public class BowlService implements DeviceHandler {
         }
         while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS * 50);
+                Thread.sleep(1000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

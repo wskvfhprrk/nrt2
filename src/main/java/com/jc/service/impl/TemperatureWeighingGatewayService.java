@@ -56,7 +56,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     private void sendOrder(String hexStr) {
         while (sendHexStatus) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -102,11 +102,6 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
      */
     public Result readTemperature() {
         sendOrder(Constants.READ_SOUP_TEMPERATURE_COMMAND);
-        try {
-            Thread.sleep(Constants.SLEEP_TIME_MS * 5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return Result.success(pubConfig.getSoupTemperatureValue());
     }
 

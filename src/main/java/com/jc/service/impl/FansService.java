@@ -264,7 +264,7 @@ public class FansService {
         // 发送查询感器状态的信息
         signalAcquisitionDeviceGatewayService.sendSearch();
         try {
-            Thread.sleep(Constants.SLEEP_TIME_MS);
+            Thread.sleep(200L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

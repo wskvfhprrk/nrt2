@@ -26,8 +26,8 @@ public class ManualOperationController {
     private Relay2DeviceGatewayService relay2DeviceGatewayService;
     @Autowired
     private BowlService bowlService;
-    @Autowired
-    private StepperMotorService stepperMotorService;
+//    @Autowired
+//    private StepperMotorService stepperMotorService;
     @Autowired
     private TemperatureWeighingGatewayService temperatureWeighingGatewayService;
     @Autowired
@@ -257,7 +257,7 @@ public class ManualOperationController {
     public String emergencyStop() {
         log.info("Emergency stop triggered");
         relay1DeviceGatewayService.closeAll();
-        stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
+//        stepperMotorService.stop(Constants.ROTARY_TABLE_STEPPER_MOTOR);
         pubConfig.setIsExecuteTask(false);
         return "急停操作完成";
     }

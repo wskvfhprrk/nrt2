@@ -52,7 +52,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     private void sendOrder(String s) {
         while (sendHexStatus) {
             try {
-                Thread.sleep(100L);
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

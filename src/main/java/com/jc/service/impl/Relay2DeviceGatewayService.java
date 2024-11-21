@@ -43,7 +43,7 @@ public class Relay2DeviceGatewayService implements DeviceHandler {
     private void sendOrder(String hexStr) {
         while (sendHexStatus) {
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
