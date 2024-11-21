@@ -79,6 +79,7 @@ pub:
   areTheFansReady: false # 粉丝是否准备好
   dishesAreReady: false # 菜品是否准备好
   servingDishesCompleted: false # 出菜是否完成
+  send485Status: false #485信号发送接收状态
 
 # 数据配置
 data:

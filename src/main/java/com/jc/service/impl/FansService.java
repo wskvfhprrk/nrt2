@@ -286,7 +286,7 @@ public class FansService {
         long timeoutMillis = 600000;
         Boolean falg = false;
 
-        while (!isFansReset()) {
+        while (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT)==SignalLevel.HIGH.ordinal()) {
             // 检查是否超过了超时时间
             if (System.currentTimeMillis() - startTime > timeoutMillis) {
                 log.error("复位超过了10分钟");
@@ -366,13 +366,17 @@ public class FansService {
      * @return 执行结果
      */
     public Result resendFromCurrentPush() {
+        log.info("进入resendFromCurrentPush()方法");
+        log.info("高低电平值：{}",ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN));
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
+            log.info("推杆高电平");
             Result result = noodleBinDeliver(); // 如果已复位，直接推送
             if (result.getCode() != 200) {
                 return result;
             }
             return Result.success();
         } else {
+            log.info("推杆低电平");
             Result result = pushRodOpen(); // 推杆复位操作
             if (result.getCode() != 200) {
                 return result; // 推杆复位失败返回错误

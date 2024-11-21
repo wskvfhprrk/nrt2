@@ -29,15 +29,8 @@ public class Reset {
         }
         log.info("设备自检复位中……");
         //打开蒸汽发生器
-        log.info("打开蒸汽发生器");
-        relayDeviceService.openSteamGenerator();
-        log.info("抽汤排气");
-        relayDeviceService.soupPipeExhaust(dataConfig.getSoupExhaustTime());
-        //机器人复位
-        log.info("机器人复位");
-        robotService.robotReset();
-        //出汤口复位
-        log.info("出汤口复位");
+//        log.info("打开蒸汽发生器");
+//        relayDeviceService.openSteamGenerator();
         //粉丝仓复位
         log.info("粉丝仓复位");
         Result result = fansService.resendFromCurrentPush();
@@ -55,6 +48,17 @@ public class Reset {
             log.error(result.getMessage());
             return;
         }
+        log.info("抽汤排气");
+        result = relayDeviceService.soupPipeExhaust(dataConfig.getSoupExhaustTime());
+        if (result.getCode() != 200) {
+            log.error(result.getMessage());
+            return;
+        }
+        //机器人复位
+        log.info("机器人复位");
+        robotService.robotReset();
+        //出汤口复位
+        log.info("出汤口复位");
 
         log.info("菜勺移动到装菜位置");
         result = bowlService.spoonLoad();

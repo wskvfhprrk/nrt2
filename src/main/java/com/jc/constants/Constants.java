@@ -8,7 +8,7 @@ public class Constants {
     /**
      * 睡眠时间（毫秒）
      */
-    public static final long SLEEP_TIME_MS = 100L;
+    public static final long SLEEP_TIME_MS = 200L;
     /**
      * 最大步进电机编号
      */
@@ -291,4 +291,5 @@ public class Constants {
     public static final int Y_HOPPER2_SWITCH_CONTROL = 6;
     public static final int Y_THIRD_BIN_DIRECTION_CONTROL = 7;
     public static final int Y_HOPPER3_SWITCH_CONTROL = 8;
+
 }

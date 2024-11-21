@@ -199,6 +199,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * @param hex      是否为16进制消息
      */
     public void sendMessageToClient(String clientIp, String message, Boolean hex) {
+        log.info("向：{} 发送指令：{}",clientIp,message);
         //停一下防止多条造成混乱
         try {
             Thread.sleep(Constants.SLEEP_TIME_MS);

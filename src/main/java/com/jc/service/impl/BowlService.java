@@ -64,7 +64,7 @@ public class BowlService implements DeviceHandler {
                 return result;
             }
         }
-        if(ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()){
+        if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
             return Result.success();
         }
         if (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
@@ -211,13 +211,13 @@ public class BowlService implements DeviceHandler {
         if (result.getCode() != 200) {
             return result;
         }
-        //先发送脉冲数，再发送指令
+        //发送脉冲数
         String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue());
         send485OrderService.sendOrder(hex);
         //倒菜时速度
-        hex = "030600053000";
+        hex = "030600055000";
         send485OrderService.sendOrder(hex);
-        //先发送脉冲数，再发送指令
+        //发送转动指令
         hex = "030600010001";
         send485OrderService.sendOrder(hex);
         try {
@@ -225,13 +225,30 @@ public class BowlService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //先发送脉冲数，再发送指令
+        hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue() - 500);
+        send485OrderService.sendOrder(hex);
+        //倒菜时速度
+        hex = "030600053000";
+        send485OrderService.sendOrder(hex);
+        //倒转
+        hex = "030600010001";
+        send485OrderService.sendOrder(hex);
         //复位
-        this.spoonReset();
+//        this.spoonReset();
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
         while (ioDeviceService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+            //先发送脉冲数，再发送指令
+            hex = "030600070000";
+            send485OrderService.sendOrder(hex);
+            hex = "030600050050";
+            send485OrderService.sendOrder(hex);
+            //先发送脉冲数，再发送指令
+            hex = "030600010001";
+            send485OrderService.sendOrder(hex);
             try {
-                Thread.sleep(Constants.SLEEP_TIME_MS);
+                Thread.sleep(8000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

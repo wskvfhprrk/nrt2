@@ -123,6 +123,7 @@ public class IODeviceService implements DeviceHandler {
             send485OrderService.sendOrder(hex);
         }
         //粉丝仓左限位
+        log.info("检测粉丝仓是否在左限位");
         if (ioDeviceService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "040600020001";
@@ -159,13 +160,13 @@ public class IODeviceService implements DeviceHandler {
      * @return
      */
     public String getStatus() {
-        // TODO: 2024/9/4 凡是无法获取传感器的都停止，不运行，只有获取到了才可以
         while (ioStatus == null) {
+            log.info("没有io信号，主动发送指令");
             // 先重置传感器
             nettyServerHandler.sendMessageToClient(ipConfig.getIo(), Constants.RESET_COMMAND, true);
             try {
-                // 等待指定时间，确保传感器完成重置
-                Thread.sleep(Constants.SLEEP_TIME_MS * 10);
+                // 等待指定时间，确保传感器完成重置——时间不能太短，太短不行
+                Thread.sleep( 10000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -213,7 +214,6 @@ public class IODeviceService implements DeviceHandler {
         sb.append((firstChar == '1' || firstChar == '5') ? SignalLevel.HIGH.getValue() : SignalLevel.LOW.getValue()).append(",");
         // 根据第一位字符判断 endIo 是否为高电平
         sb.append((firstChar == '4' || firstChar == '5') ? SignalLevel.HIGH.getValue() : SignalLevel.LOW.getValue()).append(",");
-
         return sb;
     }
 

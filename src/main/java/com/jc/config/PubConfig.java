@@ -152,4 +152,8 @@ public class PubConfig {
      * 加完蒸汽
      */
     public Boolean finishAddingSteam = false;
+    /**
+     * 485发送接收状态
+     */
+    public Boolean send485Status=false;
 }

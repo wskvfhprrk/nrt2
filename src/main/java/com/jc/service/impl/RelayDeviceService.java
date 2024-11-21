@@ -48,11 +48,13 @@ public class RelayDeviceService implements DeviceHandler {
 //            log.info("继电器设备——HEX消息: {}", message);
         } else {
             log.info("继电器设备——普通消息: {}", message);
+
             // 在这里添加处理普通字符串消息的逻辑
         }
     }
 
     /**
+     *
      * 根据编号打开继电器
      *
      * @param no 继电器编号，范围为1-32
