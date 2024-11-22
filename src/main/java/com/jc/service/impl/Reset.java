@@ -25,7 +25,7 @@ public class Reset {
     @Autowired
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
 
-    public void start() {
+    public synchronized void start() {
         if (!pubConfig.getAllDevicesConnectedStatus()) {
             return;
         }
