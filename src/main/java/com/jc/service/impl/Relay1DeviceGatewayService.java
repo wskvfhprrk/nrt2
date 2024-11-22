@@ -521,7 +521,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         //切刀量大于等于数据时关闭切肉机
         while (pubConfig.getMeatSlicingQuantity() < number) {
-            log.info("切肉片数-------------------------------------->{} number:{}",pubConfig.getMeatSlicingQuantity(),number);
+//            log.info("切肉片数-------------------------------------->{} number:{}",pubConfig.getMeatSlicingQuantity(),number);
             try {
                 Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
@@ -550,6 +550,15 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     public Result vibrationSwitchOff() {
         relayOpening(Constants.Y_VIBRATION_SWITCH_DIRECTION_CONTROL);
         relayOpening(Constants.Y_VIBRATION_SWITCH_CONTROL);
+        return Result.success();
+    }
+
+    public Result vibrationSwitchControl(int i) {
+        if(i==0){
+            relayOpening(Constants.Y_DISCHARGE_BIN_3);
+        }else {
+            openClose(Constants.Y_DISCHARGE_BIN_3,i);
+        }
         return Result.success();
     }
 }

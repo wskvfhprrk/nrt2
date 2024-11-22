@@ -271,6 +271,13 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public synchronized Result spoonLoad() {
+        if(signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.LOW.ordinal() &&
+                signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()&&
+                signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()
+        ){
+            log.error("菜勺不在任何一个位置上，请手动移动！");
+            return Result.error("菜勺不在任何一个位置上，请手动移动！");
+        }
         //如果在装菜位直接返回
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             log.info("在装菜位");
