@@ -58,24 +58,61 @@ public class Constants {
      * 汤料传感器
      */
     public static final int X_SOUP_INGREDIENT_SENSOR = 18;
-
-    /** 32位继电器 */
+    /**
+     * 切肉机传感器
+     */
+    public static final int X_MEAT_SLICER_SENSOR = 20;
+    /**
+     * 32位继电器
+     */
+    /**
+     * 蒸汽
+     */
     public static final int Y_STEAM_SWITCH = 20;
+    /**
+     * 抽汤泵
+     */
     public static final int Y_SOUP_PUMP_SWITCH = 21;
+    /**
+     * 抽汤开关
+     */
     public static final int Y_BOWL_STEAM_SOLENOID_VALVE = 22;
+    /**
+     * 抽汤排气开关
+     */
     public static final int Y_SOUP_SWITCH = 23;
+    /**
+     * 加蒸汽电磁阀开关
+     */
     public static final int Y_BATCHING_STEAM_SOLENOID_VALVE = 24;
+    /**
+     * 汤加热蒸汽电磁阀开关
+     */
     public static final int Y_SOUP_STEAM_SOLENOID_VALVE = 25;
+    /**
+     * 震动器1
+     */
     public static final int Y_SHAKER_SWITCH_1 = 17;
     public static final int Y_SHAKER_SWITCH_2 = 18;
+    /**
+     * 切肉机控制
+     */
+    public static final int Y_MEAT_SLICER_CONTROL = 18;
+    /**
+     * 出砣电机开关
+     */
     public static final int Y_CHU_WAN = 15;
+    /**
+     * 出料仓3
+     */
     public static final int Y_DISCHARGE_BIN_3 = 16;
 
     /**
-     * 伸缩杆控制
+     * 蒸汽伸缩杆控制
      */
     public static final int Y_TELESCOPIC_ROD_DIRECTION_CONTROL = 1;
     public static final int Y_TELESCOPIC_ROD_SWITCH_CONTROL = 2;
+
 
     /**
      * 仓门控制
@@ -100,28 +137,38 @@ public class Constants {
     public static final int SOUP_TEMPERATURE_SENSOR = 1;
     public static final int WEIGHT_SENSOR_ONE_TO_FOUR = 2;
 
-    /** 状态常量 */
+    /**
+     * 状态常量
+     */
     public static final int STEAM_GENERATOR_INSULATION_STATUS = 1;
     public static final int STEAM_GENERATOR_STEAM_STATUS = 2;
 
-    /** 机器人相关指令 */
+    /**
+     * 机器人相关指令
+     */
     public static final String ROBOT_HOME = "686F6D65";
     public static final String PEI_CAI = "706569636169";
     public static final String SERVING_COMPLETED = "6F70656E";
     public static final String ROBOT_EXECUTE_SUCCESS_COMMAND = "run start\n";
     public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
 
-    /** 数据命令 */
+    /**
+     * 数据命令
+     */
     public static final String READ_SOUP_TEMPERATURE_COMMAND = "01 03 00 04 00 01 C5 CB";
     public static final String READ_WEIGHT_VALUE = "02 03 00 00 00 08 44 3F";
     public static final String TARE_WEIGHT = "03 06 00 26 00 01 A8 23";
     public static final String ZEROING_CALIBRATION = "02 06 00 26 00 01 A9 F2";
 
-    /** 温度值 */
+    /**
+     * 温度值
+     */
     public static final Double SOUP_MINIMUM_TEMPERATURE_VALUE = 80.0;
     public static final Double SOUP_MAXIMUM_TEMPERATURE_VALUE = 100.0;
 
-    /** Redis主键 */
+    /**
+     * Redis主键
+     */
     public static final String ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS = "orderRedisPrimaryKeyInProgress";
     public static final String COMPLETED_ORDER_REDIS_PRIMARY_KEY = "completedOrderRedisPrimaryKey";
     public static final String PENDING_ORDER_REDIS_PRIMARY_KEY = "pendingOrderRedisPrimaryKey";
@@ -130,6 +177,8 @@ public class Constants {
     public static final String PAY_ORDER_ID = "payOrderId";
     public static final String ORDER_ID = "orderId";
 
-    /** 其他 */
+    /**
+     * 其他
+     */
     public static final int GOODS_AISLE_POWER_ON2_SECONDS = 2;
 }

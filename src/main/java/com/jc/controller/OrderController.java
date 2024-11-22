@@ -1,23 +1,17 @@
 package com.jc.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jc.config.ClientConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
-import com.jc.enums.OrderStatus;
 import com.jc.mqtt.MqttProviderConfig;
 import com.jc.vo.OrderPayMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +67,7 @@ public class OrderController {
 
         boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
-                clientConfig.getRelayDevice();
+                clientConfig.getRelay1Device();
 
         if (false) { //todo 如果有订单制作时
             //todo 轮播待制作，正在制作和已经做好的订单
@@ -91,7 +85,7 @@ public class OrderController {
             if (!clientConfig.getIOdevice()) {
                 appendWithComma(missingDevicesMessage, "IO采集设备");
             }
-            if (!clientConfig.getRelayDevice()) {
+            if (!clientConfig.getRelay1Device()) {
                 appendWithComma(missingDevicesMessage, "继电器设备");
             }
             if (!clientConfig.getSend485Order()) {

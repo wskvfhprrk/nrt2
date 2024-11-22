@@ -152,6 +152,10 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             String hex = "020600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
+        //切肉机数量加1
+        if(signalAcquisitionDeviceGatewayService.getStatus(Constants.X_MEAT_SLICER_SENSOR)==SignalLevel.HIGH.ordinal()){
+            pubConfig.setMeatSlicingQuantity(pubConfig.getMeatSlicingQuantity()+1);
+        }
     }
 
     /**

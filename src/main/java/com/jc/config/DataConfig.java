@@ -25,6 +25,10 @@ public class DataConfig {
      */
     private int beef20;
     /**
+     * 加量牛肉
+     */
+    private int extraBeef;
+    /**
      * 香菜配置
      */
     private int cilantro;

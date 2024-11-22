@@ -26,7 +26,7 @@ public class ManualOperationController {
     private Relay2DeviceGatewayService relay2DeviceGatewayService;
     @Autowired
     private BowlService bowlService;
-//    @Autowired
+    //    @Autowired
 //    private StepperMotorService stepperMotorService;
     @Autowired
     private TemperatureWeighingGatewayService temperatureWeighingGatewayService;
@@ -168,74 +168,78 @@ public class ManualOperationController {
                 result = relay1DeviceGatewayService.rearFanClose();
                 break;
             case 29:
+                actionResult = "切肉机切肉（份量）";
+                result = relay1DeviceGatewayService.meatSlicingMachine(number != null ? number : 1);
+                break;
+            case 30:
                 actionResult = "震动器1测试";
                 result = relay1DeviceGatewayService.vibrator1Test(number != null ? number : dataConfig.getVibratorTime());
                 break;
-            case 30:
+            case 31:
                 actionResult = "震动器2测试";
                 result = relay1DeviceGatewayService.vibrator2Test(number != null ? number : dataConfig.getVibratorTime());
                 break;
-            case 31:
+            case 32:
                 actionResult = "出料3测试";
                 result = relay1DeviceGatewayService.DischargeBin3Test(number != null ? number : dataConfig.getVibratorTime());
                 break;
 
             // Group 5: 配菜操作
-            case 32:
+            case 33:
                 actionResult = "一号配菜";
                 result = temperatureWeightReadingService.vegetable1Motor(1, number != null ? number : dataConfig.getBeef10());
                 break;
-            case 33:
+            case 34:
                 actionResult = "二号配菜";
                 result = temperatureWeightReadingService.vegetable1Motor(2, number != null ? number : dataConfig.getCilantro());
                 break;
-            case 34:
+            case 35:
                 actionResult = "三号配菜";
                 result = temperatureWeightReadingService.vegetable1Motor(3, number != null ? number : dataConfig.getChoppedGreenOnion());
                 break;
-            case 35:
+            case 36:
                 actionResult = "四号配菜";
                 result = temperatureWeightReadingService.vegetable1Motor(4, number != null ? number : dataConfig.getChoppedGreenOnion());
                 break;
-            case 36:
+            case 37:
                 actionResult = "称重全部清0";
                 result = temperatureWeighingGatewayService.clearAll();
                 break;
-            case 37:
+            case 38:
                 actionResult = "标重500g";
                 result = temperatureWeighingGatewayService.calibrateWeight(number != null ? number : 1);
                 break;
-            case 38:
+            case 39:
                 actionResult = "打开称重盒";
                 result = relay2DeviceGatewayService.openWeighBox(number != null ? number : 1);
                 break;
-            case 39:
+            case 40:
                 actionResult = "关闭称重盒";
                 result = relay2DeviceGatewayService.closeWeighBox(number != null ? number : 1);
                 break;
 
             // Group 6: 料仓操作
-            case 40:
+            case 41:
                 actionResult = "一号料仓打开";
                 result = relay1DeviceGatewayService.firstBinOpen();
                 break;
-            case 41:
+            case 42:
                 actionResult = "一号料仓关闭";
                 result = relay1DeviceGatewayService.firstBinClose();
                 break;
-            case 42:
+            case 43:
                 actionResult = "二号料仓打开";
                 result = relay1DeviceGatewayService.secondBinOpen();
                 break;
-            case 43:
+            case 44:
                 actionResult = "二号料仓关闭";
                 result = relay1DeviceGatewayService.secondBinClose();
                 break;
-            case 44:
+            case 45:
                 actionResult = "三号料仓打开";
                 result = relay1DeviceGatewayService.thirdBinOpen();
                 break;
-            case 45:
+            case 46:
                 actionResult = "三号料仓关闭";
                 result = relay1DeviceGatewayService.thirdBinClose();
                 break;

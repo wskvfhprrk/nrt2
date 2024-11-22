@@ -35,7 +35,7 @@ public class StepServoDriverGatewayService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         sendHexStatus = false;
-        log.info("步进伺服指令返回的HEX消息: {}", message);
+//        log.info("步进伺服指令返回的HEX消息: {}", message);
     }
 
 
@@ -55,7 +55,7 @@ public class StepServoDriverGatewayService implements DeviceHandler {
             }
         }
         sendHexStatus = true;
-        log.info("向步进伺服发送指令:{}", hexStr);
+//        log.info("向步进伺服发送指令:{}", hexStr);
         nettyServerHandler.sendMessageToClient(ipConfig.getStepServoDriverGateway(), hexStr, true);
     }
 

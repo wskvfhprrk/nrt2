@@ -32,7 +32,7 @@ public class Relay2DeviceGatewayService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         sendHexStatus = false;
-        log.info("亿佰特继电器设备——HEX消息: {}", message);
+//        log.info("亿佰特继电器设备——HEX消息: {}", message);
     }
 
     /**

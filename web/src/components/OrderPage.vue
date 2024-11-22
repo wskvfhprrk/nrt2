@@ -279,6 +279,7 @@ export default {
     this.cleanSession();
     this.fetchServerStatus();
     this.fetchOrderData();
+    setInterval(this.fetchServerStatus, 1000);
     setInterval(this.fetchOrderData, 1000);
   }
 };

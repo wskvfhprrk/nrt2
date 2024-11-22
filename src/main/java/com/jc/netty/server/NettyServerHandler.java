@@ -73,9 +73,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     private void updateClientConfig(InetSocketAddress clientAddress, Boolean flag) {
         if (ipConfig.getRelay1DeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
-            clientConfig.setRelayDevice(flag);
-            log.info("打开蒸汽发生器");
-//            relayDeviceService.openSteamGenerator();
+            clientConfig.setRelay1Device(flag);
         } else if (ipConfig.getStepServoDriverGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setSend485Order(flag);
         } else if (ipConfig.getTemperatureWeighingGateway().equals(clientAddress.getAddress().getHostAddress())) {
@@ -85,13 +83,13 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         } else if (ipConfig.getSignalAcquisitionDeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
             clientConfig.setIOdevice(flag);
         } else if (ipConfig.getRelay2DeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
-            clientConfig.setSiloWeighBoxIp(flag);
+            clientConfig.setRelay2Device(flag);
         } else if (ipConfig.getRelay1DeviceGateway().equals(clientAddress.getAddress().getHostAddress())) {
-            clientConfig.setRelayDevice(flag);
+            clientConfig.setRelay1Device(flag);
         }
         boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
-                clientConfig.getRelayDevice()&& clientConfig.getSiloWeighBoxIp();
+                clientConfig.getRelay1Device()&& clientConfig.getRelay2Device();
         if (allDevicesConnected) {
             pubConfig.setAllDevicesConnectedStatus(true);
             reset.start();
@@ -193,11 +191,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * 发送消息到指定客户端
      *
      * @param clientIp 客户端IP地址
+     *
      * @param message  消息内容
      * @param hex      是否为16进制消息
      */
     public void sendMessageToClient(String clientIp, String message, Boolean hex) {
-        log.info("向：{} 发送指令：{}",clientIp,message);
+//        log.info("向：{} 发送指令：{}",clientIp,message);
         //停一下防止多条造成混乱
 //        try {
 //            Thread.sleep(Constants.SLEEP_TIME_MS);

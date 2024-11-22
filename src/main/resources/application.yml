@@ -64,7 +64,8 @@ client:
   send485Order: false # 发送 485 命令设备是否在线
   receive485Singal: false # 接收 485 信号设备是否在线
   iOdevice: false # IO 设备是否在线
-  relayDevice: false # 中继设备是否在线
+  relay1Device: false # 继电器1设备是否在线
+  relay2Device: false # 继电器2设备是否在线
 
 # 公共变量参数
 pub:
@@ -79,12 +80,14 @@ pub:
   areTheFansReady: false # 粉丝是否准备好
   dishesAreReady: false # 菜品是否准备好
   servingDishesCompleted: false # 出菜是否完成
+  meatSlicingQuantity: 0 # 切肉数量
 
 # 数据配置
 data:
-  beef10: 10 # 牛肉 10 克
-  beef15: 15 # 牛肉 15 克
-  beef20: 20 # 牛肉 20 克
+  beef10: 1 # 牛肉 10 克
+  beef15: 2 # 牛肉 15 克
+  beef20: 3 # 牛肉 20 克
+  extraBeef: 4 # 加量牛肉
   cilantro: 10 # 香菜克数
   choppedGreenOnion: 10 # 葱花克数
   soupExtractionTime: 10 # 抽汤时间（秒）

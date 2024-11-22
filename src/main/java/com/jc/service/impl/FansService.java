@@ -366,7 +366,6 @@ public class FansService {
      * @return 执行结果
      */
     public Result resendFromCurrentPush() {
-        log.info("进入resendFromCurrentPush()方法");
         log.info("高低电平值：{}", signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN));
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
             log.info("推杆高电平");

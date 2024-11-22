@@ -43,7 +43,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         sendHexStatus = false;
-        log.info("温度称重接收到HEX消息: {}", message);
+//        log.info("温度称重接收到HEX消息: {}", message);
         if (message == null || message.equals("null") || message.length() == 0) return;
         ParseCommand(message);
     }
@@ -62,7 +62,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
             }
         }
         sendHexStatus = true;
-        log.info("温度称重发送HEX消息: {}", hexStr);
+//        log.info("温度称重发送HEX消息: {}", hexStr);
         nettyServerHandler.sendMessageToClient(ipConfig.getTemperatureWeighingGateway(), hexStr, true);
     }
 
@@ -128,7 +128,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
 
         relay2DeviceGatewayService.closeWeighBox(number);
         relay1DeviceGatewayService.relayOpening(Constants.Y_SHAKER_SWITCH_1);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_SHAKER_SWITCH_2);
+//        relay1DeviceGatewayService.relayOpening(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();
     }
 
@@ -154,7 +154,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
         }
         //打开震动盘
         relay1DeviceGatewayService.relayClosing(Constants.Y_SHAKER_SWITCH_1);
-        relay1DeviceGatewayService.relayClosing(Constants.Y_SHAKER_SWITCH_2);
+//        relay1DeviceGatewayService.relayClosing(Constants.Y_SHAKER_SWITCH_2);
         relay2DeviceGatewayService.openWeighBox(number);
         try {
             Thread.sleep(4000L);
@@ -170,7 +170,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     public Result closeWeighingBox(int number) {
         relay2DeviceGatewayService.closeWeighBox(number);
         relay1DeviceGatewayService.openClose(Constants.Y_SHAKER_SWITCH_1, 10);
-        relay1DeviceGatewayService.openClose(Constants.Y_SHAKER_SWITCH_2, 10);
+//        relay1DeviceGatewayService.openClose(Constants.Y_SHAKER_SWITCH_2, 10);
         return Result.success();
     }
 
@@ -305,7 +305,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     public Result calibrateWeight(int i) {
         String s = ModbusCalibration.generateCalibrationMessage(i, 500);
         s = s.replaceAll(" ", "");
-        log.info("发送指令：{}", s);
+//        log.info("发送指令：{}", s);
         nettyServerHandler.sendMessageToClient(ipConfig.getTemperatureWeighingGateway(), s, true);
         return Result.success();
     }

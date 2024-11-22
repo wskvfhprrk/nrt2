@@ -41,7 +41,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         sendHexStatus = false;
-        log.info("继电器设备接收到HEX消息: {}", message);
+//        log.info("继电器设备接收到HEX消息: {}", message);
     }
 
     /**
@@ -57,7 +57,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
                 e.printStackTrace();
             }
         }
-        log.info("继电器设备发送HEX消息: {}", s);
+//        log.info("继电器设备发送HEX消息: {}", s);
         sendHexStatus = true;
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay1DeviceGateway(), s, true);
     }
@@ -270,7 +270,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     }
 
     /**
-     * 出料仓3测试
+     * 出料仓3
      *
      * @param number
      * @return
@@ -492,4 +492,44 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         return this.soupSteamCoverUp();
     }
 
+    /**
+     * 切肉机切肉（份量）
+     *
+     * @param i 份量
+     * @return
+     */
+    public Result meatSlicingMachine(int i) {
+        //设置切肉初始值为0
+        pubConfig.setMeatSlicingQuantity(0);
+        //打开切肉机
+        relayOpening(Constants.Y_MEAT_SLICER_CONTROL);
+        int number = 0;
+        switch (i) {
+            case 1:
+                number = dataConfig.getBeef10();
+                break;
+            case 2:
+                number = dataConfig.getBeef15();
+                break;
+            case 3:
+                number = dataConfig.getBeef20();
+                break;
+            case 4:
+                number = dataConfig.getExtraBeef();
+                break;
+            default:
+        }
+        //切刀量大于等于数据时关闭切肉机
+        while (pubConfig.getMeatSlicingQuantity() < number) {
+            log.info("切肉片数-------------------------------------->{} number:{}",pubConfig.getMeatSlicingQuantity(),number);
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //关闭切肉机
+        relayClosing(Constants.Y_MEAT_SLICER_CONTROL);
+        return Result.success();
+    }
 }

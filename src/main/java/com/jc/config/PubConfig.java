@@ -151,4 +151,8 @@ public class PubConfig {
      * 加完蒸汽
      */
     public Boolean finishAddingSteam = false;
+    /**
+     * 切肉数量
+     */
+    public int meatSlicingQuantity;
 }

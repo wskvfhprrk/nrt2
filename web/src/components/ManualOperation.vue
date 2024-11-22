@@ -100,69 +100,68 @@ export default {
   data() {
     return {
       buttonsGroup1: [
-        {id: 1, name: "机器人重置"},
-        {id: 2, name: "机器人取粉丝"},
-        {id: 3, name: "机器人取菜蓝"},
-        {id: 4, name: "机器人取碗"},
-        {id: 5, name: "机器人放碗"},
-        {id: 6, name: "机器人出餐"},
-        {id: 7, name: "取餐口复位"},
-        {id: 8, name: "取餐口出餐"}
+        { id: 1, name: "机器人重置" },
+        { id: 2, name: "机器人取粉丝" },
+        { id: 3, name: "机器人取菜蓝" },
+        { id: 4, name: "机器人取碗" },
+        { id: 5, name: "机器人放碗" },
+        { id: 6, name: "机器人出餐" },
+        { id: 7, name: "取餐口复位" },
+        { id: 8, name: "取餐口出餐" }
       ],
 
       buttonsGroup2: [
-        {id: 9, name: "出碗"},
-        {id: 10, name: "粉丝仓复位"},
-        {id: 11, name: "移动粉丝仓（编号）"},
-        {id: 12, name: "粉丝仓出粉丝"},
-        {id: 13, name: "装菜勺复位"},
-        {id: 14, name: "装菜勺装菜"},
-        {id: 15, name: "装菜勺倒菜"}
+        { id: 9, name: "出碗" },
+        { id: 10, name: "粉丝仓复位" },
+        { id: 11, name: "移动粉丝仓（编号）" },
+        { id: 12, name: "粉丝仓出粉丝" },
+        { id: 13, name: "装菜勺复位" },
+        { id: 14, name: "装菜勺装菜" },
+        { id: 15, name: "装菜勺倒菜" }
       ],
 
       buttonsGroup3: [
-        {id: 16, name: "蒸汽打开"},
-        {id: 17, name: "蒸汽关闭"},
-        {id: 18, name: "加蒸汽盖下降"},
-        {id: 19, name: "加汤盖下降"},
-        {id: 20, name: "加汤蒸汤盖上升"},
-        {id: 21, name: "关汤蒸汽阀"},
-        {id: 22, name: "加汤（秒）"},
-        {id: 23, name: "汤管排气（秒）"},
-        {id: 24, name: "汤加热至（度）"},
-        {id: 25, name: "加蒸汽（秒）"},
-        {id: 26, name: "加蒸汽和汤"}
+        { id: 16, name: "蒸汽打开" },
+        { id: 17, name: "蒸汽关闭" },
+        { id: 18, name: "加蒸汽盖下降" },
+        { id: 19, name: "加汤盖下降" },
+        { id: 20, name: "加汤蒸汤盖上升" },
+        { id: 21, name: "关汤蒸汽阀" },
+        { id: 22, name: "加汤（秒）" },
+        { id: 23, name: "汤管排气（秒）" },
+        { id: 24, name: "汤加热至（度）" },
+        { id: 25, name: "加蒸汽（秒）" },
+        { id: 26, name: "加蒸汽和汤" }
       ],
 
       buttonsGroup4: [
-        {id: 27, name: "后箱风扇开"},
-        {id: 28, name: "后箱风扇关"},
-        {id: 29, name: "震动器1（秒）"},
-        {id: 30, name: "震动器2（秒）"},
-        {id: 31, name: "出料3（秒）"}
+        { id: 27, name: "后箱风扇开" },
+        { id: 28, name: "后箱风扇关" },
+        { id: 29, name: "切肉机切肉（份量）" },
+        { id: 30, name: "震动器1（秒）" },
+        { id: 31, name: "震动器2（秒）" },
+        { id: 32, name: "出料3（秒）" }
       ],
 
       buttonsGroup5: [
-        {id: 32, name: "一号配菜（g）"},
-        {id: 33, name: "二号配菜（g）"},
-        {id: 34, name: "三号配菜（g）"},
-        {id: 35, name: "四号配菜（g）"},
-        {id: 36, name: "称重全部清0"},
-        {id: 37, name: "标重500g（编号）"},
-        {id: 38, name: "打开称重盒（编号）"},
-        {id: 39, name: "关闭称重盒（编号）"}
+        { id: 33, name: "一号配菜（g）" },
+        { id: 34, name: "二号配菜（g）" },
+        { id: 35, name: "三号配菜（g）" },
+        { id: 36, name: "四号配菜（g）" },
+        { id: 37, name: "称重全部清0" },
+        { id: 38, name: "标重500g（编号）" },
+        { id: 39, name: "打开称重盒（编号）" },
+        { id: 40, name: "关闭称重盒（编号）" }
       ],
 
       buttonsGroup6: [
-        {id: 40, name: "一号料仓打开"},
-        {id: 41, name: "一号料仓关闭"},
-        {id: 42, name: "二号料仓打开"},
-        {id: 43, name: "二号料仓关闭"},
-        {id: 44, name: "三号料仓打开"},
-        {id: 45, name: "三号料仓关闭"}
+        { id: 41, name: "一号料仓打开" },
+        { id: 42, name: "一号料仓关闭" },
+        { id: 43, name: "二号料仓打开" },
+        { id: 44, name: "二号料仓关闭" },
+        { id: 45, name: "三号料仓打开" },
+        { id: 46, name: "三号料仓关闭" }
       ],
-
-
       dialogVisible: false,
       parameter: '',
       currentButtonId: null,
