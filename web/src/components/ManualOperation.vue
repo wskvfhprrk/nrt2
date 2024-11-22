@@ -126,7 +126,6 @@ export default {
         { id: 18, name: "加蒸汽盖下降" },
         { id: 19, name: "加汤盖下降" },
         { id: 20, name: "加汤蒸汤盖上升" },
-        { id: 21, name: "关汤蒸汽阀" },
         { id: 22, name: "加汤（秒）" },
         { id: 23, name: "汤管排气（秒）" },
         { id: 24, name: "汤加热至（度）" },
@@ -138,29 +137,24 @@ export default {
         { id: 27, name: "后箱风扇开" },
         { id: 28, name: "后箱风扇关" },
         { id: 29, name: "切肉机切肉（份量）" },
-        { id: 30, name: "震动器1（秒）" },
-        { id: 31, name: "震动器2（秒）" },
-        { id: 32, name: "出料3（秒）" }
+        { id: 30, name: "震动器（秒）" },
+        { id: 31, name: "震动料开关打开" },
+        { id: 32, name: "震动料开关关闭" },
+        { id: 33, name: "出料开关（秒）" }
       ],
 
       buttonsGroup5: [
-        { id: 33, name: "一号配菜（g）" },
-        { id: 34, name: "二号配菜（g）" },
-        { id: 35, name: "三号配菜（g）" },
-        { id: 36, name: "四号配菜（g）" },
-        { id: 37, name: "称重全部清0" },
-        { id: 38, name: "标重500g（编号）" },
-        { id: 39, name: "打开称重盒（编号）" },
-        { id: 40, name: "关闭称重盒（编号）" }
+        { id: 34, name: "一号配菜（g）" },
+        { id: 35, name: "二号配菜（g）" },
+        { id: 36, name: "三号配菜（g）" },
+        { id: 37, name: "四号配菜（g）" },
+        { id: 38, name: "称重全部清0" },
+        { id: 39, name: "标重500g（编号）" },
+        { id: 40, name: "打开称重盒（编号）" },
+        { id: 41, name: "关闭称重盒（编号）" }
       ],
 
       buttonsGroup6: [
-        { id: 41, name: "一号料仓打开" },
-        { id: 42, name: "一号料仓关闭" },
-        { id: 43, name: "二号料仓打开" },
-        { id: 44, name: "二号料仓关闭" },
-        { id: 45, name: "三号料仓打开" },
-        { id: 46, name: "三号料仓关闭" }
       ],
       dialogVisible: false,
       parameter: '',

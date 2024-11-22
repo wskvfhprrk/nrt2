@@ -347,59 +347,59 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         return Result.success();
     }
 
-    /**
-     * 一号料仓打开
-     *
-     * @return
-     */
-    public Result firstBinOpen() {
-        //控制方向
-        relayOpening(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
-        //控制电源
-        relayOpening(Constants.Y_HOPPER1_SWITCH_CONTROL);
+//    /**
+//     * 一号料仓打开
+//     *
+//     * @return
+//     */
+//    public Result firstBinOpen() {
+//        //控制方向
+//        relayOpening(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
+//        //控制电源
+//        relayOpening(Constants.Y_HOPPER1_SWITCH_CONTROL);
+//
+//        return Result.success();
+//    }
 
-        return Result.success();
-    }
-
-    public Result firstBinClose() {
-        //控制方向
-        relayClosing(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
-        //控制电源
-        openClose(Constants.Y_HOPPER1_SWITCH_CONTROL, 2);
-        return Result.success();
-    }
-
-    public Result secondBinOpen() {
-        //控制方向
-        relayOpening(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
-        //控制电源
-        relayOpening(Constants.Y_HOPPER2_SWITCH_CONTROL);
-        return Result.success();
-    }
-
-    public Result secondBinClose() {
-        //控制方向
-        relayClosing(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
-        //控制电源
-        openClose(Constants.Y_HOPPER2_SWITCH_CONTROL, 2);
-        return Result.success();
-    }
-
-    public Result thirdBinOpen() {
-        //控制方向
-        relayOpening(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
-        //控制电源
-        relayOpening(Constants.Y_HOPPER3_SWITCH_CONTROL);
-        return Result.success();
-    }
-
-    public Result thirdBinClose() {
-        //控制方向
-        relayClosing(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
-        //控制电源
-        openClose(Constants.Y_HOPPER3_SWITCH_CONTROL, 2);
-        return Result.success();
-    }
+//    public Result firstBinClose() {
+//        //控制方向
+//        relayClosing(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
+//        //控制电源
+//        openClose(Constants.Y_HOPPER1_SWITCH_CONTROL, 2);
+//        return Result.success();
+//    }
+//
+//    public Result secondBinOpen() {
+//        //控制方向
+//        relayOpening(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
+//        //控制电源
+//        relayOpening(Constants.Y_HOPPER2_SWITCH_CONTROL);
+//        return Result.success();
+//    }
+//
+//    public Result secondBinClose() {
+//        //控制方向
+//        relayClosing(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
+//        //控制电源
+//        openClose(Constants.Y_HOPPER2_SWITCH_CONTROL, 2);
+//        return Result.success();
+//    }
+//
+//    public Result thirdBinOpen() {
+//        //控制方向
+//        relayOpening(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
+//        //控制电源
+//        relayOpening(Constants.Y_HOPPER3_SWITCH_CONTROL);
+//        return Result.success();
+//    }
+//
+//    public Result thirdBinClose() {
+//        //控制方向
+//        relayClosing(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
+//        //控制电源
+//        openClose(Constants.Y_HOPPER3_SWITCH_CONTROL, 2);
+//        return Result.success();
+//    }
 
     /**
      * 加蒸汽盖下降
@@ -530,6 +530,26 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         //关闭切肉机
         relayClosing(Constants.Y_MEAT_SLICER_CONTROL);
+        return Result.success();
+    }
+
+    /**
+     * 震动料开关打开
+     * @return
+     */
+    public Result vibrationSwitchOn() {
+        relayClosing(Constants.Y_VIBRATION_SWITCH_DIRECTION_CONTROL);
+        relayOpening(Constants.Y_VIBRATION_SWITCH_CONTROL);
+        return Result.success();
+    }
+
+    /**
+     * 震动料开关关闭
+     * @return
+     */
+    public Result vibrationSwitchOff() {
+        relayOpening(Constants.Y_VIBRATION_SWITCH_DIRECTION_CONTROL);
+        relayOpening(Constants.Y_VIBRATION_SWITCH_CONTROL);
         return Result.success();
     }
 }

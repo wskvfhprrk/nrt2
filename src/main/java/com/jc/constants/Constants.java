@@ -113,16 +113,18 @@ public class Constants {
     public static final int Y_TELESCOPIC_ROD_DIRECTION_CONTROL = 1;
     public static final int Y_TELESCOPIC_ROD_SWITCH_CONTROL = 2;
 
-
+    /**
+     * 震动料开关
+     */
+    public static final int Y_VIBRATION_SWITCH_DIRECTION_CONTROL = 3;
+    public static final int Y_VIBRATION_SWITCH_CONTROL = 4;
     /**
      * 仓门控制
      */
-    public static final int Y_FIRST_BIN_DIRECTION_CONTROL = 3;
-    public static final int Y_HOPPER1_SWITCH_CONTROL = 4;
-    public static final int Y_SECOND_BIN_DIRECTION_CONTROL = 5;
-    public static final int Y_HOPPER2_SWITCH_CONTROL = 6;
-    public static final int Y_THIRD_BIN_DIRECTION_CONTROL = 7;
-    public static final int Y_HOPPER3_SWITCH_CONTROL = 8;
+//    public static final int Y_SECOND_BIN_DIRECTION_CONTROL = 5;
+//    public static final int Y_HOPPER2_SWITCH_CONTROL = 6;
+//    public static final int Y_THIRD_BIN_DIRECTION_CONTROL = 7;
+//    public static final int Y_HOPPER3_SWITCH_CONTROL = 8;
 
     /** 485设备指令 */
     /**

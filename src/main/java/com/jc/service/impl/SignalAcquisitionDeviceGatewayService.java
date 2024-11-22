@@ -123,7 +123,6 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //粉丝仓左限位
-        log.info("检测粉丝仓是否在左限位");
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             //停止
             String hex = "040600020001";

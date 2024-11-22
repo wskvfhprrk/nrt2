@@ -115,13 +115,13 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     public Result vegetableMotor(Integer number) {
         switch (number) {
             case 1:
-                relay1DeviceGatewayService.firstBinOpen();
+//                relay1DeviceGatewayService.firstBinOpen();
                 break;
             case 2:
-                relay1DeviceGatewayService.secondBinOpen();
+//                relay1DeviceGatewayService.secondBinOpen();
                 break;
             case 3:
-                relay1DeviceGatewayService.thirdBinOpen();
+//                relay1DeviceGatewayService.thirdBinOpen();
                 break;
             default:
         }
@@ -140,13 +140,13 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     public Result vegetableMotorStop(Integer number) {
         switch (number) {
             case 1:
-                relay1DeviceGatewayService.firstBinClose();
+//                relay1DeviceGatewayService.firstBinClose();
                 break;
             case 2:
-                relay1DeviceGatewayService.secondBinClose();
+//                relay1DeviceGatewayService.secondBinClose();
                 break;
             case 3:
-                relay1DeviceGatewayService.thirdBinClose();
+//                relay1DeviceGatewayService.thirdBinClose();
                 break;
             case 4:
                 break;
