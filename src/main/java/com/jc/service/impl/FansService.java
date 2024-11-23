@@ -44,15 +44,17 @@ public class FansService {
                 return result; // 如果推杆复位失败，返回错误
             }
         }
-
+        log.info("检查左限位信号是否高电平");
         // 检查左限位信号是否高电平
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            log.info("左限位信号是高电平");
             pubConfig.setCurrentFanBinNumber(1); // 设置当前仓编号为1
             return Result.success(); // 返回成功
         }
 
         // 如果左限位信号是低电平，发指令进行移动
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            log.info("左限位信号是低电平");
             String hex = "040600050015"; // 发送速度指令
             stepServoDriverGatewayService.sendOrder(hex);
 
@@ -286,7 +288,7 @@ public class FansService {
         long timeoutMillis = 600000;
         Boolean falg = false;
 
-        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT)==SignalLevel.HIGH.ordinal()) {
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             // 检查是否超过了超时时间
             if (System.currentTimeMillis() - startTime > timeoutMillis) {
                 log.error("复位超过了10分钟");

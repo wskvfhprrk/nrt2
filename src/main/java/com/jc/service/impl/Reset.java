@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 @Slf4j
 public class Reset {
@@ -35,17 +37,17 @@ public class Reset {
 //        relayDeviceService.openSteamGenerator();
         //粉丝仓复位
         log.info("粉丝仓复位");
-        Result result = fansService.resendFromCurrentPush();
-        if (result.getCode() != 200) {
-            log.error(result.getMessage());
-            return;
-        }
-        result = fansService.moveFanBin(2);
+        Result result = fansService.moveFanBin(2);
         if (result.getCode() != 200) {
             log.error(result.getMessage());
             return;
         }
         result = fansService.fanReset();
+        if (result.getCode() != 200) {
+            log.error(result.getMessage());
+            return;
+        }
+        result = fansService.resendFromCurrentPush();
         if (result.getCode() != 200) {
             log.error(result.getMessage());
             return;
@@ -81,6 +83,14 @@ public class Reset {
          */
         pubConfig.setIsExecuteTask(true);
         log.info("定时任务打开！");
+        //复位后打开windows浏览器脚本全屏显示
+        try {
+            String scriptPath = "C:\\scripts\\open_browser.ps1";
+            String command = "powershell.exe -ExecutionPolicy Bypass -File \"" + scriptPath + "\"";
+            Runtime.getRuntime().exec(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

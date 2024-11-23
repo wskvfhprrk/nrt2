@@ -136,23 +136,24 @@ export default {
       buttonsGroup4: [
         { id: 26, name: "后箱风扇开" },
         { id: 27, name: "后箱风扇关" },
-        { id: 28, name: "切肉机切肉（份量）" },
-        { id: 29, name: "震动器（秒）" },
-        { id: 30, name: "震动料开关打开" },
-        { id: 31, name: "震动料开关关闭" },
-        { id: 32, name: "出料开关（秒）" }
+
       ],
 
       buttonsGroup5: [
         { id: 33, name: "一号配菜（g）" },
         { id: 34, name: "二号配菜（g）" },
-        { id: 35, name: "三号配菜（g）" },
-        { id: 36, name: "四号配菜（g）" },
-        { id: 37, name: "称重全部清0" },
-        { id: 38, name: "标重500g（编号）" }
+        { id: 37, name: "1称重清0" },
+        { id: 38, name: "1标重500g（编号）" },
+        { id: 37, name: "2称重清0" },
+        { id: 38, name: "2标重500g（编号）" }
       ],
 
       buttonsGroup6: [
+        { id: 28, name: "切肉机切肉（份量）" },
+        { id: 29, name: "震动器（秒）" },
+        { id: 32, name: "出料开关（秒）" },
+        { id: 30, name: "震动料开关打开" },
+        { id: 31, name: "震动料开关关闭" },
         { id: 39, name: "打开称重盒1" },
         { id: 40, name: "关闭称重盒1" },
         { id: 41, name: "打开称重盒2" },

@@ -145,16 +145,10 @@ public class ManualOperationController {
 
             // buttonsGroup5
             case 33:
-                result = temperatureWeighingGatewayService.vegetable1Motor(1, number != null ? number : dataConfig.getBeef10());
+                result = temperatureWeighingGatewayService.vegetable1Motor(1, number != null ? number : dataConfig.getIngredient1Value());
                 break;
             case 34:
-                result = temperatureWeighingGatewayService.vegetable1Motor(2, number != null ? number : dataConfig.getCilantro());
-                break;
-            case 35:
-                result = temperatureWeighingGatewayService.vegetable1Motor(3, number != null ? number : dataConfig.getChoppedGreenOnion());
-                break;
-            case 36:
-                result = temperatureWeighingGatewayService.vegetable1Motor(4, number != null ? number : dataConfig.getChoppedGreenOnion());
+                result = temperatureWeighingGatewayService.vegetable1Motor2( number != null ? number : dataConfig.getIngredient2Value());
                 break;
             case 37:
                 result = temperatureWeighingGatewayService.clearAll();

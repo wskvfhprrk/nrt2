@@ -29,14 +29,6 @@ public class DataConfig {
      */
     private int extraBeef;
     /**
-     * 香菜配置
-     */
-    private int cilantro;
-    /**
-     * 葱花配置
-     */
-    private int choppedGreenOnion;
-    /**
      * 抽汤时间
      */
     private int soupExtractionTime;
@@ -76,4 +68,12 @@ public class DataConfig {
      * 粉丝推杆推动距离值
      */
     private int fanPushRodThrustDistanceValue;
+    /**
+     * 配料1的值
+     */
+    private int ingredient1Value;
+    /**
+     * 配料2的值
+     */
+    private int ingredient2Value;
 }

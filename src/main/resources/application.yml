@@ -84,12 +84,12 @@ pub:
 
 # 数据配置
 data:
-  beef10: 1 # 牛肉 1片
-  beef15: 2 # 牛肉 2片
-  beef20: 3 # 牛肉 3片
-  extraBeef: 4 # 加量牛肉4片
-  cilantro: 10 # 香菜克数
-  choppedGreenOnion: 10 # 葱花克数
+  beef10: 4 # 牛肉 1片
+  beef15: 6 # 牛肉 2片
+  beef20: 8 # 牛肉 3片
+  extraBeef: 10 # 加量牛肉4片
+  ingredient1Value: 10 # 配料1的值(g)
+  ingredient2Value: 10 # 配料2的值(g)
   soupExtractionTime: 10 # 抽汤时间（秒）
   vibratorTime: 5 # 振动器工作时间（秒）
   soupHeatingTemperature: 120 # 汤加热温度（℃）

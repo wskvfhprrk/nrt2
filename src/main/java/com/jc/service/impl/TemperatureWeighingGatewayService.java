@@ -113,22 +113,9 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
      * @return
      */
     public Result vegetableMotor(Integer number) {
-        switch (number) {
-            case 1:
-//                relay1DeviceGatewayService.firstBinOpen();
-                break;
-            case 2:
-//                relay1DeviceGatewayService.secondBinOpen();
-                break;
-            case 3:
-//                relay1DeviceGatewayService.thirdBinOpen();
-                break;
-            default:
-        }
-
-        relay2DeviceGatewayService.closeWeighBox(number);
+        //打开震动筛上面的开关
+        relay1DeviceGatewayService.vibrationSwitchOn();
         relay1DeviceGatewayService.relayOpening(Constants.Y_SHAKER_SWITCH_1);
-//        relay1DeviceGatewayService.relayOpening(Constants.Y_SHAKER_SWITCH_2);
         return Result.success();
     }
 
@@ -138,24 +125,18 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
      * @param number
      */
     public Result vegetableMotorStop(Integer number) {
-        switch (number) {
-            case 1:
-//                relay1DeviceGatewayService.firstBinClose();
-                break;
-            case 2:
-//                relay1DeviceGatewayService.secondBinClose();
-                break;
-            case 3:
-//                relay1DeviceGatewayService.thirdBinClose();
-                break;
-            case 4:
-                break;
-            default:
-        }
-        //打开震动盘
+        //关闭震动盘
         relay1DeviceGatewayService.relayClosing(Constants.Y_SHAKER_SWITCH_1);
-//        relay1DeviceGatewayService.relayClosing(Constants.Y_SHAKER_SWITCH_2);
-        relay2DeviceGatewayService.openWeighBox(number);
+        //打开盒子，然后关闭
+        relay2DeviceGatewayService.openWeighBox(1);
+        try {
+            Thread.sleep(4000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relay2DeviceGatewayService.closeWeighBox(1);
+        //震动筛上开关关闭
+        relay1DeviceGatewayService.vibrationSwitchOff();
         try {
             Thread.sleep(4000L);
         } catch (InterruptedException e) {
@@ -201,16 +182,19 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
                 flag = false;
             }
         }
-        //停目
+        //停止
         result = vegetableMotorStop(i);
         if (result.getCode() != 200) {
             return result;
         }
-        //打开称重盒
-        result = closeWeighingBox(i);
-        if (result.getCode() != 200) {
-            return result;
+        //打开盒子，然后关闭
+        relay2DeviceGatewayService.openWeighBox(4);
+        try {
+            Thread.sleep(4000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        relay2DeviceGatewayService.closeWeighBox(4);
         pubConfig.setDishesAreReady(true);
         log.info("第{}个配菜已经配好{}g", i, number);
         return Result.success();
@@ -299,6 +283,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
 
     /**
      * 标重重量500g
+     *
      * @param i 第几个传感器
      * @return
      */
@@ -307,6 +292,36 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
         s = s.replaceAll(" ", "");
 //        log.info("发送指令：{}", s);
         nettyServerHandler.sendMessageToClient(ipConfig.getTemperatureWeighingGateway(), s, true);
+        return Result.success();
+    }
+
+    /**
+     * 滚筒料称重
+     *
+     * @param number
+     * @return
+     */
+    public Result vegetable1Motor2(int number) {
+        pubConfig.setDishesAreReady(false);
+        //清零
+        //02 06 00 26 00 01 A9 F2
+//        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
+//        Thread.sleep(Constants.SLEEP_TIME_MS);
+        //称重前准备——打开电源
+        relay1DeviceGatewayService.relayOpening(Constants.Y_DISCHARGE_BIN_3);
+        //查看是否够重量
+        Boolean flag = true;
+        while (flag) {
+            //发送称重指令
+            sendOrder(Constants.READ_WEIGHT_VALUE);
+            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[4 - 1] >= number) {
+                flag = false;
+            }
+        }
+        //停止
+        relay1DeviceGatewayService.relayClosing(Constants.Y_DISCHARGE_BIN_3);
+        pubConfig.setDishesAreReady(true);
+        log.info("第{}个配菜已经配好{}g", 2, number);
         return Result.success();
     }
 }

@@ -164,7 +164,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
      */
     public String getStatus() {
         while (ioStatus == null) {
-            log.info("没有io信号，主动发送指令");
+            log.info("没有io信号，主动查询……");
             // 先重置传感器
             nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
             try {
