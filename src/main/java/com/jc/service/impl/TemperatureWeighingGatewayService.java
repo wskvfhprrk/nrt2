@@ -109,12 +109,11 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     /**
      * 配菜称重盒关闭打开（编号）
      *
-     * @param number
      * @return
      */
-    public Result vegetableMotor(Integer number) {
+    public Result vegetableMotor() {
         //打开震动筛上面的开关
-        relay1DeviceGatewayService.vibrationSwitchOn();
+        relay1DeviceGatewayService.vibrationSwitchOff();
         relay1DeviceGatewayService.relayOpening(Constants.Y_SHAKER_SWITCH_1);
         return Result.success();
     }
@@ -158,18 +157,18 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     /**
      * 配菜电机（KG）
      *
-     * @param i
      * @param number
      * @return
      */
-    public Result vegetable1Motor(int i, Integer number) {
+    public Result vegetable1Motor(Integer number) {
+
         pubConfig.setDishesAreReady(false);
         //清零
         //02 06 00 26 00 01 A9 F2
 //        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
 //        Thread.sleep(Constants.SLEEP_TIME_MS);
         //称重前准备
-        Result result = vegetableMotor(i);
+        Result result = vegetableMotor();
         if (result.getCode() != 200) {
             return result;
         }
@@ -178,25 +177,18 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
         while (flag) {
             //发送称重指令
             sendOrder(Constants.READ_WEIGHT_VALUE);
-            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[i - 1] >= number) {
+            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[2 - 1] >= number) {
                 flag = false;
             }
         }
         //停止
-        result = vegetableMotorStop(i);
+        result = vegetableMotorStop(number);
         if (result.getCode() != 200) {
             return result;
         }
-        //打开盒子，然后关闭
-        relay2DeviceGatewayService.openWeighBox(4);
-        try {
-            Thread.sleep(4000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        relay2DeviceGatewayService.closeWeighBox(4);
+
         pubConfig.setDishesAreReady(true);
-        log.info("第{}个配菜已经配好{}g", i, number);
+        log.info("第1个配菜已经配好{}g",  number);
         return Result.success();
     }
 
@@ -223,7 +215,13 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
             String substring = message.substring(startIndex, startIndex + 8);
             int number = WeightParserUtils.parseWeight(substring);
             sensorValues[i] = number;
-            log.info("称重传感器 {} 的值为：{} g", i + 1, number);
+            if(i==1){
+                log.info("称重传感器 {} 的值为：{} g", 1, number);
+            }
+            if(i==2){
+                log.info("称重传感器 {} 的值为：{} g", 2, number);
+            }
+//            log.info("称重传感器 {} 的值为：{} g", i, number);
         }
         pubConfig.setCalculateWeight(sensorValues);
         return sensorValues;
@@ -282,15 +280,14 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     }
 
     /**
-     * 标重重量500g
+     * 第1个传感器标重重量500g
      *
-     * @param i 第几个传感器
      * @return
      */
-    public Result calibrateWeight(int i) {
-        String s = ModbusCalibration.generateCalibrationMessage(i, 500);
+    public Result calibrateWeight1() {
+        String s = ModbusCalibration.generateCalibrationMessage(2, 500);
         s = s.replaceAll(" ", "");
-//        log.info("发送指令：{}", s);
+        log.info("向1号传感器发送标准500g指令：{}", s);
         nettyServerHandler.sendMessageToClient(ipConfig.getTemperatureWeighingGateway(), s, true);
         return Result.success();
     }
@@ -301,27 +298,49 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
      * @param number
      * @return
      */
-    public Result vegetable1Motor2(int number) {
+    public Result vegetable2Motor(int number) {
         pubConfig.setDishesAreReady(false);
         //清零
         //02 06 00 26 00 01 A9 F2
 //        nettyServerHandler.sendMessageToClient(ipConfig.getReceive485Signal(), Constants.ZEROING_CALIBRATION, true);
 //        Thread.sleep(Constants.SLEEP_TIME_MS);
-        //称重前准备——打开电源
+        //称重前准备——打开电源,
         relay1DeviceGatewayService.relayOpening(Constants.Y_DISCHARGE_BIN_3);
+        //关闭盒子
+        relay2DeviceGatewayService.closeWeighBox(4);
         //查看是否够重量
         Boolean flag = true;
         while (flag) {
             //发送称重指令
             sendOrder(Constants.READ_WEIGHT_VALUE);
-            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[4 - 1] >= number) {
+            if (pubConfig.getCalculateWeight().length > 0 && pubConfig.getCalculateWeight()[3 - 1] >= number) {
                 flag = false;
             }
         }
         //停止
         relay1DeviceGatewayService.relayClosing(Constants.Y_DISCHARGE_BIN_3);
+        //打开盒子，然后关闭
+        relay2DeviceGatewayService.openWeighBox(4);
+        try {
+            Thread.sleep(4000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        relay2DeviceGatewayService.closeWeighBox(4);
         pubConfig.setDishesAreReady(true);
         log.info("第{}个配菜已经配好{}g", 2, number);
+        return Result.success();
+    }
+    /**
+     * 第2个传感器标重重量500g
+     *
+     * @return
+     */
+    public Result calibrateWeight2() {
+        String s = ModbusCalibration.generateCalibrationMessage(3, 500);
+        s = s.replaceAll(" ", "");
+        log.info("向2号传感器发送标准指令：{}", s);
+        nettyServerHandler.sendMessageToClient(ipConfig.getTemperatureWeighingGateway(), s, true);
         return Result.success();
     }
 }

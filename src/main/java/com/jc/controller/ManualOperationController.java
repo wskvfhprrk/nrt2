@@ -145,16 +145,19 @@ public class ManualOperationController {
 
             // buttonsGroup5
             case 33:
-                result = temperatureWeighingGatewayService.vegetable1Motor(1, number != null ? number : dataConfig.getIngredient1Value());
+                result = temperatureWeighingGatewayService.vegetable1Motor( number != null ? number : dataConfig.getIngredient1Value());
                 break;
             case 34:
-                result = temperatureWeighingGatewayService.vegetable1Motor2( number != null ? number : dataConfig.getIngredient2Value());
+                result = temperatureWeighingGatewayService.vegetable2Motor( number != null ? number : dataConfig.getIngredient2Value());
                 break;
             case 37:
                 result = temperatureWeighingGatewayService.clearAll();
                 break;
             case 38:
-                result = temperatureWeighingGatewayService.calibrateWeight(number != null ? number : 1);
+                result = temperatureWeighingGatewayService.calibrateWeight1();
+                break;
+            case 43:
+                result = temperatureWeighingGatewayService.calibrateWeight2();
                 break;
 
             // buttonsGroup6
@@ -170,6 +173,7 @@ public class ManualOperationController {
             case 42:
                 result = relay2DeviceGatewayService.closeWeighBox(4);
                 break;
+
 
             default:
                 throw new IllegalArgumentException("Invalid button ID: " + id);

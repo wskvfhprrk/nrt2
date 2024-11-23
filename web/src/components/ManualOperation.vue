@@ -143,9 +143,9 @@ export default {
         { id: 33, name: "一号配菜（g）" },
         { id: 34, name: "二号配菜（g）" },
         { id: 37, name: "1称重清0" },
-        { id: 38, name: "1标重500g（编号）" },
+        { id: 38, name: "1标重500g" },
         { id: 37, name: "2称重清0" },
-        { id: 38, name: "2标重500g（编号）" }
+        { id: 43, name: "2标重500g" }
       ],
 
       buttonsGroup6: [

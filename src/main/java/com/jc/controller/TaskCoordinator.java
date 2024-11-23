@@ -69,8 +69,17 @@ public class TaskCoordinator {
         //第一种配菜
         pubConfig.setDishesAreReady(false);
         executorService.submit(() -> {
+            log.info("开始切肉");
+            // TODO: 2024/11/23 根据订单类型选择
+            relay1DeviceGatewayService.meatSlicingMachine(dataConfig.getBeef10());
+        });
+        executorService.submit(() -> {
             log.info("开始称重第一种配菜");
-            temperatureWeightReadingService.vegetable1Motor(1, 10);
+            temperatureWeightReadingService.vegetable1Motor( dataConfig.getIngredient1Value());
+        });
+        executorService.submit(() -> {
+            log.info("开始称重第二种配菜");
+            temperatureWeightReadingService.vegetable2Motor( dataConfig.getIngredient2Value());
         });
         //加蒸汽
         executorService.submit(() -> {

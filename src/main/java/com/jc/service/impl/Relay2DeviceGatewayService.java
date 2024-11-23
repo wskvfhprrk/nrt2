@@ -32,7 +32,7 @@ public class Relay2DeviceGatewayService implements DeviceHandler {
     @Override
     public void handle(String message, boolean isHex) {
         sendHexStatus = false;
-        log.info("亿佰特继电器设备接收——HEX消息: {}", message);
+//        log.info("亿佰特继电器设备接收——HEX消息: {}", message);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Relay2DeviceGatewayService implements DeviceHandler {
                 e.printStackTrace();
             }
         }
-        log.info("亿佰特继电器设备发送——HEX消息: {}", hexStr);
+//        log.info("亿佰特继电器设备发送——HEX消息: {}", hexStr);
         nettyServerHandler.sendMessageToClient(ipConfig.getRelay2DeviceGateway(), hexStr, true);
         sendHexStatus = true;
     }
