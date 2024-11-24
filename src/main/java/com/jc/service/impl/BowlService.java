@@ -212,10 +212,11 @@ public class BowlService implements DeviceHandler {
             return result;
         }
         //发送脉冲数
-        String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue());
+//        String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue());
+        String hex = "030600070000" ;
         stepServoDriverGatewayService.sendOrder(hex);
         //倒菜时速度
-        hex = "030600055000";
+        hex = "030600050050";
         stepServoDriverGatewayService.sendOrder(hex);
         //发送转动指令
         hex = "030600010001";
@@ -225,15 +226,15 @@ public class BowlService implements DeviceHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //先发送脉冲数，再发送指令
-        hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue() - 500);
-        stepServoDriverGatewayService.sendOrder(hex);
-        //倒菜时速度
-        hex = "030600053000";
-        stepServoDriverGatewayService.sendOrder(hex);
-        //倒转
-        hex = "030600010001";
-        stepServoDriverGatewayService.sendOrder(hex);
+//        //先发送脉冲数，再发送指令
+//        hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue() - 500);
+//        stepServoDriverGatewayService.sendOrder(hex);
+//        //倒菜时速度
+//        hex = "030600053000";
+//        stepServoDriverGatewayService.sendOrder(hex);
+//        //倒转
+//        hex = "030600010001";
+//        stepServoDriverGatewayService.sendOrder(hex);
         //复位
 //        this.spoonReset();
         Long begin = System.currentTimeMillis();

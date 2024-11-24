@@ -81,7 +81,9 @@ pub:
   dishesAreReady: false # 菜品是否准备好
   servingDishesCompleted: false # 出菜是否完成
   meatSlicingQuantity: 0 # 切肉数量
-  getBowl: false
+  getBowl: false # 机器人获取碗信号
+  vegetable1Motor: false #称重1完毕
+  vegetable2Motor: false #称重2完毕
 
 # 数据配置
 data:

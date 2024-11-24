@@ -46,7 +46,7 @@ public class RobotServiceImpl implements RobotService {
         try {
             nettyClientConfig.connectAndSendData("run(bowl/getBowl.jspf)");
             if (!pubConfig.getIsRobotStatus()) {
-                Thread.sleep(200L);
+                Thread.sleep(300L);
             }
             log.info("机器人复位自检成功");
         } catch (InterruptedException e) {
@@ -59,17 +59,23 @@ public class RobotServiceImpl implements RobotService {
                 e.printStackTrace();
             }
         }
+        try {
+            Thread.sleep(2000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //出碗指令
         Result result = relay1DeviceGatewayService.deliverBowl();
         if (result.getCode() == 200) {
             try {
-                Thread.sleep(1000L);
+                Thread.sleep(2000L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         } else {
             return result;
         }
+        pubConfig.setGetBowl(false);
         pubConfig.setIsRobotStatus(true);
         log.info("机器人状态赋值为true");
         return Result.success();

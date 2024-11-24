@@ -44,7 +44,7 @@ public class TaskCoordinator {
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
 
     // 创建一个固定大小的线程池，线程池大小为 5
-    ExecutorService executorService = Executors.newFixedThreadPool(5);
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     public Result executeOrder() throws Exception {
         log.info("开始处理订单");
@@ -66,21 +66,6 @@ public class TaskCoordinator {
         if (result.getCode() != 200) {
             return result;
         }
-        //第一种配菜
-        pubConfig.setDishesAreReady(false);
-        executorService.submit(() -> {
-            log.info("开始切肉");
-            // TODO: 2024/11/23 根据订单类型选择
-            relay1DeviceGatewayService.meatSlicingMachine(dataConfig.getBeef10());
-        });
-        executorService.submit(() -> {
-            log.info("开始称重第一种配菜");
-            temperatureWeightReadingService.vegetable1Motor( dataConfig.getIngredient1Value());
-        });
-        executorService.submit(() -> {
-            log.info("开始称重第二种配菜");
-            temperatureWeightReadingService.vegetable2Motor( dataConfig.getIngredient2Value());
-        });
         //加蒸汽
         executorService.submit(() -> {
             addSteamToSideDishes();
@@ -88,6 +73,36 @@ public class TaskCoordinator {
         executorService.submit(() -> {
             log.info("开始开始汤加热");
             temperatureWeightReadingService.soupHeatTo(dataConfig.getSoupHeatingTemperature());
+        });
+        //第一种配菜
+        pubConfig.setDishesAreReady(false);
+        executorService.submit(() -> {
+            log.info("开始切肉");
+            //根据订单类型选择
+            int selectedPrice = order.getSelectedPrice();
+//            log.info("selectedPrice==={}", selectedPrice);
+            switch (selectedPrice) {
+                case 10:
+                    relay1DeviceGatewayService.meatSlicingMachine(1);
+                    break;
+                case 15:
+                    relay1DeviceGatewayService.meatSlicingMachine(2);
+                    break;
+                case 20:
+                    relay1DeviceGatewayService.meatSlicingMachine(3);
+                    break;
+                case 25:
+                    relay1DeviceGatewayService.meatSlicingMachine(4);
+                    break;
+            }
+        });
+        executorService.submit(() -> {
+            log.info("开始称重第一种配菜");
+            temperatureWeightReadingService.vegetable1Motor(dataConfig.getIngredient1Value());
+        });
+        executorService.submit(() -> {
+            log.info("开始称重第二种配菜");
+            temperatureWeightReadingService.vegetable2Motor(dataConfig.getIngredient2Value());
         });
         //必须机器人和粉丝准备到位才可以
         while (!pubConfig.getIsRobotStatus() || !pubConfig.getAreTheFansReady()) {
@@ -97,7 +112,7 @@ public class TaskCoordinator {
         while (pubConfig.getCurrentFanBinNumber() > 4 || pubConfig.getCurrentFanBinNumber() < 0) {
             Thread.sleep(500L);
         }
-        while (pubConfig.getCurrentFanBinNumber()<1||pubConfig.getCurrentFanBinNumber()>5){
+        while (pubConfig.getCurrentFanBinNumber() < 1 || pubConfig.getCurrentFanBinNumber() > 5) {
             log.error("粉丝仓没有出粉丝");
             Thread.sleep(500L);
         }
@@ -181,10 +196,14 @@ public class TaskCoordinator {
      * @return
      */
     private Result addSteamToSideDishes() {
+        //初始化一下
+        pubConfig.setSideDishesCompleted(false);
+        pubConfig.setVegetable1Motor(false);
+        pubConfig.setVegetable2Motor(false);
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
         //当配菜弄完时开始加蒸汽
-        while (!pubConfig.getSideDishesCompleted()) {
+        while (!pubConfig.getSideDishesCompleted() || !pubConfig.getVegetable1Motor() || !pubConfig.getVegetable2Motor()) {
             try {
                 Thread.sleep(200L);
             } catch (InterruptedException e) {

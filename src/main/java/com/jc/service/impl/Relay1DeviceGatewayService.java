@@ -499,6 +499,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      * @return
      */
     public Result meatSlicingMachine(int i) {
+        pubConfig.setDishesAreReady(false);
         //设置切肉初始值为0
         pubConfig.setMeatSlicingQuantity(0);
         //打开切肉机
@@ -530,6 +531,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         //关闭切肉机
         relayClosing(Constants.Y_MEAT_SLICER_CONTROL);
+        pubConfig.setDishesAreReady(true);
         return Result.success();
     }
 

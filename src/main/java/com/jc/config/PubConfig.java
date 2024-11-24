@@ -159,4 +159,13 @@ public class PubConfig {
      * 机器人获取碗的指令
      */
     public Boolean getBowl;
+
+    /**
+     * 称重1完毕
+     */
+    public Boolean vegetable1Motor;
+    /**
+     * 称重2完毕
+     */
+    public Boolean vegetable2Motor;
 }
