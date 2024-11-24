@@ -81,6 +81,7 @@ pub:
   dishesAreReady: false # 菜品是否准备好
   servingDishesCompleted: false # 出菜是否完成
   meatSlicingQuantity: 0 # 切肉数量
+  getBowl: false
 
 # 数据配置
 data:

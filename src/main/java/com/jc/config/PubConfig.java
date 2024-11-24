@@ -155,4 +155,8 @@ public class PubConfig {
      * 切肉数量
      */
     public int meatSlicingQuantity;
+    /**
+     * 机器人获取碗的指令
+     */
+    public Boolean getBowl;
 }

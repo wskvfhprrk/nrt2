@@ -183,4 +183,8 @@ public class Constants {
      * 其他
      */
     public static final int GOODS_AISLE_POWER_ON2_SECONDS = 2;
+    /**
+     * 机器人获取碗指令67 65 74 62 6F 77 6C
+     */
+    public static final String GET_BOWL = "676574626F776C";
 }

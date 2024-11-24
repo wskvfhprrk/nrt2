@@ -20,8 +20,6 @@ public class RobotServiceImpl implements RobotService {
     private int takeBowlNumber = 0;
     @Autowired
     private Relay1DeviceGatewayService relay1DeviceGatewayService;
-    @Autowired
-    private FansService fansService;
 
     @Override
     public Result robotReset() {
@@ -54,10 +52,12 @@ public class RobotServiceImpl implements RobotService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        try {
-            Thread.sleep(2000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (!pubConfig.getGetBowl()){
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         //出碗指令
         Result result = relay1DeviceGatewayService.deliverBowl();

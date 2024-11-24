@@ -42,6 +42,10 @@ public class DocuService implements DeviceHandler {
         if (message.replaceAll(" ","").equals(Constants.SERVING_COMPLETED)) {
             pubConfig.setIsServingCompleted(true);
         }
+        //机器人获取碗指令
+        if (message.replaceAll(" ","").equals(Constants.GET_BOWL)) {
+            pubConfig.setGetBowl(true);
+        }
 
     }
 }
