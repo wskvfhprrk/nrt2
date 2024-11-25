@@ -142,7 +142,7 @@ public class RobotServiceImpl implements RobotService {
         }
         pubConfig.setIsRobotStatus(false);
         try {
-            // TODO: 2024/11/7 根据出粉丝进行判断
+            //根据出粉丝进行判断
             int currentFanBinNumber = pubConfig.getCurrentFanBinNumber();
             switch (currentFanBinNumber) {
                 case 1:
@@ -156,6 +156,9 @@ public class RobotServiceImpl implements RobotService {
                     break;
                 case 4:
                     nettyClientConfig.connectAndSendData("run(fenSi/fen4.jspf)");
+                    break;
+                case 5:
+                    nettyClientConfig.connectAndSendData("run(fenSi/fen5.jspf)");
                     break;
                 default:
                     return Result.error(500,"没有粉丝仓！");

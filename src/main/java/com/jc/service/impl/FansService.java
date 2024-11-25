@@ -198,8 +198,22 @@ public class FansService {
                     }
                     log.info("执行到达第 {} 粉丝仓位", i);
                     break;
+                case 5:
+                    hex = "0406000503E8"; // 发送转向指令
+                    stepServoDriverGatewayService.sendOrder(hex);
+                    hex = "040600070600"; // 发送脉冲数指令
+                    stepServoDriverGatewayService.sendOrder(hex);
+                    hex = "040600010001"; // 发送速度指令
+                    stepServoDriverGatewayService.sendOrder(hex);
+                    try {
+                        Thread.sleep(3000L); // 等待3秒
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    log.info("执行到达第 {} 粉丝仓位", i);
+                    break;
                 default:
-                    return Result.error("只有1-4"); // 返回错误，输入超出范围
+                    return Result.error("只有1-5"); // 返回错误，输入超出范围
             }
         }
         pubConfig.setCurrentFanBinNumber(i); // 设置当前仓位号
