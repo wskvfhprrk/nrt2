@@ -96,7 +96,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
 
     private void passdata(int i, String s, String s1) {
         //有碗信号感应到时
-        if (i == Constants.X_PLACE_BOWL_SIGNAL) {
+        if (i == Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")) {
             relay1DeviceGatewayService.chuWanStop();
         }
         //如果碗报警信号
@@ -128,7 +128,6 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             String hex = "040600020001";
             stepServoDriverGatewayService.sendOrder(hex);
             log.info("粉丝仓左限位");
-
             //设置原点为1仓
             pubConfig.setCurrentFanBinNumber(1);
         }
