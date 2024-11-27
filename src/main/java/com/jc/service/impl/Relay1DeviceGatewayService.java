@@ -456,7 +456,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         relayOpening(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         //无需要停止
         try {
-            Thread.sleep(1000L);
+            Thread.sleep(3000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -35,6 +35,8 @@ public class ManualOperationController {
     private Reset reset;
     @Autowired
     private PubConfig pubConfig;
+    @Autowired
+    private TemperatureWeighingGatewayService temperatureWeightReadingService;
 
     @GetMapping("/{id}")
     public Result handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
@@ -114,7 +116,7 @@ public class ManualOperationController {
                 result = relay1DeviceGatewayService.soupPipeExhaust(number != null ? number : dataConfig.getSoupExhaustTime());
                 break;
             case 23:
-                result = relay1DeviceGatewayService.bowlSteamAdd(number != null ? number : dataConfig.getSteamAdditionTimeSeconds());
+                result = temperatureWeightReadingService.soupHeatTo(number != null ? number : dataConfig.getSteamAdditionTimeSeconds());
                 break;
             case 24:
                 result = relay1DeviceGatewayService.steamAndSoupAdd();

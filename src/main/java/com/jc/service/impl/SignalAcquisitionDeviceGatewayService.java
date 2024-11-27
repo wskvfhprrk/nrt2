@@ -9,6 +9,7 @@ import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,6 +39,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
     private StepServoDriverGatewayService stepServoDriverGatewayService;
     @Autowired
     private PubConfig pubConfig;
+    public Boolean sendOrderStatus = true;
 
     /**
      * 处理消息
@@ -47,6 +49,8 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
      */
     @Override
     public void handle(String message, boolean isHex) {
+//        log.info("收到信号");
+        sendOrderStatus = false;
         if (isHex) {
             // 查中间8位，从第6位开始查询
             String[] split = message.split(" ");
@@ -66,6 +70,17 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
         }
     }
 
+    // 每毫秒运行一次
+    @Scheduled(fixedRate = 1)
+    public void performTask() {
+        // 在这里执行你需要的逻辑
+        if (pubConfig.getAllDevicesConnectedStatus() && !sendOrderStatus) {
+//            log.info("发送信号");
+            nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
+            sendOrderStatus = true;
+        }
+    }
+
     /**
      * 打印高低电平变化
      *
@@ -73,12 +88,8 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
      */
     private void highAndLowLevelsChange(StringBuffer currentLevels) {
         if (previousLevels == null) {
-            // 如果之前没有记录，表示这是第一次读取
-//            log.info("首次读取的高低电平：{}", currentLevels);
         } else {
             // 与上次的高低电平进行对比
-//            log.info("上次的高低电平：{}", previousLevels);
-//            log.info("本次的高低电平：{}", currentLevels);
             String[] previousLevelStr = previousLevels.toString().split(",");
             String[] currentLevelStr = currentLevels.toString().split(",");
 
@@ -113,17 +124,17 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽限上位停止
-        if (i == Constants.X_STEAM_UPPER_LIMIT && pubConfig.getAddSteam()) {
+        if (i == Constants.X_STEAM_UPPER_LIMIT && s.equals("0") && s1.equals("1") && pubConfig.getAddSteam()) {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "030600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //粉丝仓左限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "040600020001";
             stepServoDriverGatewayService.sendOrder(hex);
@@ -132,47 +143,38 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             pubConfig.setCurrentFanBinNumber(1);
         }
         //粉丝仓右限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "040600020001";
             stepServoDriverGatewayService.sendOrder(hex);
             log.info("粉丝仓右限位");
         }
         //倒菜伺服到位——汤右限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "020600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //倒菜伺服到位——汤左限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "020600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //切肉机数量加1
-        if(signalAcquisitionDeviceGatewayService.getStatus(Constants.X_MEAT_SLICER_SENSOR)==SignalLevel.HIGH.ordinal()){
-            pubConfig.setMeatSlicingQuantity(pubConfig.getMeatSlicingQuantity()+1);
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_MEAT_SLICER_SENSOR) == SignalLevel.HIGH.ordinal()) {
+            pubConfig.setMeatSlicingQuantity(pubConfig.getMeatSlicingQuantity() + 1);
         }
     }
 
     /**
-     * 查询当前io所有状态值——如果为初始值主动查询
+     * 查询当前io所有状态值——主动查询状态值
      *
      * @return
      */
     public String getStatus() {
-        while (ioStatus == null) {
-            log.info("没有io信号，主动查询……");
-            // 先重置传感器
-            nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
-            try {
-                // 等待指定时间，确保传感器完成重置——时间不能太短，太短不行
-                Thread.sleep( 10000L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        //发送信号开关
+//        sendOrderStatus = false;
         return ioStatus;
     }
 

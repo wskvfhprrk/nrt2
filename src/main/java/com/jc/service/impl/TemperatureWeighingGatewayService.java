@@ -79,7 +79,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     private void ParseCommand(String message) {
         //先modbus验证，如果验证不过就不管
         try {
-            if (message == null) return;
+            if (message == null||message.equals("null")) return;
             boolean b = CRC16.validateCRC(message);
             if (!b) {
                 return;
@@ -299,7 +299,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
         int i = Integer.parseInt(substring, 16);
         double soupTemperatureValue = i / 10.0;
         pubConfig.setSoupTemperatureValue(soupTemperatureValue);
-        log.info("测量汤的温度为：{} 度", soupTemperatureValue);
+        log.info("汤的温度为：{} 度", soupTemperatureValue);
     }
 
     /**

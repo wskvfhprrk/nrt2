@@ -198,19 +198,20 @@ public class BowlService implements DeviceHandler {
      */
     public synchronized Result spoonPour() {
         log.info("装菜勺倒菜");
-        pubConfig.setServingDishesCompleted(false);
-        //如果没有到达位置倒菜勺——汤右限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
-            Result result = servoMotorMoveToDumpPosition();
-            if (result.getCode() != 200) {
-                return result;
-            }
-        }
         //需要2次向上，不然的话达不到最顶端
         Result result = relay1DeviceGatewayService.soupSteamCoverUp();
         if (result.getCode() != 200) {
             return result;
         }
+        pubConfig.setServingDishesCompleted(false);
+        //如果没有到达位置倒菜勺——汤右限位
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()) {
+            result = servoMotorMoveToDumpPosition();
+            if (result.getCode() != 200) {
+                return result;
+            }
+        }
+
         //发送脉冲数
         String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue());
 //        String hex = "030600070000" ;
@@ -272,10 +273,10 @@ public class BowlService implements DeviceHandler {
      * @return
      */
     public synchronized Result spoonLoad() {
-        if(signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.LOW.ordinal() &&
-                signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()&&
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.LOW.ordinal() &&
+                signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.LOW.ordinal() &&
                 signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_ORIGIN) == SignalLevel.LOW.ordinal()
-        ){
+        ) {
             log.error("菜勺不在任何一个位置上，请手动移动！");
             return Result.error("菜勺不在任何一个位置上，请手动移动！");
         }

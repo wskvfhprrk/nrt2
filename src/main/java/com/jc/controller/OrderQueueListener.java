@@ -2,6 +2,7 @@ package com.jc.controller;
 
 import com.jc.config.PubConfig;
 import com.jc.service.impl.RedisQueueService;
+import com.jc.service.impl.SignalAcquisitionDeviceGatewayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,11 +22,14 @@ public class OrderQueueListener {
     private TaskCoordinator taskCoordinator;
     @Autowired
     private PubConfig pubConfig;
+    @Autowired
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
 
     // 每秒钟检查一次队列中的订单
     @Scheduled(cron = "0/1 * * * * ?") // 1秒
     public void checkAndProcessOrders() {
+        signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
         //如果定时任务没有打开就不要进行
         if (!pubConfig.getIsExecuteTask()) {
             return;

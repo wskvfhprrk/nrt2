@@ -2,6 +2,7 @@ package com.jc;
 
 import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
+import com.jc.service.impl.SignalAcquisitionDeviceGatewayService;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

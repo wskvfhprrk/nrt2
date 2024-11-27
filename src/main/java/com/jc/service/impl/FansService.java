@@ -23,13 +23,12 @@ public class FansService {
     private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService; // IO设备服务
     @Autowired
     private PubConfig pubConfig; // 公共配置
+    @Autowired
+    private DataConfig dataConfig;
 
     // 当前粉丝仓是否复位的标志
     private boolean isFansReset = false;
-    @Autowired
-    private DataConfig dataConfig;
-    @Autowired
-    private BowlService bowlService;
+
 
     /**
      * 粉丝仓复位——移动至第一个仓
@@ -101,7 +100,7 @@ public class FansService {
 
         // 每50毫秒检查一次状态，超时6分钟退出
         while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal()) {
-            if (System.currentTimeMillis() - startTime > 60000) { // 10000
+            if (System.currentTimeMillis() - startTime > 60000) {
                 isTimedOut = true;
                 break;
             }
@@ -135,7 +134,6 @@ public class FansService {
      */
     public Result moveFanBin(int i) {
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.LOW.ordinal()) {
-//            log.warn("推杆没有复位");
             Result result = pushRodOpen(); // 推杆复位操作
             if (result.getCode() != 200) {
                 return result; // 如果推杆复位失败，返回错误
@@ -367,7 +365,7 @@ public class FansService {
      * 移动到下一个粉丝仓
      */
     private Result moveToNextOne() {
-        if (pubConfig.getCurrentFanBinNumber() == 4) {
+        if (pubConfig.getCurrentFanBinNumber() == 5) {
             noodleBinReset(); // 如果当前仓是4，执行复位操作
             log.error("没有粉丝了！");
             return Result.error("没有粉丝了！"); // 返回错误提示

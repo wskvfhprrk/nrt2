@@ -26,8 +26,11 @@ public class Reset {
     private FansService fansService;
     @Autowired
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
+    @Autowired
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
     public synchronized void start() {
+        signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
         if (!pubConfig.getAllDevicesConnectedStatus()) {
             return;
         }
@@ -63,7 +66,12 @@ public class Reset {
         robotService.robotReset();
         //出汤口复位
         log.info("出汤口复位");
-
+        log.info("蒸汽盖上升");
+        result = relay1DeviceGatewayService.soupSteamCoverUp();
+        if (result.getCode() != 200) {
+            log.error(result.getMessage());
+            return;
+        }
         log.info("菜勺移动到装菜位置");
         result = bowlService.spoonLoad();
         if (result.getCode() != 200) {

@@ -42,11 +42,14 @@ public class TaskCoordinator {
     private BowlService bowlService;
     @Autowired
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
+    @Autowired
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
     // 创建一个固定大小的线程池，线程池大小为 5
     ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     public Result executeOrder() throws Exception {
+        signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
         log.info("开始处理订单");
         // TODO: 2024/11/15 先把上一次未处理完的订单作为异常订单处理退款
         Long size = redisTemplate.opsForList().size(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
