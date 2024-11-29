@@ -29,7 +29,8 @@ public class Application {
     private MqttProviderConfig mqttProviderConfig;
     @Autowired
     private MqttConsumerConfig mqttConsumerConfig;
-
+    @Autowired
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

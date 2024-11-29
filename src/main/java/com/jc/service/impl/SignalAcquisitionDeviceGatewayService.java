@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 /**
  * IO设备处理类——根据传感器自动控制设备
  * 实现了DeviceHandler接口，提供了处理IO设备消息的功能
@@ -32,14 +34,11 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
     private StringBuffer previousLevels = null;
 
     private String ioStatus = null;
-    @Lazy
-    @Autowired
-    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
     @Autowired
     private StepServoDriverGatewayService stepServoDriverGatewayService;
     @Autowired
     private PubConfig pubConfig;
-    public Boolean sendOrderStatus = true;
+    public Boolean sendOrderStatus = false;
 
     /**
      * 处理消息
@@ -70,16 +69,25 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
         }
     }
 
-    // 每毫秒运行一次
-    @Scheduled(fixedRate = 1)
+//    @Scheduled(fixedRate = 10)
     public void performTask() {
-        // 在这里执行你需要的逻辑
-        if (pubConfig.getAllDevicesConnectedStatus() && !sendOrderStatus) {
-//            log.info("发送信号");
-            nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
-            sendOrderStatus = true;
+        log.info("io值初始化…………");
+        try {
+            // 强制初始化相关依赖
+            boolean allDevicesConnected = pubConfig.getAllDevicesConnectedStatus();
+            Objects.requireNonNull(ipConfig.getSignalAcquisitionDeviceGateway(), "SignalAcquisitionDeviceGateway 未正确初始化");
+
+            // 任务逻辑
+            if (allDevicesConnected && !sendOrderStatus) {
+                nettyServerHandler.sendMessageToClient(ipConfig.getSignalAcquisitionDeviceGateway(), Constants.RESET_COMMAND, true);
+                sendOrderStatus = true;
+            }
+        } catch (Exception e) {
+            // 捕获异常，记录日志
+            log.error("定时任务执行异常", e);
         }
     }
+
 
     /**
      * 打印高低电平变化
@@ -107,7 +115,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
 
     private void passdata(int i, String s, String s1) {
         //有碗信号感应到时
-        if (i == Constants.X_PLACE_BOWL_SIGNAL && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_PLACE_BOWL_SIGNAL ) {
             relay1DeviceGatewayService.chuWanStop();
         }
         //如果碗报警信号
@@ -128,42 +136,42 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_SOUP_INGREDIENT_SENSOR) {
+            log.info("菜勺转正停止");
             //停止
             String hex = "030600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //粉丝仓左限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_FAN_COMPARTMENT_LEFT_LIMIT && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "040600020001";
             stepServoDriverGatewayService.sendOrder(hex);
-            log.info("粉丝仓左限位");
             //设置原点为1仓
             pubConfig.setCurrentFanBinNumber(1);
         }
         //粉丝仓右限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "040600020001";
             stepServoDriverGatewayService.sendOrder(hex);
-            log.info("粉丝仓右限位");
         }
         //倒菜伺服到位——汤右限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_SOUP_RIGHT_LIMIT && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "020600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //倒菜伺服到位——汤左限位
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal() && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_SOUP_LEFT_LIMIT && s.equals("0") && s1.equals("1")) {
             //停止
             String hex = "020600020001";
             stepServoDriverGatewayService.sendOrder(hex);
         }
         //切肉机数量加1
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_MEAT_SLICER_SENSOR) == SignalLevel.HIGH.ordinal()) {
+        if (i == Constants.X_MEAT_SLICER_SENSOR && s.equals("0") && s1.equals("1")) {
             pubConfig.setMeatSlicingQuantity(pubConfig.getMeatSlicingQuantity() + 1);
+            log.info("切肉数量：{}", pubConfig.getMeatSlicingQuantity());
         }
     }
 
@@ -173,8 +181,14 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
      * @return
      */
     public String getStatus() {
-        //发送信号开关
-//        sendOrderStatus = false;
+        while (ioStatus == null) {
+            performTask();
+            try {
+                Thread.sleep(10000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return ioStatus;
     }
 

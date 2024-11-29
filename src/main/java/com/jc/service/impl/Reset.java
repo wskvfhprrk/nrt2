@@ -35,9 +35,6 @@ public class Reset {
             return;
         }
         log.info("设备自检复位中……");
-        //打开蒸汽发生器
-//        log.info("打开蒸汽发生器");
-//        relayDeviceService.openSteamGenerator();
         //粉丝仓复位
         log.info("粉丝仓复位");
         Result result = fansService.moveFanBin(2);
