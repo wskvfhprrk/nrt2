@@ -190,6 +190,8 @@ public class TaskCoordinator {
         redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
         long l = (System.currentTimeMillis() - start) / 1000;
         log.info("出单时间：{}秒", l);
+        //处理完订单告诉服务器
+        notifyServerAfterProcessingOrder(orderJson);
         return Result.success();
     }
 
@@ -249,5 +251,11 @@ public class TaskCoordinator {
         // TODO: 2024/11/15 处理异常订单
         log.info("退款订单：{}", order.getCustomerName());
         handleFaultyOrder();
+    }
+    /**
+     * 处理完订单告诉服务器
+     * @param orderJson
+     */
+    private void notifyServerAfterProcessingOrder(String orderJson) {
     }
 }
