@@ -90,9 +90,9 @@
       </el-container>
     </div>
     <!-- Status message section -->
-    <div class="status-message" :style="{ color: serverStatus.color }">
+<!--    <div class="status-message" :style="{ color: serverStatus.color }">
       {{ serverStatus.message || '默认状态信息显示' }}
-    </div>
+    </div>-->
 
     <div class="go-to-backend">
       <el-button type="primary" @click="goToBackend">进入后台</el-button>

@@ -140,19 +140,19 @@ public class Constants {
     /**
      * 中间左上门
      */
-    public static final int Y_MIDDLE_LEFT_UPPER_DOOR=29;
+    public static final int Y_MIDDLE_LEFT_UPPER_DOOR=31;
     /**
      * 中间左下门
      */
-    public static final int Y_MIDDLE_LEFT_LOWER_DOOR=30;
+    public static final int Y_MIDDLE_LEFT_LOWER_DOOR=32;
     /**
      * 中间右上门
      */
-    public static final int Y_MIDDLE_RIGHT_UPPER_DOOR=31;
+    public static final int Y_MIDDLE_RIGHT_UPPER_DOOR=29;
     /**
      * 中间右下门
      */
-    public static final int Y_MIDDLE_RIGHT_LOWER_DOOR=32;
+    public static final int Y_MIDDLE_RIGHT_LOWER_DOOR=30;
 
     /** 485设备指令 */
     /**
