@@ -46,7 +46,7 @@ public class TaskCoordinator {
     private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
     // 创建一个固定大小的线程池，线程池大小为 2
-    ExecutorService executorService = Executors.newFixedThreadPool(5);
+    ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     public Result executeOrder() throws Exception {
         signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
@@ -62,10 +62,15 @@ public class TaskCoordinator {
         //加入正在做的订单redis队列中
         order.setStatus(OrderStatus.PROCESSING);
         redisTemplate.opsForList().rightPush(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS, orderJson);
+        //菜勺移到装菜位置
+        Result result = bowlService.spoonLoad();
+        if (result.getCode() != 200) {
+            return result;
+        }
         //同时处理
         // 取粉丝
         log.info("开始粉丝出粉丝");
-        Result result = fansService.takeFans();
+        result = fansService.takeFans();
         if (result.getCode() != 200) {
             return result;
         }

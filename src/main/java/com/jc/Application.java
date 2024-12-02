@@ -51,7 +51,7 @@ public class Application {
             ChannelFuture serverFuture = ctx.getBean("serverBootstrap", ChannelFuture.class);
             if (serverFuture != null) {
                 serverFuture.sync();
-                log.info("Netty服务器启动成功。");
+//                log.info("Netty服务器启动成功。");
             } else {
                 log.error("Netty服务器启动失败。");
             }

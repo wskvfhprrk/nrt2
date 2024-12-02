@@ -69,7 +69,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
         }
     }
 
-//    @Scheduled(fixedRate = 10)
+    //    @Scheduled(fixedRate = 10)
     public void performTask() {
         log.info("io值初始化…………");
         try {
@@ -115,7 +115,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
 
     private void passdata(int i, String s, String s1) {
         //有碗信号感应到时
-        if (i == Constants.X_PLACE_BOWL_SIGNAL ) {
+        if (i == Constants.X_PLACE_BOWL_SIGNAL) {
             relay1DeviceGatewayService.chuWanStop();
         }
         //如果碗报警信号
@@ -136,7 +136,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }
-        if (i == Constants.X_SOUP_INGREDIENT_SENSOR) {
+        if (i == Constants.X_SOUP_INGREDIENT_SENSOR && s.equals("0") && s1.equals("1")) {
             log.info("菜勺转正停止");
             //停止
             String hex = "030600020001";

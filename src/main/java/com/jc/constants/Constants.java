@@ -126,6 +126,34 @@ public class Constants {
 //    public static final int Y_THIRD_BIN_DIRECTION_CONTROL = 7;
 //    public static final int Y_HOPPER3_SWITCH_CONTROL = 8;
 
+    /**
+     * 柜门控制
+     */
+    /**
+     * 右上门
+     */
+    public static final int Y_RIGHT_DOOR = 27;
+    /**
+     * 右下门
+     */
+    public static final int Y_OPEN_LOWER_RIGHT_DOOR = 28;
+    /**
+     * 中间左上门
+     */
+    public static final int Y_MIDDLE_LEFT_UPPER_DOOR=29;
+    /**
+     * 中间左下门
+     */
+    public static final int Y_MIDDLE_LEFT_LOWER_DOOR=30;
+    /**
+     * 中间右上门
+     */
+    public static final int Y_MIDDLE_RIGHT_UPPER_DOOR=31;
+    /**
+     * 中间右下门
+     */
+    public static final int Y_MIDDLE_RIGHT_LOWER_DOOR=32;
+
     /** 485设备指令 */
     /**
      * 设备地址

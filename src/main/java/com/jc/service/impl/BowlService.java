@@ -220,7 +220,7 @@ public class BowlService implements DeviceHandler {
         hex = "030600055000";
         stepServoDriverGatewayService.sendOrder(hex);
         //发送转动指令
-        hex = "030600010001";
+        hex = "030600000001";
         stepServoDriverGatewayService.sendOrder(hex);
         try {
             Thread.sleep(3000L);
@@ -234,7 +234,7 @@ public class BowlService implements DeviceHandler {
         hex = "030600055000";
         stepServoDriverGatewayService.sendOrder(hex);
         //倒转
-        hex = "030600000001";
+        hex = "030600010001";
         stepServoDriverGatewayService.sendOrder(hex);
         //复位
 //        this.spoonReset();
@@ -280,7 +280,25 @@ public class BowlService implements DeviceHandler {
             log.error("菜勺不在任何一个位置上，请手动移动！");
             return Result.error("菜勺不在任何一个位置上，请手动移动！");
         }
-        //如果在装菜位直接返回
+        //如果菜勺不正，要转动到正位
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()) {
+            //先发送脉冲数，再发送指令
+            String hex = "030600070000";
+            stepServoDriverGatewayService.sendOrder(hex);
+            hex = "030600050050";
+            stepServoDriverGatewayService.sendOrder(hex);
+            //先发送脉冲数，再发送指令
+            hex = "030600010001";
+            stepServoDriverGatewayService.sendOrder(hex);
+        }
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_INGREDIENT_SENSOR) == SignalLevel.LOW.ordinal()){
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+            //如果在装菜位直接返回
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_SOUP_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
             log.info("在装菜位");
             return Result.success();

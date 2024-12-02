@@ -57,7 +57,7 @@ public class NettyServerConfig {
             ChannelFuture f = b.bind(ipConfig.getNettyPort()).sync();
 
             // 记录服务器启动日志
-            log.info("Netty 服务器已启动，端口号：{}",ipConfig.getNettyPort());
+            log.info("tcp服务器已启动，端口号：{}",ipConfig.getNettyPort());
 
             return f;
         } catch (InterruptedException e) {
