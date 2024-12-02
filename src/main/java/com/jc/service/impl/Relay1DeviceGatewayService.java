@@ -321,7 +321,11 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         openClose(Constants.Y_SOUP_SWITCH, second);
         //抽汤泵打开
         openClose(Constants.Y_SOUP_PUMP_SWITCH, second);
-
+        try {
+            Thread.sleep(second*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return Result.success();
     }
 

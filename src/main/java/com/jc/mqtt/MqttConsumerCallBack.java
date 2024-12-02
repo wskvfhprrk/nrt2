@@ -95,6 +95,7 @@ public class MqttConsumerCallBack implements MqttCallback {
             return;
         }
         if (split.length == 3 && !topic.split("/")[2].equals(machineCode)) {
+
             //不是此服务器的，不做处理
             return;
         }
