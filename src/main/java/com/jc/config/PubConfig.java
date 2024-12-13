@@ -168,4 +168,9 @@ public class PubConfig {
      * 称重2完毕
      */
     public Boolean vegetable2Motor;
+    /**
+     * 机器人加使通
+     */
+    public Boolean robotAlreadyEnableCommand;
+
 }

@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <el-form label-width="100px">
+    <el-form label-width="200px">
       <!-- Meat Category Selection -->
       <el-form-item label="选择肉类" style="font-size: 15px;">
         <el-radio-group v-model="selectedCategory">
-          <el-radio-button label="牛肉, 牛杂">牛肉和牛杂</el-radio-button>
-          <el-radio-button label="羊肉, 羊杂">羊肉和羊杂</el-radio-button>
+          <el-radio-button label="牛肉和牛杂">牛肉和牛杂</el-radio-button>
+          <el-radio-button label="羊肉和羊杂">羊肉和羊杂</el-radio-button>
         </el-radio-group>
       </el-form-item>
 
@@ -48,7 +48,7 @@
 export default {
   data() {
     return {
-      selectedCategory: '牛肉, 牛杂', // Either "牛肉, 牛杂" or "羊肉, 羊杂"
+      selectedCategory: '牛肉和牛杂', // Either "牛肉, 牛杂" or "羊肉, 羊杂"
       showChili: '不显示',
       showMsg: '不显示',
       showCilantro: '不显示',

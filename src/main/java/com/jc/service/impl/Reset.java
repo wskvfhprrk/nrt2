@@ -3,6 +3,7 @@ package com.jc.service.impl;
 import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
+import com.jc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,13 @@ public class Reset {
             return;
         }
         log.info("设备自检复位中……");
+        //锁门
+        relay1DeviceGatewayService.relayOpening(Constants.Y_RIGHT_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_OPEN_LOWER_RIGHT_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_UPPER_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_LOWER_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_UPPER_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_LOWER_DOOR);
         //粉丝仓复位
         log.info("粉丝仓复位");
         Result result = fansService.moveFanBin(2);
@@ -58,9 +66,6 @@ public class Reset {
             log.error(result.getMessage());
             return;
         }
-        //机器人复位
-        log.info("机器人复位");
-        robotService.robotReset();
         //出汤口复位
         log.info("出汤口复位");
         log.info("蒸汽盖上升");
@@ -81,6 +86,26 @@ public class Reset {
             log.error(result.getMessage());
             return;
         }
+        // TODO: 2024/12/9 机器人使能是否加载完全，没有加载不让启动
+        //发送检测复位指令
+//        robotService.sendDetectionResetCommand();
+//        try {
+//            Thread.sleep(2000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        while (!pubConfig.getRobotAlreadyEnableCommand()){
+//            log.error("机器人还没有加使能！");
+//            try {
+//                Thread.sleep(2000L);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        //机器人复位
+        log.info("机器人复位");
+        robotService.robotReset();
+
         log.info("自检完成！");
         pubConfig.setDeviceSelfCheckComplete(true);
         /**

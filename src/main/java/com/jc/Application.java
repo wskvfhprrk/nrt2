@@ -2,6 +2,7 @@ package com.jc;
 
 import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
+import com.jc.netty.client.NettyClientConfig;
 import com.jc.service.impl.SignalAcquisitionDeviceGatewayService;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class Application {
     @Autowired
     private MqttConsumerConfig mqttConsumerConfig;
     @Autowired
-    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
+    private NettyClientConfig nettyClientConfig;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -42,6 +43,7 @@ public class Application {
         mqttProviderConfig.connect();
         //启动mqtt接收端连接
         mqttConsumerConfig.connect();
+        nettyClientConfig.connectAndSendData("Hello from Netty Client");
     }
 
     @Bean

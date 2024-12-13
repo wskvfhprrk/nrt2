@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" label-width="120px">
+  <el-form :model="form" label-width="200px">
     <el-row gutter="10">
       <el-col :span="24" v-for="(field, index) in formFields" :key="index">
         <el-form-item :label="field.label" style="font-size: 15px;">

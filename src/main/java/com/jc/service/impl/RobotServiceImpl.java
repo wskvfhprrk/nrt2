@@ -52,7 +52,7 @@ public class RobotServiceImpl implements RobotService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        while (!pubConfig.getGetBowl()){
+        while (!pubConfig.getGetBowl()) {
             try {
                 Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
@@ -89,12 +89,8 @@ public class RobotServiceImpl implements RobotService {
             return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
-        try {
-            nettyClientConfig.connectAndSendData("run(bowl/putBowl.jspf)");
-            pubConfig.setIsRobotStatus(false);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        nettyClientConfig.connectAndSendData("run(bowl/putBowl.jspf)");
+        pubConfig.setIsRobotStatus(false);
         return Result.success();
     }
 
@@ -106,12 +102,8 @@ public class RobotServiceImpl implements RobotService {
             return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
-        try {
-            nettyClientConfig.connectAndSendData("run(bowl/pickUpSoupBowl.jspf)");
-            pubConfig.setIsRobotStatus(false);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        nettyClientConfig.connectAndSendData("run(bowl/pickUpSoupBowl.jspf)");
+        pubConfig.setIsRobotStatus(false);
         return Result.success();
     }
 
@@ -123,12 +115,8 @@ public class RobotServiceImpl implements RobotService {
             return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
-        try {
-            nettyClientConfig.connectAndSendData("run(pieCai/main.jspf)");
-            pubConfig.setIsRobotStatus(false);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        nettyClientConfig.connectAndSendData("run(pieCai/main.jspf)");
+        pubConfig.setIsRobotStatus(false);
         return Result.success();
     }
 
@@ -141,33 +129,40 @@ public class RobotServiceImpl implements RobotService {
             return Result.error("机器人未复位！");
         }
         pubConfig.setIsRobotStatus(false);
-        try {
-            //根据出粉丝进行判断
-            int currentFanBinNumber = pubConfig.getCurrentFanBinNumber();
-            switch (currentFanBinNumber) {
-                case 1:
-                    nettyClientConfig.connectAndSendData("run(fenSi/fen1.jspf)");
-                    break;
-                case 2:
-                    nettyClientConfig.connectAndSendData("run(fenSi/fen2.jspf)");
-                    break;
-                case 3:
-                    nettyClientConfig.connectAndSendData("run(fenSi/fen3.jspf)");
-                    break;
-                case 4:
-                    nettyClientConfig.connectAndSendData("run(fenSi/fen4.jspf)");
-                    break;
-                case 5:
-                    nettyClientConfig.connectAndSendData("run(fenSi/fen5.jspf)");
-                    break;
-                default:
-                    return Result.error(500,"没有粉丝仓！");
-            }
-            pubConfig.setIsRobotStatus(false);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        //根据出粉丝进行判断
+        int currentFanBinNumber = pubConfig.getCurrentFanBinNumber();
+        switch (currentFanBinNumber) {
+            case 1:
+                nettyClientConfig.connectAndSendData("run(fenSi/fen1.jspf)");
+                break;
+            case 2:
+                nettyClientConfig.connectAndSendData("run(fenSi/fen2.jspf)");
+                break;
+            case 3:
+                nettyClientConfig.connectAndSendData("run(fenSi/fen3.jspf)");
+                break;
+            case 4:
+                nettyClientConfig.connectAndSendData("run(fenSi/fen4.jspf)");
+                break;
+            case 5:
+                nettyClientConfig.connectAndSendData("run(fenSi/fen5.jspf)");
+                break;
+            default:
+                return Result.error(500, "没有粉丝仓！");
         }
+        pubConfig.setIsRobotStatus(false);
         return Result.success();
     }
 
+    /**
+     * 发送检测复位指令
+     * enable
+     * 执行成功反馈:enable success
+     * 执行失败反馈:enable fail
+     * 机器人上使能，若上使能成功，返menable success若失败返回 enable fai,若当前是使能状态，返口already enable
+     */
+    // TODO: 2024/12/9 没有接收状态
+    public void sendDetectionResetCommand() {
+        nettyClientConfig.connectAndSendData("enable");
+    }
 }

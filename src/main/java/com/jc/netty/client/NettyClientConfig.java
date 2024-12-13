@@ -46,8 +46,13 @@ public class NettyClientConfig {
         workerGroup.shutdownGracefully();
     }
 
-    public void connectAndSendData(String message) throws InterruptedException {
-        ChannelFuture f = bootstrap().connect(ipConfig.getDucuIp(), ipConfig.getDucuPort()).sync();
+    public void connectAndSendData(String message)  {
+        ChannelFuture f = null;
+        try {
+            f = bootstrap().connect(ipConfig.getDucuIp(), ipConfig.getDucuPort()).sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         channel = f.channel();
         NettyClientHandler.sendData(channel, message);
     }

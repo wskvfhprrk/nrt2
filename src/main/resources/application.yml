@@ -84,6 +84,7 @@ pub:
   getBowl: false # 机器人获取碗信号
   vegetable1Motor: false #称重1完毕
   vegetable2Motor: false #称重2完毕
+  robotAlreadyEnableCommand: false #机器人加使能完毕
 
 # 数据配置
 data:

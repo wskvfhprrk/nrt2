@@ -181,6 +181,7 @@ public class Constants {
     public static final String SERVING_COMPLETED = "6F70656E";
     public static final String ROBOT_EXECUTE_SUCCESS_COMMAND = "run start\n";
     public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
+    public static final String ROBOT_ALREADY_ENABLE_COMMAND = "already enable\n";
     /**
      * 机器人获取碗指令67 65 74 62 6F 77 6C
      */

@@ -138,79 +138,58 @@ public class ManualOperationController {
                 if (result.getCode() != 200) return result;
                 break;
 
-            // buttonsGroup4
-            case 23:
+            // buttonsGroup4（页面中的按钮组4）
+            case 23:  // 后箱风扇开
                 result = relay1DeviceGatewayService.rearFanOpen();
                 if (result.getCode() != 200) return result;
                 break;
-            case 24:
+            case 24:  // 后箱风扇关
                 result = relay1DeviceGatewayService.rearFanClose();
                 if (result.getCode() != 200) return result;
                 break;
-            case 25:
+            case 25:  // 一号配菜（g）
                 result = relay1DeviceGatewayService.meatSlicingMachine(number == null ? 1 : number);
                 if (result.getCode() != 200) return result;
                 break;
-            case 26:
+            case 26:  // 二号配菜（g）
                 result = relay1DeviceGatewayService.vibrator1Test(number == null ? dataConfig.getVibratorTime() : number);
                 if (result.getCode() != 200) return result;
                 break;
-            case 27:
+            case 27:  // 1称重清0
                 result = relay1DeviceGatewayService.vibrationSwitchOn();
                 if (result.getCode() != 200) return result;
                 break;
-            case 28:
+            case 28:  // 1标重500g
                 result = relay1DeviceGatewayService.vibrationSwitchOff();
                 if (result.getCode() != 200) return result;
                 break;
-            case 29:
+            case 29:  // 2称重清0
                 result = relay1DeviceGatewayService.vibrationSwitchControl(number == null ? 0 : number);
                 if (result.getCode() != 200) return result;
                 break;
 
-            // buttonsGroup5
-            case 30:
-                result = temperatureWeighingGatewayService.vegetable1Motor(number != null ? number : dataConfig.getIngredient1Value());
+            // buttonsGroup5（页面中的按钮组5）
+            case 31:  // 切肉机切肉（份量）
+                result = relay1DeviceGatewayService.meatSlicingMachine(number != null ? number : 1);
                 if (result.getCode() != 200) return result;
                 break;
-            case 31:
-                result = temperatureWeighingGatewayService.vegetable2Motor(number != null ? number : dataConfig.getIngredient2Value());
+            case 32:  // 震动器（秒）
+                result = relay1DeviceGatewayService.openVibrator();
                 if (result.getCode() != 200) return result;
                 break;
-            case 32:
+            case 33:  // 出料开关（秒）
                 result = temperatureWeighingGatewayService.clearAll();
                 if (result.getCode() != 200) return result;
                 break;
-            case 33:
+            case 34:  // 震动料开关打开
                 result = temperatureWeighingGatewayService.calibrateWeight1();
                 if (result.getCode() != 200) return result;
                 break;
-            case 34:
+            case 35:  // 震动料开关关闭
                 result = temperatureWeighingGatewayService.calibrateWeight2();
                 if (result.getCode() != 200) return result;
                 break;
 
-
-            case 35:
-                result = relay2DeviceGatewayService.openWeighBox(1);
-                if (result.getCode() != 200) return result;
-                break;
-            case 36:
-                result = relay2DeviceGatewayService.closeWeighBox(1);
-                if (result.getCode() != 200) return result;
-                break;
-            case 37:
-                result = relay2DeviceGatewayService.openWeighBox(4);
-                if (result.getCode() != 200) return result;
-                break;
-            case 38:
-                result = relay2DeviceGatewayService.closeWeighBox(4);
-                if (result.getCode() != 200) return result;
-                break;
-            case 39:
-                result = relay2DeviceGatewayService.openWeighBox(2);
-                if (result.getCode() != 200) return result;
-                break;
 
             // buttonsGroup6
             case 40:
@@ -254,7 +233,7 @@ public class ManualOperationController {
                 throw new IllegalArgumentException("Invalid button ID: " + id);
         }
 
-        return result != null && result.getCode() == 200 ? result : Result.success("操作完成");
+        return result.getCode() != 200 ? result : Result.success("操作完成");
     }
 
     @GetMapping("/emergencyStop")

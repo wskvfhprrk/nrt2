@@ -46,7 +46,7 @@ public class TaskCoordinator {
     private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
     // 创建一个固定大小的线程池，线程池大小为 2
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
+    ExecutorService executorService = Executors.newFixedThreadPool(5);
 
     public Result executeOrder() throws Exception {
         signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
@@ -74,7 +74,7 @@ public class TaskCoordinator {
         if (result.getCode() != 200) {
             return result;
         }
-        //加蒸汽
+        //配菜加蒸汽
         executorService.submit(() -> {
             addSteamToSideDishes();
         });
@@ -117,7 +117,7 @@ public class TaskCoordinator {
             Thread.sleep(500L);
         }
         log.info("机器人拿粉丝");
-        while (pubConfig.getCurrentFanBinNumber() > 4 || pubConfig.getCurrentFanBinNumber() < 0) {
+        while (pubConfig.getCurrentFanBinNumber() > 5 || pubConfig.getCurrentFanBinNumber() < 0) {
             Thread.sleep(500L);
         }
         while (pubConfig.getCurrentFanBinNumber() < 1 || pubConfig.getCurrentFanBinNumber() > 5) {
@@ -173,6 +173,9 @@ public class TaskCoordinator {
             return result;
         }
 
+        //转90度，预防打架
+        bowlService.turn90Degrees();
+
         log.info("开始加汤");
         result = relay1DeviceGatewayService.soupAdd(dataConfig.getSoupExtractionTime());
         if (result.getCode() != 200) {
@@ -213,7 +216,8 @@ public class TaskCoordinator {
         Long begin = System.currentTimeMillis();
         Boolean flag = false;
         //当配菜弄完时开始加蒸汽
-        while (!pubConfig.getSideDishesCompleted() || !pubConfig.getVegetable1Motor() || !pubConfig.getVegetable2Motor()) {
+//        while (!pubConfig.getSideDishesCompleted() || !pubConfig.getVegetable1Motor() || !pubConfig.getVegetable2Motor()) {
+        while (!pubConfig.getSideDishesCompleted()) {
             try {
                 Thread.sleep(200L);
             } catch (InterruptedException e) {
@@ -257,8 +261,10 @@ public class TaskCoordinator {
         log.info("退款订单：{}", order.getCustomerName());
         handleFaultyOrder();
     }
+
     /**
      * 处理完订单告诉服务器
+     *
      * @param orderJson
      */
     private void notifyServerAfterProcessingOrder(String orderJson) {

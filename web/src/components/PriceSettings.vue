@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-form label-width="50px">
+    <el-form label-width="200px">
       <!-- Extra Portion Price -->
       <el-form-item label="加量" style="font-size: 15px;">
         <el-input v-model="extraPortion" style="width: 80px; background-color: #aef5ff; text-align: center;" />

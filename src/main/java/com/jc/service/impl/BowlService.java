@@ -343,4 +343,21 @@ public class BowlService implements DeviceHandler {
         }
         return Result.success();
     }
+
+    /**
+     * 转90度
+     */
+    public Result turn90Degrees() {
+        //发送脉冲数
+        String hex = "03060007" + DecimalToHexConverter.decimalToHex(dataConfig.getLadleDishDumpingRotationValue()/2);
+//        String hex = "030600070000" ;
+        stepServoDriverGatewayService.sendOrder(hex);
+        //倒菜时速度
+        hex = "030600055000";
+        stepServoDriverGatewayService.sendOrder(hex);
+        //发送转动指令
+        hex = "030600000001";
+        stepServoDriverGatewayService.sendOrder(hex);
+        return Result.success();
+    }
 }
