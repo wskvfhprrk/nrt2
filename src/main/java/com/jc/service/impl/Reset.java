@@ -45,17 +45,7 @@ public class Reset {
         relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_LOWER_DOOR);
         //粉丝仓复位
         log.info("粉丝仓复位");
-        Result result = fansService.moveFanBin(2);
-        if (result.getCode() != 200) {
-            log.error(result.getMessage());
-            return;
-        }
-        result = fansService.fanReset();
-        if (result.getCode() != 200) {
-            log.error(result.getMessage());
-            return;
-        }
-        result = fansService.resendFromCurrentPush();
+        Result result = fansService.fanReset();
         if (result.getCode() != 200) {
             log.error(result.getMessage());
             return;

@@ -22,8 +22,8 @@ public class ManualOperationController {
     private RobotService robotService;
     @Autowired
     private Relay1DeviceGatewayService relay1DeviceGatewayService;
-    @Autowired
-    private Relay2DeviceGatewayService relay2DeviceGatewayService;
+//    @Autowired
+//    private Relay2DeviceGatewayService relay2DeviceGatewayService;
     @Autowired
     private BowlService bowlService;
     @Autowired

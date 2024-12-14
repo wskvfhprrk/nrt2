@@ -29,13 +29,38 @@ public class FansService {
     // 当前粉丝仓是否复位的标志
     private boolean isFansReset = false;
 
+    /**
+     * 移动到右限位
+     */
+    private Result moveToRightLimit() {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.HIGH.ordinal()) {
+            return Result.success();
+        }
+        log.info("右限位信号是低电平");
+        String hex = "040600050055"; // 发送速度指令
+        stepServoDriverGatewayService.sendOrder(hex);
+
+        hex = "040600070000"; // 发送脉冲数指令
+        stepServoDriverGatewayService.sendOrder(hex);
+
+        hex = "040600010001"; // 发送开始指令
+        stepServoDriverGatewayService.sendOrder(hex);
+        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return Result.success();
+    }
 
     /**
      * 粉丝仓复位——移动至第一个仓
      *
      * @return 执行结果
      */
-    public Result noodleBinReset() {
+    public Result moveToLeftLimit() {
         // 检查是否已经复位
         if (!isFansReset()) {
             Result result = this.pushRodOpen(); // 推杆复位操作
@@ -54,7 +79,7 @@ public class FansService {
         // 如果左限位信号是低电平，发指令进行移动
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
             log.info("左限位信号是低电平");
-            String hex = "040600050015"; // 发送速度指令
+            String hex = "040600050055"; // 发送速度指令
             stepServoDriverGatewayService.sendOrder(hex);
 
             hex = "040600070000"; // 发送脉冲数指令
@@ -67,12 +92,11 @@ public class FansService {
         // 阻塞线程，直到检测到高电平（左限位信号）
         while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()) {
             try {
-                Thread.sleep(50L); // 每500ms检查一次
+                Thread.sleep(50L); // 每50ms检查一次
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
         return Result.success(); // 返回成功
     }
 
@@ -143,7 +167,7 @@ public class FansService {
             log.error("没有拉开推拉杆");
             return Result.error("没有拉开推拉杆");
         }
-        Result result = this.noodleBinReset(); // 粉丝仓复位操作
+        Result result = this.moveToLeftLimit(); // 粉丝仓复位操作
         if (result.getCode() == 200) {
             try {
                 Thread.sleep(1000L);
@@ -224,11 +248,10 @@ public class FansService {
      * @return 执行结果
      */
     public synchronized Result pushRodOpen() {
-
-        log.info("推杆向后拉");
         if ((signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal())) {
             return Result.success();
         }
+        log.info(" 推杆向后拉");
         String hex = "0106000503E8"; // 发送速度指令
         stepServoDriverGatewayService.sendOrder(hex);
 
@@ -271,63 +294,29 @@ public class FansService {
 
     /**
      * 粉丝仓回到第一个仓
+     * R
      *
      * @return 执行结果
      */
     public Result fanReset() {
-        // 发送查询感器状态的信息
-        signalAcquisitionDeviceGatewayService.sendSearch();
-        try {
-            Thread.sleep(200L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        boolean b = signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal();
-        if (isFansReset() && b) {
-            return Result.success(); // 如果已复位且左限位信号高，返回成功
-        }
-        if (isFansReset() && !b) {
-            return noodleBinReset(); // 已复位但左限位低，进行复位操作
-        }
-        if (!b) {
-            Result result = pushRodOpen(); // 推杆复位操作
+        // 先到右边，再到左边第一个仓
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_RIGHT_LIMIT) == SignalLevel.LOW.ordinal()) {
+            Result result = pushRodOpen();
             if (result.getCode() != 200) {
-                return result; // 如果推杆复位失败，返回错误
+                return result;
             }
-            return noodleBinReset(); // 粉丝仓复位
-        }
-        long startTime = System.currentTimeMillis();
-        long timeoutMillis = 600000;
-        Boolean falg = false;
-
-        while (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.HIGH.ordinal()) {
-            // 检查是否超过了超时时间
-            if (System.currentTimeMillis() - startTime > timeoutMillis) {
-                log.error("复位超过了10分钟");
-                falg = true;
-                break;
-            }
-
-            try {
-                Thread.sleep(50L);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                // 如果线程被中断，也可以选择跳出循环
-                break;
+            result = moveToRightLimit();
+            if (result.getCode() != 200) {
+                return result;
             }
         }
-        if (falg) {
-            return Result.error("复位超过了6分钟");
+        if(signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_LEFT_LIMIT) == SignalLevel.LOW.ordinal()){
+            Result result = moveToLeftLimit(); // 已复位但左限位低，进行复位操作
+            if (result.getCode() != 200) {
+                return result;
+            }
         }
-//        Result result = noodleBinDeliver();
-//        if (result.getCode() != 200) {
-//            return result;
-//        }
-//        result = pushRodOpen();
-//        if (result.getCode() != 200) {
-//            return result;
-//        }
-        return Result.error("未知错误"); // 返回未知错误
+        return Result.success();
     }
 
     /**
@@ -366,7 +355,7 @@ public class FansService {
      */
     private Result moveToNextOne() {
         if (pubConfig.getCurrentFanBinNumber() == 5) {
-            noodleBinReset(); // 如果当前仓是4，执行复位操作
+            moveToLeftLimit(); // 如果当前仓是4，执行复位操作
             log.error("没有粉丝了！");
             return Result.error("没有粉丝了！"); // 返回错误提示
         }
