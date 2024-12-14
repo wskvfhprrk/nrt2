@@ -202,7 +202,7 @@ public class TaskCoordinator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
+            redisTemplate.delete(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
         });
         long l = (System.currentTimeMillis() - start) / 1000;
         log.info("出单时间：{}秒", l);
