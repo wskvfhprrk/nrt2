@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 任务中心管理器
@@ -195,7 +196,14 @@ public class TaskCoordinator {
         log.info("开始出汤");
         log.info("开始出餐口打开出餐");
         //从已经完成队列中移除
-        redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
+        executorService.submit(()->{
+            try {
+                Thread.sleep(60000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            redisTemplate.opsForList().leftPop(Constants.COMPLETED_ORDER_REDIS_PRIMARY_KEY);
+        });
         long l = (System.currentTimeMillis() - start) / 1000;
         log.info("出单时间：{}秒", l);
         //处理完订单告诉服务器
