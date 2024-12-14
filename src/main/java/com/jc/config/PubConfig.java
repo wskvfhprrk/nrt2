@@ -172,5 +172,9 @@ public class PubConfig {
      * 机器人加使通
      */
     public Boolean robotAlreadyEnableCommand;
+    /**
+     * mqtt连接状态
+     */
+    public Boolean mqttConnectStatus;
 
 }

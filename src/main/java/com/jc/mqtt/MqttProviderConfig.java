@@ -5,6 +5,7 @@ import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.service.SignService;
 import com.jc.config.MqttConfig;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
@@ -34,6 +35,8 @@ public class MqttProviderConfig {
 
     @Autowired
     private MqttProviderCallBack mqttProviderCallBack;
+    @Autowired
+    private PubConfig pubConfig;
 
 
     /**
@@ -61,6 +64,7 @@ public class MqttProviderConfig {
             //设置回调
             client.setCallback(mqttProviderCallBack);
             client.connect(options);
+            pubConfig.setMqttConnectStatus(true);
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -85,6 +89,7 @@ public class MqttProviderConfig {
         } catch (MqttException e) {
             if (e.getReasonCode() == 32104) {
                 log.error("与服务器断开连接");
+                pubConfig.setMqttConnectStatus(false);
             } else {
                 e.printStackTrace();
             }

@@ -47,6 +47,10 @@ public class OrderController {
      */
     @PostMapping
     public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
+        if(!pubConfig.getMqttConnectStatus()){
+            log.info("mqtt服务器重新连接中");
+            mqttProviderConfig.connect();
+        }
         //发送mqtt消息
         String topic = "message/order/" + machineCode;
         mqttProviderConfig.publishSign(0, false, topic, JSON.toJSONString(order));

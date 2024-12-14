@@ -89,7 +89,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         }
         boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
-                clientConfig.getRelay1Device()&& clientConfig.getRelay2Device();
+                clientConfig.getRelay1Device() && clientConfig.getRelay2Device();
         if (allDevicesConnected) {
             pubConfig.setAllDevicesConnectedStatus(true);
             reset.start();
@@ -124,25 +124,29 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         String clientIp = clientAddress.getAddress().toString().replace("/", "");
         if (msg instanceof ByteBuf) {
             ByteBuf byteBuf = (ByteBuf) msg;
-            // 获取可读字节数
-            int readableBytes = byteBuf.readableBytes();
-            // 创建一个字节数组来存储可读的字节
-            byte[] bytes = new byte[readableBytes];
-            byteBuf.readBytes(bytes);
-            // 处理字符串
-            String s = HexConvert.BinaryToHexString(bytes);
-            boolean hexStringWithSpaces = isHexStringWithSpaces(s);
-            // 检查是否为16进制字符串
-            if (hexStringWithSpaces) {
-                String hexString = HexConvert.BinaryToHexString(bytes);
+            try {
+                // 获取可读字节数
+                int readableBytes = byteBuf.readableBytes();
+                // 创建一个字节数组来存储可读的字节
+                byte[] bytes = new byte[readableBytes];
+                byteBuf.readBytes(bytes);
+                // 处理字符串
+                String s = HexConvert.BinaryToHexString(bytes);
+                boolean hexStringWithSpaces = isHexStringWithSpaces(s);
+                // 检查是否为16进制字符串
+                if (hexStringWithSpaces) {
+                    String hexString = HexConvert.BinaryToHexString(bytes);
 //                log.info("clientIp：{}发送的HEX字符:{}", clientIp, hexString);
-                ficationProcessing.classificationProcessing(clientIp, true, hexString);
-            } else {
-                String str = new String(bytes, StandardCharsets.UTF_8);
+                    ficationProcessing.classificationProcessing(clientIp, true, hexString);
+                } else {
+                    String str = new String(bytes, StandardCharsets.UTF_8);
 //                log.info("clientIp：{}发送的普通字符串：{}", clientIp, str);
-                ficationProcessing.classificationProcessing(clientIp, false, str);
+                    ficationProcessing.classificationProcessing(clientIp, false, str);
+                }
+                releaseBuffer(byteBuf);
+            } finally {
+                byteBuf.release();
             }
-            releaseBuffer(byteBuf);
         } else {
             super.channelRead(ctx, msg);
         }
@@ -191,7 +195,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * 发送消息到指定客户端
      *
      * @param clientIp 客户端IP地址
-     *
      * @param message  消息内容
      * @param hex      是否为16进制消息
      */
@@ -208,14 +211,17 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             if (address.equals(clientIp)) {
                 Channel channel = entry.getValue();
 //                log.info("服务器发送指令：{}", message);
-                if (hex) {
-                    ByteBuf buff = Unpooled.buffer();
-                    buff.writeBytes(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));
-                    channel.writeAndFlush(buff);
-                } else {
-                    ByteBuf buff = Unpooled.buffer();
-                    buff.writeBytes(message.getBytes());
-                    channel.writeAndFlush(buff);
+                ByteBuf buff = Unpooled.buffer();
+                try {
+                    if (hex) {
+                        buff.writeBytes(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));
+                        channel.writeAndFlush(buff);
+                    } else {
+                        buff.writeBytes(message.getBytes());
+                        channel.writeAndFlush(buff);
+                    }
+                } finally {
+                    buff.release();
                 }
                 return;
             }

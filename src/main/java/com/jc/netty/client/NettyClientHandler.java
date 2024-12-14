@@ -22,15 +22,20 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     public static void sendData(Channel channel, String data) {
         ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes(data.getBytes());
-        channel.writeAndFlush(buf);
+        try {
+            buf.writeBytes(data.getBytes());
+            channel.writeAndFlush(buf);
+        }finally {
+            buf.release(); // 确保释放资源
+        }
+
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // 读取服务端响应
+        ByteBuf buf = (ByteBuf) msg;
         try {
-            ByteBuf buf = (ByteBuf) msg;
             byte[] data = new byte[buf.readableBytes()];
             buf.readBytes(data);
             String response = new String(data);
@@ -48,7 +53,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             ctx.close(); // 关闭连接}
         } finally {
             // 确保释放 msg——否则内存泄漏
-            ReferenceCountUtil.release(msg);
+            buf.release();
         }
 
     }
