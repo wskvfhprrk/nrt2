@@ -6,6 +6,8 @@ import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
+import com.jc.mqtt.MqttConsumerCallBack;
+import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
 import com.jc.vo.OrderPayMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,8 @@ public class OrderController {
     private RedisTemplate redisTemplate;
     @Autowired
     private MqttProviderConfig mqttProviderConfig;
+    @Autowired
+    private MqttConsumerConfig mqttConsumerConfig;
     @Value("${machineCode}")
     private String machineCode;
 
@@ -50,6 +54,7 @@ public class OrderController {
         if(!pubConfig.getMqttConnectStatus()){
             log.info("mqtt服务器重新连接中");
             mqttProviderConfig.connect();
+            mqttConsumerConfig.connect();
         }
         //发送mqtt消息
         String topic = "message/order/" + machineCode;

@@ -143,7 +143,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                log.info("clientIp：{}发送的普通字符串：{}", clientIp, str);
                     ficationProcessing.classificationProcessing(clientIp, false, str);
                 }
-                releaseBuffer(byteBuf);
             } finally {
                 byteBuf.release();
             }
@@ -212,16 +211,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 Channel channel = entry.getValue();
 //                log.info("服务器发送指令：{}", message);
                 ByteBuf buff = Unpooled.buffer();
-                try {
-                    if (hex) {
-                        buff.writeBytes(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));
-                        channel.writeAndFlush(buff);
-                    } else {
-                        buff.writeBytes(message.getBytes());
-                        channel.writeAndFlush(buff);
-                    }
-                } finally {
-                    buff.release();
+                if (hex) {
+                    buff.writeBytes(HexConvert.hexStringToBytes(message.replaceAll(" ", "")));
+                    channel.writeAndFlush(buff);
+                } else {
+                    buff.writeBytes(message.getBytes());
+                    channel.writeAndFlush(buff);
                 }
                 return;
             }
@@ -229,14 +224,4 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         log.error("无法找到与 IP 地址 {} 相关联的通道！", clientIp);
     }
 
-    /**
-     * 释放ByteBuf资源
-     *
-     * @param buffer ByteBuf对象
-     */
-    private void releaseBuffer(ByteBuf buffer) {
-        if (buffer != null && buffer.refCnt() != 1) {
-            buffer.release(); // 释放 ByteBuf 资源
-        }
-    }
 }

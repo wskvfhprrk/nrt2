@@ -22,13 +22,8 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     public static void sendData(Channel channel, String data) {
         ByteBuf buf = Unpooled.buffer();
-        try {
-            buf.writeBytes(data.getBytes());
-            channel.writeAndFlush(buf);
-        }finally {
-            buf.release(); // 确保释放资源
-        }
-
+        buf.writeBytes(data.getBytes());
+        channel.writeAndFlush(buf);
     }
 
     @Override
@@ -40,11 +35,11 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             buf.readBytes(data);
             String response = new String(data);
             log.info("机器人服务器返回信息:{} ", response);
-        if (response.equals(Constants.ROBOT_ALREADY_ENABLE_COMMAND)) {
-            //无法被spirng管理，只有new
-            pubConfig = new PubConfig();
-            pubConfig.setRobotAlreadyEnableCommand(true);
-        }
+            if (response.equals(Constants.ROBOT_ALREADY_ENABLE_COMMAND)) {
+                //无法被spirng管理，只有new
+                pubConfig = new PubConfig();
+                pubConfig.setRobotAlreadyEnableCommand(true);
+            }
 //        if (response.equals(Constants.ROBOT_EXECUTE_SUCCESS_COMMAND)) {
 //            pubConfig.setRobotExecutionNaming(true);
 //        }
