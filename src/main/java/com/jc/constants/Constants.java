@@ -32,6 +32,10 @@ public class Constants {
     public static final int X_FAN_COMPARTMENT_ORIGIN = 6;
     public static final int X_FAN_COMPARTMENT_RIGHT_LIMIT = 7;
     public static final int X_FAN_COMPARTMENT_LEFT_LIMIT = 8;
+    /**
+     * 菜篮复位
+     */
+    public static final int X_BASKET_RESET = 22;
 
     /**
      * 碗信号
@@ -179,11 +183,20 @@ public class Constants {
     public static final String ROBOT_HOME = "686F6D65";
     public static final String PEI_CAI = "706569636169";
     public static final String SERVING_COMPLETED = "6F70656E";
+    /**
+     * 检测菜篮取走
+     */
+//    public static final String DETECT_BASKET_REMOVAL = "636865636B4C616E";
+    /**
+     * 检测取碗
+     */
+    public static final String DETECT_BOWL_PICKING = "636865636B426F776C";
+
     public static final String ROBOT_EXECUTE_SUCCESS_COMMAND = "run start\n";
     public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
     public static final String ROBOT_ALREADY_ENABLE_COMMAND = "already enable\n";
     /**
-     * 机器人获取碗指令67 65 74 62 6F 77 6C
+     * 机器人获取碗指令
      */
     public static final String GET_BOWL = "676574626F776C";
 

@@ -2,6 +2,8 @@ package com.jc.service;
 
 import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
+import com.jc.enums.SignalLevel;
+import com.jc.service.impl.SignalAcquisitionDeviceGatewayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ public class DocuService implements DeviceHandler {
 
     @Autowired
     private PubConfig pubConfig;
+    @Autowired
+    private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
 
     /**
      * 处理消息
@@ -46,6 +50,12 @@ public class DocuService implements DeviceHandler {
         if (message.replaceAll(" ","").equals(Constants.GET_BOWL)) {
             pubConfig.setGetBowl(true);
         }
+        //机器人拿取菜篮子
+//        if (message.replaceAll(" ","").equals(Constants.DETECT_BASKET_REMOVAL)) {
+//            if(signalAcquisitionDeviceGatewayService.getStatus(Constants.X_BASKET_RESET)== SignalLevel.LOW.ordinal()){
+//                pubConfig.setDetectBasketRemovalStatus(true);
+//            }
+//        }
 
     }
 }

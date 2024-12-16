@@ -176,5 +176,9 @@ public class PubConfig {
      * mqtt连接状态
      */
     public Boolean mqttConnectStatus;
+//    /**
+//     * 检测菜篮是否被取走
+//     */
+//    public Boolean detectBasketRemovalStatus;
 
 }

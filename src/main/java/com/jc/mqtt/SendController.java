@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.hejz.util.SignUtil;
 import com.hejz.util.dto.SignDto;
 import com.hejz.util.service.SignService;
+import com.jc.config.PubConfig;
 import com.jc.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class SendController {
     private RedisTemplate redisTemplate;
     @Autowired
     private SignService signService;
+    @Autowired
+    private PubConfig pubConfig;
 
     @RequestMapping("/sendMessage")
     @ResponseBody
@@ -48,6 +51,10 @@ public class SendController {
      */
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void heartbeat() {
+        //mqtt没有连接向服务器发送
+        if(!pubConfig.getMqttConnectStatus()){
+            return;
+        }
         Object o = redisTemplate.opsForValue().get(Constants.APP_SECRET_REDIS_KEY);
         if(o==null){
             log.error("没有密钥");

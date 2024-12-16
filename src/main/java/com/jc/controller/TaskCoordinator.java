@@ -105,14 +105,14 @@ public class TaskCoordinator {
                     break;
             }
         });
-        executorService.submit(() -> {
-            log.info("开始称重第一种配菜");
-            temperatureWeightReadingService.vegetable1Motor(dataConfig.getIngredient1Value());
-        });
-        executorService.submit(() -> {
-            log.info("开始称重第二种配菜");
-            temperatureWeightReadingService.vegetable2Motor(dataConfig.getIngredient2Value());
-        });
+//        executorService.submit(() -> {
+//            log.info("开始称重第一种配菜");
+//            temperatureWeightReadingService.vegetable1Motor(dataConfig.getIngredient1Value());
+//        });
+//        executorService.submit(() -> {
+//            log.info("开始称重第二种配菜");
+//            temperatureWeightReadingService.vegetable2Motor(dataConfig.getIngredient2Value());
+//        });
         //必须机器人和粉丝准备到位才可以
         while (!pubConfig.getIsRobotStatus() || !pubConfig.getAreTheFansReady()) {
             Thread.sleep(500L);

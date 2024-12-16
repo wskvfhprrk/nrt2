@@ -37,7 +37,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void openBrowser() {
         //启动mqtt发送端连接
         mqttProviderConfig.connect();
