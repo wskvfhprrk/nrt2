@@ -49,7 +49,7 @@ public class SendController {
     /**
      * 心跳——每分钟向服务器发送信息
      */
-    @Scheduled(cron = "0 0/1 * * * ? ")
+//    @Scheduled(cron = "0 0/1 * * * ? ")
     public void heartbeat() {
         //mqtt没有连接向服务器发送
         if(!pubConfig.getMqttConnectStatus()){

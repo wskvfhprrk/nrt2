@@ -51,6 +51,12 @@ public class TaskCoordinator {
 
     public Result executeOrder() throws Exception {
         signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
+        pubConfig.setCheckBowl(false);
+        pubConfig.setPutBowl(false);
+        pubConfig.setPutBeef(false);
+        pubConfig.setPickUpSoupBowl(false);
+        pubConfig.setNaLan(false);
+        pubConfig.setGetBowl(false);
         log.info("开始处理订单");
         //先把上一次未处理完的订单作为异常订单处理退款
         Long size = redisTemplate.opsForList().size(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
@@ -75,6 +81,7 @@ public class TaskCoordinator {
         if (result.getCode() != 200) {
             return result;
         }
+        // TODO: 2024/12/16 检测菜篮是否在位置上，不在报警订单不继续做下去
         //配菜加蒸汽
         executorService.submit(() -> {
             addSteamToSideDishes();
@@ -140,17 +147,17 @@ public class TaskCoordinator {
             return result;
         }
         //开始机器人取碗
-        while (!pubConfig.getIsRobotStatus()) {
-            Thread.sleep(500L);
+        while (!pubConfig.getPutBeef() || !pubConfig.getIsRobotStatus()) {
+            Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
         }
+        Thread.sleep(2000L);
         log.info("开始机器人取碗");
         result = robotService.robotTakeBowl();
         if (result.getCode() != 200) {
             return result;
         }
-        //开始放碗
-        while (!pubConfig.getIsRobotStatus()) {
-            Thread.sleep(200L);
+        while (!pubConfig.getCheckBowl() || !pubConfig.getIsRobotStatus()) {
+            Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
         }
         Thread.sleep(2000L);
         log.info("开始放碗……");
@@ -196,7 +203,7 @@ public class TaskCoordinator {
         log.info("开始出汤");
         log.info("开始出餐口打开出餐");
         //从已经完成队列中移除
-        executorService.submit(()->{
+        executorService.submit(() -> {
             try {
                 Thread.sleep(60000L);
             } catch (InterruptedException e) {
@@ -265,7 +272,7 @@ public class TaskCoordinator {
         }
         //记录本地并上报服务器数据
         Order order = JSON.parseObject(o.toString(), Order.class);
-        // TODO: 2024/11/15 处理异常订单
+        // TODO: 2024/11/15 处理异常订单——正在做的和未做订单都要退款
         log.info("退款订单：{}", order.getCustomerName());
         handleFaultyOrder();
     }

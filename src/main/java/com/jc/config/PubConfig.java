@@ -176,9 +176,30 @@ public class PubConfig {
      * mqtt连接状态
      */
     public Boolean mqttConnectStatus;
-//    /**
-//     * 检测菜篮是否被取走
-//     */
-//    public Boolean detectBasketRemovalStatus;
+    /**
+     * 拿篮子
+     */
+    public Boolean naLan;
+    /**
+     * 放牛肉
+     */
+    public Boolean putBeef;
+    /**
+     * 放粉丝
+     */
+    public Boolean fens;
+    /**
+     * 取碗
+     */
+    public Boolean checkBowl;
+    /**
+     * 放碗
+     */
+    public Boolean putBowl;
+    /**
+     * 出餐
+     */
+    public Boolean pickUpSoupBowl;
+
 
 }

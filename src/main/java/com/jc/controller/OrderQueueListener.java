@@ -1,6 +1,9 @@
 package com.jc.controller;
 
 import com.jc.config.PubConfig;
+import com.jc.mqtt.ConsumerController;
+import com.jc.mqtt.MqttConsumerConfig;
+import com.jc.mqtt.MqttProviderConfig;
 import com.jc.service.impl.RedisQueueService;
 import com.jc.service.impl.SignalAcquisitionDeviceGatewayService;
 import lombok.extern.slf4j.Slf4j;

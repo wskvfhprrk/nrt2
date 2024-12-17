@@ -86,7 +86,12 @@ pub:
   vegetable2Motor: false #称重2完毕
   robotAlreadyEnableCommand: false #机器人加使能完毕
   mqttConnectStatus: false
-
+  naLan: false  #拿篮子
+  putBeef: false  #放牛肉
+  fens: false  #放粉丝
+  checkBowl: false  #取碗
+  putBowl: false  #放碗
+  pickUpSoupBowl: false  #出餐
 # 数据配置
 data:
   beef10: 4 # 牛肉 1片

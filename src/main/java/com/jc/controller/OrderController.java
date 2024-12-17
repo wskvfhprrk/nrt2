@@ -78,8 +78,7 @@ public class OrderController {
                 clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
                 clientConfig.getRelay1Device();
 
-        if (false) { //todo 如果有订单制作时
-            //todo 轮播待制作，正在制作和已经做好的订单
+        if (false) {
         } else if (allDevicesConnected && pubConfig.getAllDevicesConnectedStatus()) {
             statusMap.put("color", "green");
             statusMap.put("message", "请您点餐！");

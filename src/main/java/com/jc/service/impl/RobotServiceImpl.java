@@ -81,7 +81,38 @@ public class RobotServiceImpl implements RobotService {
         pubConfig.setGetBowl(false);
         pubConfig.setIsRobotStatus(true);
         log.info("机器人状态赋值为true");
+        checkBowl();
         return Result.success();
+    }
+
+    private int getBowlNumber = 0;
+
+    private Result checkBowl() {
+        while (!pubConfig.getIsRobotStatus()) {
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        pubConfig.setIsRobotStatus(false);
+        nettyClientConfig.connectAndSendData("run(bowl/checkBowl.jspf)");
+        while (!pubConfig.getIsRobotStatus()) {
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FANS_WAREHOUSE_4) == SignalLevel.HIGH.ordinal()) {
+            getBowlNumber = 0;
+            return Result.success();
+        }
+        getBowlNumber += 1;
+        if(getBowlNumber>=3){
+            return Result.error("取碗失败！");
+        }
+        return robotTakeBowl();
     }
 
     @Override
@@ -180,15 +211,4 @@ public class RobotServiceImpl implements RobotService {
         return Result.success();
     }
 
-    /**
-     * 发送检测复位指令
-     * enable
-     * 执行成功反馈:enable success
-     * 执行失败反馈:enable fail
-     * 机器人上使能，若上使能成功，返menable success若失败返回 enable fai,若当前是使能状态，返口already enable
-     */
-    // TODO: 2024/12/9 没有接收状态
-    public void sendDetectionResetCommand() {
-        nettyClientConfig.connectAndSendData("enable");
-    }
 }

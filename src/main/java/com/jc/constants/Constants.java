@@ -184,21 +184,41 @@ public class Constants {
     public static final String PEI_CAI = "706569636169";
     public static final String SERVING_COMPLETED = "6F70656E";
     /**
-     * 检测菜篮取走
+     * 拿篮子——naLan
      */
-//    public static final String DETECT_BASKET_REMOVAL = "636865636B4C616E";
+    public static final String NA_LAN = "6E614C616E";
     /**
-     * 检测取碗
+     * 放牛肉——putBeef
      */
-    public static final String DETECT_BOWL_PICKING = "636865636B426F776C";
-
-    public static final String ROBOT_EXECUTE_SUCCESS_COMMAND = "run start\n";
-    public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
-    public static final String ROBOT_ALREADY_ENABLE_COMMAND = "already enable\n";
+    public static final String PUT_BEEF = "70757442656566";
     /**
-     * 机器人获取碗指令
+     * 放粉丝——fens
+     */
+    public static final String FENS = "66 65 6E 73";
+    /**
+     * 机器人取碗——getBowl
      */
     public static final String GET_BOWL = "676574626F776C";
+    /**
+     * 取碗——checkBowl
+     */
+    public static final String CHECK_BOWL = "636865636B426F776C";
+    /**
+     * 放碗——putBowl
+     */
+    public static final String PUT_BOWL = "707574426F776C";
+    /**
+     * 出餐——pickUpSoupBowl
+     */
+    public static final String PICK_UP_SOUP_BOWL = "7069636B5570536F7570426F776C";
+
+//    public static final String ROBOT_EXECUTE_SUCCESS_COMMAND = "run start\n";
+//    public static final String ROBOT_EXECUTE_FAILURE_COMMAND = "run fail\n";
+//    public static final String ROBOT_ALREADY_ENABLE_COMMAND = "already enable\n";
+//    /**
+//     * 机器人获取碗指令
+//     */
+//    public static final String GET_BOWL = "676574626F776C";
 
     /**
      * 数据命令

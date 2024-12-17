@@ -4,6 +4,9 @@ import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
+import com.jc.mqtt.ConsumerController;
+import com.jc.mqtt.MqttConsumerConfig;
+import com.jc.mqtt.MqttProviderConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,10 @@ public class Reset {
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
     @Autowired
     private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
+    @Autowired
+    private MqttProviderConfig mqttProviderConfig;
+    @Autowired
+    private MqttConsumerConfig mqttConsumerConfig;
 
     public synchronized void start() {
         signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
@@ -102,6 +109,8 @@ public class Reset {
          * 打开系统定时任务
          */
         pubConfig.setIsExecuteTask(true);
+        mqttProviderConfig.connect();
+        mqttConsumerConfig.connect();
         log.info("定时任务打开！");
         //复位后打开windows浏览器脚本全屏显示
         try {
