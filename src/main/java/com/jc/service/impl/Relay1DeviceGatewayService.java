@@ -233,7 +233,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      * @return
      */
     public Result rearFanOpen() {
-//        relayOpening(Constants.REAR_BOX_FAN);
+        relayOpening(Constants.REAR_BOX_FAN);
         return Result.success();
     }
 
@@ -243,7 +243,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      * @return
      */
     public Result rearFanClose() {
-//        relayClosing(Constants.REAR_BOX_FAN);
+        relayClosing(Constants.REAR_BOX_FAN);
         return Result.success();
     }
 
@@ -322,7 +322,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         //抽汤泵打开
         openClose(Constants.Y_SOUP_PUMP_SWITCH, second);
         try {
-            Thread.sleep(second*1000);
+            Thread.sleep(second * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -330,7 +330,8 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     }
 
     public Result deliverBowl() {
-        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL) == SignalLevel.LOW.ordinal()) {
+        if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_BOWL_PRESENT_SIGNAL) == SignalLevel.LOW.ordinal()
+                && signalAcquisitionDeviceGatewayService.getStatus(Constants.X_PLACE_BOWL_SIGNAL) == SignalLevel.LOW.ordinal()) {
             log.error("没有碗了！");
             return Result.error("没有碗了！");
         }
@@ -541,6 +542,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
 
     /**
      * 震动料开关打开
+     *
      * @return
      */
     public Result vibrationSwitchOn() {
@@ -551,6 +553,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
 
     /**
      * 震动料开关关闭
+     *
      * @return
      */
     public Result vibrationSwitchOff() {
@@ -560,10 +563,10 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     }
 
     public Result vibrationSwitchControl(int i) {
-        if(i==0){
+        if (i == 0) {
             relayOpening(Constants.Y_DISCHARGE_BIN_3);
-        }else {
-            openClose(Constants.Y_DISCHARGE_BIN_3,i);
+        } else {
+            openClose(Constants.Y_DISCHARGE_BIN_3, i);
         }
         return Result.success();
     }

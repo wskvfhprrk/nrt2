@@ -249,5 +249,8 @@ public class Constants {
      * 其他
      */
     public static final int GOODS_AISLE_POWER_ON2_SECONDS = 2;
-
+    /**
+     * 风扇继电器
+     */
+    public static final int REAR_BOX_FAN = 14;
 }
