@@ -83,8 +83,6 @@
           <div class="button-container">
             <el-button type="primary" @click="submitOrder" class="center-button">提交订单
             </el-button>
-            <!--            <el-button type="primary" :disabled="!isButtonEnabled" @click="submitOrder" class="center-button">提交订单
-                        </el-button>-->
           </div>
         </el-main>
       </el-container>
@@ -95,7 +93,9 @@
     </div>-->
 
     <div class="go-to-backend">
-      <el-button type="primary" @click="goToBackend">进入后台</el-button>
+      <el-icon :size="40" @click="goToBackend">
+      <setting />
+    </el-icon>
     </div>
   </div>
 </template>
@@ -104,8 +104,15 @@
 import axios from 'axios';
 import QRCode from 'qrcodejs2';
 
+
+import { Setting } from '@element-plus/icons-vue'
+
 const baseUrl = 'http://127.0.0.1:8080/orders';
 export default {
+  components: {
+    // ElIcon,
+    Setting
+  },
   name: 'App',
   data() {
     return {
@@ -348,16 +355,16 @@ html, body {
   color: rgb(72, 8, 25);
 }
 
-.status-message {
-  width: 100%;
-  padding: 20px;
-  text-align: center;
-  background-color: var(--gray);
-  font-size: calc(12px + 1.5vh);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-}
+/*.status-message {*/
+/*  width: 100%;*/
+/*  padding: 20px;*/
+/*  text-align: center;*/
+/*  background-color: var(--gray);*/
+/*  font-size: calc(12px + 1.5vh);*/
+/*  position: fixed;*/
+/*  bottom: 0;*/
+/*  left: 0;*/
+/*}*/
 
 .order-status-display {
   position: absolute;
@@ -407,8 +414,8 @@ html, body {
 /*后管管理按钮*/
 .go-to-backend {
   position: fixed;
-  bottom: 100px;
-  right: 0px;
+  bottom: 10px;
+  right: 10px;
 }
 
 .go-to-backend .el-button {

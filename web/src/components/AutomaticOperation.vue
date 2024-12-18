@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="form" label-width="300px">
+  <el-form :model="form" label-width="250px">
     <el-row gutter="10">
       <!-- Existing fields -->
       <el-col :span="24">
