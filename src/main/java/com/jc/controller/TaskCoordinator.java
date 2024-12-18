@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 任务中心管理器
@@ -253,7 +252,8 @@ public class TaskCoordinator {
             return result;
         }
         log.info("加蒸汽");
-        result = relay1DeviceGatewayService.bowlSteamAdd(dataConfig.getSteamAdditionTimeSeconds());
+        relay1DeviceGatewayService.rearFanOpenClose(90);
+        result = relay1DeviceGatewayService.SteamAdd(dataConfig.getSteamAdditionTimeSeconds());
         if (result.getCode() != 200) {
             return result;
         }

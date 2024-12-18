@@ -116,8 +116,8 @@ export default {
         {id: 11, name: "移动粉丝仓（编号）"},
         {id: 12, name: "粉丝仓出粉丝"},
         {id: 13, name: "装菜勺复位"},
-        {id: 14, name: "装菜勺装菜"},
-        {id: 15, name: "装菜勺倒菜"}
+        {id: 14, name: "装菜勺倒菜"},
+        {id: 15, name: "装菜勺装菜"}
       ],
 
       buttonsGroup3: [
@@ -154,18 +154,12 @@ export default {
       ],
 
       buttonsGroup6: [
-        {id: 40, name: "右上打开"},
-        {id: 41, name: "右上关闭"},
-        {id: 42, name: "右下打开"},
-        {id: 43, name: "右下关闭"},
+        {id: 40, name: "左上打开"},
+        {id: 42, name: "左下打开"},
         {id: 44, name: "中间左上打开"},
-        {id: 45, name: "中间左上关闭"},
         {id: 46, name: "中间左下打开"},
-        {id: 47, name: "中间左下关闭"},
         {id: 48, name: "中间右上打开"},
-        {id: 49, name: "中间右上关闭"},
-        {id: 50, name: "中间右下打开"},
-        {id: 51, name: "中间右下关闭"}
+        {id: 50, name: "中间右下打开"}
       ],
       dialogVisible: false,
       parameter: '',

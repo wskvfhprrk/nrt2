@@ -1,5 +1,10 @@
 <template>
   <div id="app" class="outer-container">
+    <!-- Logo区域 -->
+    <div class="logo-container">
+      <img src="@/assets/img/logo.png" alt="logo" class="logo-image" />
+      <span class="logo-text">自助点餐系统</span>
+    </div>
     <!-- Order status display -->
     <div v-if="hasOrders" class="order-status-display">
       <div v-if="pendingOrders.length" class="order-status pending">
@@ -49,7 +54,7 @@
                 <el-radio-button :value="'牛杂汤'">牛杂汤</el-radio-button>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="选择类别">
+            <el-form-item label="选择份量">
               <el-radio-group v-model="form.selectedPrice">
                 <el-radio-button v-for="price in prices" :key="price" :label="price">{{ price }}元</el-radio-button>
               </el-radio-group>
@@ -87,15 +92,10 @@
         </el-main>
       </el-container>
     </div>
-    <!-- Status message section -->
-<!--    <div class="status-message" :style="{ color: serverStatus.color }">
-      {{ serverStatus.message || '默认状态信息显示' }}
-    </div>-->
-
     <div class="go-to-backend">
       <el-icon :size="40" @click="goToBackend">
-      <setting />
-    </el-icon>
+        <setting/>
+      </el-icon>
     </div>
   </div>
 </template>
@@ -105,7 +105,7 @@ import axios from 'axios';
 import QRCode from 'qrcodejs2';
 
 
-import { Setting } from '@element-plus/icons-vue'
+import {Setting} from '@element-plus/icons-vue'
 
 const baseUrl = 'http://127.0.0.1:8080/orders';
 export default {
@@ -125,7 +125,7 @@ export default {
         paymentMethod: 'wechat'   // 默认选择微信支付
       },
       recipes: ['牛肉汤', '牛杂汤'],
-      prices: [10, 15, 20],
+      prices: [10, 15, 20, 30],
       spices: ['不辣', '微辣', '中辣', '辣'],
       orderSubmitted: false,
       isButtonEnabled: false,
@@ -294,6 +294,29 @@ export default {
 
 
 <style>
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  width: 60px; /* 控制logo尺寸 */
+  height: 60px;
+  border-radius: 50%; /* 将图片裁剪成圆形 */
+  object-fit: cover; /* 保证图片适配并不会变形 */
+  border: 2px solid #07C160; /* 给logo添加边框，可选 */
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-left: 10px;
+}
+
+
 html, body {
   height: 100%;
   margin: 0;

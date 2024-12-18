@@ -20,21 +20,21 @@ public class CabinetDoorSwitchService {
      * 打开右上门
      */
     public Result openUpperRightDoor() {
-        relay1DeviceGatewayService.relayClosing(Constants.Y_RIGHT_DOOR);
+        relay1DeviceGatewayService.relayClosing(Constants.Y_LEFT_DOOR);
         return Result.success();
     }
     /**
      * 关闭右上门
      */
     public Result closeUpperRightDoor() {
-        relay1DeviceGatewayService.relayClosing(Constants.Y_RIGHT_DOOR);
+        relay1DeviceGatewayService.relayClosing(Constants.Y_LEFT_DOOR);
         return Result.success();
     }
     /**
      * 打开中间左边上门
      */
     public Result openMiddleLeftUpperDoor(){
-        relay1DeviceGatewayService.relayClosing(Constants.Y_RIGHT_DOOR);
+        relay1DeviceGatewayService.relayClosing(Constants.Y_LEFT_DOOR);
         return Result.success();
     }
 

@@ -4,7 +4,6 @@ import com.jc.config.DataConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
-import com.jc.mqtt.ConsumerController;
 import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +43,8 @@ public class Reset {
         }
         log.info("设备自检复位中……");
         //锁门
-        relay1DeviceGatewayService.relayOpening(Constants.Y_RIGHT_DOOR);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_OPEN_LOWER_RIGHT_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_LEFT_DOOR);
+        relay1DeviceGatewayService.relayOpening(Constants.Y_OPEN_LOWER_LEFT_DOOR);
         relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_UPPER_DOOR);
         relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_LOWER_DOOR);
         relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_UPPER_DOOR);
@@ -109,8 +108,11 @@ public class Reset {
          * 打开系统定时任务
          */
         pubConfig.setIsExecuteTask(true);
-        mqttProviderConfig.connect();
-        mqttConsumerConfig.connect();
+        //如果mqtt没有连接里德连接
+        if (!pubConfig.getMqttConnectStatus()) {
+            mqttProviderConfig.connect();
+            mqttConsumerConfig.connect();
+        }
         log.info("定时任务打开！");
         //复位后打开windows浏览器脚本全屏显示
         try {

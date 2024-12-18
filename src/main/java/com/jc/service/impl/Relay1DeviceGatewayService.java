@@ -238,6 +238,16 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     }
 
     /**
+     * 风扇打开多少秒后关闭
+     * @param number
+     * @return
+     */
+    public Result rearFanOpenClose(int number) {
+        openClose(Constants.REAR_BOX_FAN, number);
+        return Result.success();
+    }
+
+    /**
      * 关闭风扇
      *
      * @return
@@ -285,7 +295,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      *
      * @return
      */
-    public Result bowlSteamAdd(int number) {
+    public Result SteamAdd(int number) {
         pubConfig.setFinishAddingSteam(false);
         //盖子方向向下
         Result result = lowerSteamCover();
@@ -352,59 +362,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         return Result.success();
     }
 
-//    /**
-//     * 一号料仓打开
-//     *
-//     * @return
-//     */
-//    public Result firstBinOpen() {
-//        //控制方向
-//        relayOpening(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
-//        //控制电源
-//        relayOpening(Constants.Y_HOPPER1_SWITCH_CONTROL);
-//
-//        return Result.success();
-//    }
-
-//    public Result firstBinClose() {
-//        //控制方向
-//        relayClosing(Constants.Y_FIRST_BIN_DIRECTION_CONTROL);
-//        //控制电源
-//        openClose(Constants.Y_HOPPER1_SWITCH_CONTROL, 2);
-//        return Result.success();
-//    }
-//
-//    public Result secondBinOpen() {
-//        //控制方向
-//        relayOpening(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
-//        //控制电源
-//        relayOpening(Constants.Y_HOPPER2_SWITCH_CONTROL);
-//        return Result.success();
-//    }
-//
-//    public Result secondBinClose() {
-//        //控制方向
-//        relayClosing(Constants.Y_SECOND_BIN_DIRECTION_CONTROL);
-//        //控制电源
-//        openClose(Constants.Y_HOPPER2_SWITCH_CONTROL, 2);
-//        return Result.success();
-//    }
-//
-//    public Result thirdBinOpen() {
-//        //控制方向
-//        relayOpening(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
-//        //控制电源
-//        relayOpening(Constants.Y_HOPPER3_SWITCH_CONTROL);
-//        return Result.success();
-//    }
-//
-//    public Result thirdBinClose() {
-//        //控制方向
-//        relayClosing(Constants.Y_THIRD_BIN_DIRECTION_CONTROL);
-//        //控制电源
-//        openClose(Constants.Y_HOPPER3_SWITCH_CONTROL, 2);
-//        return Result.success();
-//    }
 
     /**
      * 加蒸汽盖下降

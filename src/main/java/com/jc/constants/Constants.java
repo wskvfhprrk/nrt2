@@ -134,13 +134,13 @@ public class Constants {
      * 柜门控制
      */
     /**
-     * 右上门
+     * 左上门
      */
-    public static final int Y_RIGHT_DOOR = 27;
+    public static final int Y_LEFT_DOOR = 27;
     /**
-     * 右下门
+     * 左下门
      */
-    public static final int Y_OPEN_LOWER_RIGHT_DOOR = 28;
+    public static final int Y_OPEN_LOWER_LEFT_DOOR = 28;
     /**
      * 中间左上门
      */
@@ -252,5 +252,5 @@ public class Constants {
     /**
      * 风扇继电器
      */
-    public static final int REAR_BOX_FAN = 14;
+    public static final int REAR_BOX_FAN = 13;
 }
