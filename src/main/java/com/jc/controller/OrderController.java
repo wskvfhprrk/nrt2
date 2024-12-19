@@ -6,6 +6,7 @@ import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
+import com.jc.enums.OrderStatus;
 import com.jc.mqtt.MqttConsumerCallBack;
 import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
@@ -56,6 +57,8 @@ public class OrderController {
             mqttProviderConfig.connect();
             mqttConsumerConfig.connect();
         }
+        order.setStatus(OrderStatus.PENDING);
+        log.info("获取订单二维码：{}",order);
         //发送mqtt消息
         String topic = "message/order/" + machineCode;
         mqttProviderConfig.publishSign(0, false, topic, JSON.toJSONString(order));

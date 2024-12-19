@@ -7,10 +7,12 @@ import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
+import com.jc.mqtt.MqttProviderConfig;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +49,10 @@ public class TaskCoordinator {
 
     // 创建一个固定大小的线程池，线程池大小为 2
     ExecutorService executorService = Executors.newFixedThreadPool(5);
+    @Value("${machineCode}")
+    private String machineCode;
+    @Autowired
+    private MqttProviderConfig mqttProviderConfig;
 
     public Result executeOrder() throws Exception {
         signalAcquisitionDeviceGatewayService.sendOrderStatus = false;
@@ -252,7 +258,7 @@ public class TaskCoordinator {
             return result;
         }
         log.info("加蒸汽");
-        relay1DeviceGatewayService.rearFanOpenClose(90);
+        relay1DeviceGatewayService.rearFanOpenClose(dataConfig.getOpenFanTime());
         result = relay1DeviceGatewayService.SteamAdd(dataConfig.getSteamAdditionTimeSeconds());
         if (result.getCode() != 200) {
             return result;
@@ -265,6 +271,7 @@ public class TaskCoordinator {
      * 处理异常订单
      */
     private void handleFaultyOrder() {
+        // TODO: 2024/11/15 处理异常订单——正在做的和未做订单都要退款
         //删除缓存中的正在做的数据
         Object o = redisTemplate.opsForList().leftPop(Constants.ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS);
         if (o == null) {
@@ -272,8 +279,15 @@ public class TaskCoordinator {
         }
         //记录本地并上报服务器数据
         Order order = JSON.parseObject(o.toString(), Order.class);
-        // TODO: 2024/11/15 处理异常订单——正在做的和未做订单都要退款
-        log.info("退款订单：{}", order.getCustomerName());
+        order.setStatus(OrderStatus.FAILED);
+        log.info("失败订单：{}", order);
+        //发送mqtt消息
+        String topic = "message/order/" + machineCode;
+        try {
+            mqttProviderConfig.publishSign(0, false, topic, JSON.toJSONString(order));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         handleFaultyOrder();
     }
 
@@ -283,5 +297,15 @@ public class TaskCoordinator {
      * @param orderJson
      */
     private void notifyServerAfterProcessingOrder(String orderJson) {
+        Order order = JSON.parseObject(orderJson, Order.class);
+        order.setStatus(OrderStatus.COMPLETED);
+        log.info("成功订单：{}",order);
+        //发送mqtt消息
+        String topic = "message/order/" + machineCode;
+        try {
+            mqttProviderConfig.publishSign(0, false, topic, JSON.toJSONString(order));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

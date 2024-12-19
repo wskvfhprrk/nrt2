@@ -76,4 +76,8 @@ public class DataConfig {
      * 配料2的值
      */
     private int ingredient2Value;
+    /**
+     * openFanTime(秒)
+     */
+    private int openFanTime;
 }

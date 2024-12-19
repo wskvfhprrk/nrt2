@@ -6,7 +6,8 @@ package com.jc.enums;
 public enum OrderStatus {
     PENDING("待加工"),    // 待加工
     PROCESSING("正在加工"), // 正在加工
-    COMPLETED("已完成");   // 已完成
+    COMPLETED("已完成"),   // 已完成
+    FAILED("失败订单");   // 已完成
 
     private final String description; // 中文描述
 
