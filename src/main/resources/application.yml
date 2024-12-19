@@ -110,4 +110,4 @@ data:
   ladleDishDumpingDistancePulseValue: 1300 #菜勺倒菜距离（脉冲值）
   ladleDishDumpingRotationValue: 1300 # 菜勺倒菜转动值（脉冲值）
   fanPushRodThrustDistanceValue: 1000 # 粉丝推杆推动距离值（脉冲值）
-  openFanTime:90 #openFanTime(秒)
+  openFanTime: 90 #openFanTime(秒)
