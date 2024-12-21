@@ -251,7 +251,7 @@ public class FansService {
         if ((signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FAN_COMPARTMENT_ORIGIN) == SignalLevel.HIGH.ordinal())) {
             return Result.success();
         }
-        log.info(" 推杆向后拉");
+        log.info("推杆向后拉");
         String hex = "0106000503E8"; // 发送速度指令
         stepServoDriverGatewayService.sendOrder(hex);
 

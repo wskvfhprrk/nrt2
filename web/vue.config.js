@@ -4,19 +4,23 @@ module.exports = {
         proxy: {
             '/orders': {
                 target: `${baseUrl}/orders/`,
-                changeOrigin: true
+                changeOrigin: true,
+                secure: false,
             },
             '/qrcode': {
                 target: `${baseUrl}/qrcode/`,
-                changeOrigin: true
+                changeOrigin: true,
+                secure: false,
             },
             '/login': {
                 target: `${baseUrl}/login/`,
-                changeOrigin: true
+                changeOrigin: true,
+                secure: false,
             },
             '/buttonAction': {
                 target: `${baseUrl}/buttonAction/`,
-                changeOrigin: true
+                changeOrigin: true,
+                secure: false,
             }
         }
     }

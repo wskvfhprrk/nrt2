@@ -97,6 +97,10 @@
         <setting/>
       </el-icon>
     </div>
+    <!-- 就餐流程图片区域 -->
+    <div class="dining-process-container">
+      <img src="@/assets/img/dining-process.png" alt="就餐流程" class="dining-process-image" />
+    </div>
   </div>
 </template>
 
@@ -187,10 +191,6 @@ export default {
             }
           });
           this.orderSubmitted = true;
-          // this.$message.success('订单提交成功');
-          // setTimeout(() => {
-          //   location.reload();
-          // }, 5000); // 5秒后刷新页面
         } catch (error) {
           this.$message.error('订单提交失败');
           console.error(error);
@@ -460,7 +460,7 @@ html, body {
 
 .qr-code-container {
   position: fixed;
-  bottom: 20px;
+  bottom: 300px;
   left: 20px;
   width: 150px;
   height: 200px;
@@ -484,6 +484,24 @@ html, body {
   color: #07C160;
   margin-bottom: 5px;
 }
+
+/*底部流程图*/
+.dining-process-container {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%); /* 水平居中 */
+  width: 80%; /* 设置宽度为 80% */
+  text-align: center;
+  padding: 10px 0;
+}
+
+.dining-process-image {
+  width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
 
 
 </style>
