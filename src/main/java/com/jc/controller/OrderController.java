@@ -11,7 +11,9 @@ import com.jc.mqtt.MqttConsumerCallBack;
 import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
 import com.jc.vo.OrderPayMessage;
+import com.jc.vo.OrderVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -47,18 +49,20 @@ public class OrderController {
     /**
      * 提交订单
      *
-     * @param order 订单对象
+     * @param orderVo 订单对象
      * @return ResponseEntity<String> 响应实体
      */
     @PostMapping
-    public ResponseEntity<String> submitOrder(@RequestBody Order order) throws Exception {
+    public ResponseEntity<String> submitOrder(@RequestBody OrderVo orderVo) throws Exception {
         if(!pubConfig.getMqttConnectStatus()){
             log.info("mqtt服务器重新连接中");
             mqttProviderConfig.connect();
             mqttConsumerConfig.connect();
         }
+        Order order=new Order();
+        BeanUtils.copyProperties(orderVo,order);
         order.setStatus(OrderStatus.PENDING);
-        log.info("获取订单二维码：{}",order);
+//        log.info("获取订单二维码：{}",orderVo);
         //发送mqtt消息
         String topic = "message/order/" + machineCode;
         mqttProviderConfig.publishSign(0, false, topic, JSON.toJSONString(order));

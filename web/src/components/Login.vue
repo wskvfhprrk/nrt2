@@ -27,7 +27,6 @@
 <script>
 import axios from 'axios';
 import {useRouter} from 'vue-router'; // 使用 Vue Router 进行跳转
-const baseURL = 'http://127.0.0.1:8080';
 
 export default {
   data() {
@@ -42,7 +41,7 @@ export default {
     async submitForm() {
       try {
         // 发送 POST 请求到后端 API
-        const url = `${baseURL}/login`;
+        const url = `login`;
         const response = await axios.post(url, {
           username: this.username,
           password: this.password,

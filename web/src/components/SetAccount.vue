@@ -20,7 +20,6 @@
 <script>
 import axios from "axios";
 
-const baseUrl = 'http://127.0.0.1:8080/setAccount';
 export default {
   name: 'SetAccount',
   data() {
@@ -46,7 +45,7 @@ export default {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           try {
-            const response = await axios.post(baseUrl + "/getKey", this.form, {
+            const response = await axios.post( "setAccount/getKey", this.form, {
               headers: {
                 'Content-Type': 'application/json'
               }
@@ -69,7 +68,7 @@ export default {
     ,
     async getCode() {
       try {
-        const response = await axios.get(baseUrl + '/getCode');
+        const response = await axios.get( 'setAccount/getCode');
         if (response.data.code === 200) {
           this.form.code = response.data.data;
         } else {

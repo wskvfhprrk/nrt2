@@ -111,7 +111,6 @@ import QRCode from 'qrcodejs2';
 
 import {Setting} from '@element-plus/icons-vue'
 
-const baseUrl = 'http://127.0.0.1:8080/orders';
 export default {
   components: {
     // ElIcon,
@@ -185,7 +184,7 @@ export default {
     async submitOrder() {
       if (this.form.selectedRecipe && this.form.selectedPrice && this.form.selectedSpice) {
         try {
-          const response = await axios.post(baseUrl, this.form, {
+          const response = await axios.post("orders", this.form, {
             headers: {
               'Content-Type': 'application/json'
             }
@@ -201,7 +200,7 @@ export default {
     },
     async fetchServerStatus() {
       try {
-        const response = await axios.get(baseUrl + '/serverStatus');
+        const response = await axios.get( 'orders/serverStatus');
         this.serverStatus.color = response.data.color;
         this.serverStatus.message = response.data.message;
         // 更新按钮状态
@@ -213,7 +212,7 @@ export default {
     },
     async fetchOrderData() {
       try {
-        const response = await axios.get(baseUrl + '/status');
+        const response = await axios.get('orders/status');
         if (response.data.code === 200) {
           this.pendingOrders = response.data.data.pendingOrders || [];
           this.inProgressOrders = response.data.data.inProgressOrders || [];
@@ -231,10 +230,10 @@ export default {
     //查询二给码信息
     async fetchQrData() {
       try {
-        const response = await axios.get(baseUrl + '/qrcode');
+        const response = await axios.get('orders/qrcode');
         if (response.data.code === 200 & response.data.data !== null) {
           this.qrCodeText = response.data.data.qrCodeText;
-          console.log("response.data.data.qrCodeText===" + response.data.data)
+          // console.log("response.data.data.qrCodeText===" + response.data.data)
           this.orderId = response.data.data.orderId;
           this.payMethods = response.data.data.payMethods;
           this.generateQrCode();
