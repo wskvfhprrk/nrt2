@@ -93,7 +93,6 @@
 <script>
 import axios from 'axios';
 
-const baseURL = 'http://127.0.0.1:8080/buttonAction';
 
 export default {
   name: 'ManualOperation',
@@ -191,7 +190,7 @@ export default {
         this.dialogVisible = true;
       } else {
         this.dialogVisible = false;
-        this.sendRequest(`${baseURL}/${id}`);
+        this.sendRequest(`buttonAction/${id}`);
       }
       this.currentButtonId = id;
       this.currentButtonName = name;
@@ -200,16 +199,16 @@ export default {
       this.dialogVisible = false;
     },
     submitParameter() {
-      const url = `${baseURL}/${this.currentButtonId}?number=${this.parameter}`;
+      const url = `buttonAction/${this.currentButtonId}?number=${this.parameter}`;
       this.sendRequest(url);
       this.dialogVisible = false;
       this.parameter = '';
     },
     emergencyStop() {
-      this.sendRequest(`${baseURL}/emergencyStop`);
+      this.sendRequest(`buttonAction/emergencyStop`);
     },
     resetSystem() {
-      this.sendRequest(`${baseURL}/reset`);
+      this.sendRequest(`buttonAction/reset`);
     }
   }
 };
