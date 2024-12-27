@@ -15,15 +15,15 @@ public class PubConfig {
     /**
      * 出餐口有碗
      */
-    public Boolean thereIsABowlAtTheServingWindow;
+    private Boolean thereIsABowlAtTheServingWindow;
     /**
      * 出餐口没有升起
      */
-    public Boolean servingWindowResetSensor;
+    private Boolean servingWindowResetSensor;
     /**
      * 出餐口上一碗汤没有取走
      */
-    public Boolean theBowlWasNotTakenFromTheServingWindow;
+    private Boolean theBowlWasNotTakenFromTheServingWindow;
     /**
      * 机器人在待机状态
      */
@@ -31,7 +31,7 @@ public class PubConfig {
     /**
      * 机器人成功执行命令
      */
-    public Boolean isRobotExecutionNaming = false;
+    private Boolean isRobotExecutionNaming = false;
 
     /**
      * 有多少个未做订单
@@ -108,98 +108,96 @@ public class PubConfig {
     /**
      * 设备自检完成
      */
-    public boolean deviceSelfCheckComplete = false;
+    private boolean deviceSelfCheckComplete = false;
 
     /**
      * 汤的温度
      */
-    public Double soupTemperatureValue = 0.0;
+    private Double soupTemperatureValue = 0.0;
 
     /**
      * 称重传感器
      */
-    public int[] calculateWeight = new int[4];
+    private int[] calculateWeight = new int[4];
     /**
      * 是否开启定时任务——初始化时给开启，急停关闭
      */
-    public Boolean isExecuteTask = false;
+    private Boolean isExecuteTask = false;
     /**
      * 粉丝货道
      */
-    public int currentFanBinNumber = 1;
+    private int currentFanBinNumber = 1;
     /**
      * 粉丝是否准备好
      */
-    public Boolean areTheFansReady = false;
+    private Boolean areTheFansReady = false;
     /**
      * 菜准备好
      */
-    public Boolean dishesAreReady = false;
+    private Boolean dishesAreReady = false;
     /**
      * 倒菜完成
      */
-    public Boolean servingDishesCompleted = false;
+    private Boolean servingDishesCompleted = false;
     /**
      * 加蒸汽
      */
-    public Boolean addSteam = true;
+    private Boolean addSteam = true;
     /**
      * 配菜完成
      */
-    public Boolean sideDishesCompleted = false;
+    private Boolean sideDishesCompleted = false;
     /**
      * 加完蒸汽
      */
-    public Boolean finishAddingSteam = false;
+    private Boolean finishAddingSteam = false;
     /**
      * 切肉数量
      */
-    public int meatSlicingQuantity;
+    private int meatSlicingQuantity;
     /**
      * 机器人获取碗的指令
      */
-    public Boolean getBowl;
+    private Boolean getBowl;
 
     /**
      * 称重1完毕
      */
-    public Boolean vegetable1Motor;
+    private Boolean vegetable1Motor;
     /**
      * 称重2完毕
      */
-    public Boolean vegetable2Motor;
+    private Boolean vegetable2Motor;
     /**
      * 机器人加使通
      */
-    public Boolean robotAlreadyEnableCommand;
+    private Boolean robotAlreadyEnableCommand;
     /**
      * mqtt连接状态
      */
-    public Boolean mqttConnectStatus;
+    private Boolean mqttConnectStatus;
     /**
      * 拿篮子
      */
-    public Boolean naLan;
+    private Boolean naLan;
     /**
      * 放牛肉
      */
-    public Boolean putBeef;
+    private Boolean putBeef;
     /**
      * 放粉丝
      */
-    public Boolean fens;
+    private Boolean fens;
     /**
      * 取碗
      */
-    public Boolean checkBowl;
+    private Boolean checkBowl;
     /**
      * 放碗
      */
-    public Boolean putBowl;
+    private Boolean putBowl;
     /**
      * 出餐
      */
-    public Boolean pickUpSoupBowl;
-
-
+    private Boolean pickUpSoupBowl;
 }

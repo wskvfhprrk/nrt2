@@ -223,7 +223,14 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      * 打开震动器
      */
     public Result openVibrator() {
-        openClose(Constants.Y_SHAKER_SWITCH_1, 5);
+        relayOpening(Constants.Y_SHAKER_SWITCH_1);
+        return Result.success();
+    }
+    /**
+     * 关闭震动器
+     */
+    public Result closeVibrator() {
+        relayClosing(Constants.Y_SHAKER_SWITCH_1);
         return Result.success();
     }
 
@@ -239,6 +246,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
 
     /**
      * 风扇打开多少秒后关闭
+     *
      * @param number
      * @return
      */
@@ -354,13 +362,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     }
 
 
-    public Result foodOutletReset() {
-        return Result.success();
-    }
-
-    public Result foodOutletDeliver() {
-        return Result.success();
-    }
 
 
     /**
@@ -484,7 +485,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         //切刀量大于等于数据时关闭切肉机
         while (pubConfig.getMeatSlicingQuantity() < number) {
-//            log.info("切肉片数-------------------------------------->{} number:{}",pubConfig.getMeatSlicingQuantity(),number);
             try {
                 Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {
@@ -525,6 +525,26 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         } else {
             openClose(Constants.Y_DISCHARGE_BIN_3, i);
         }
+        return Result.success();
+    }
+
+    /**
+     * 打开出餐口
+     * @return
+     */
+    public Result openPickUpCounter() {
+        relayOpening(Constants.Y_PICK_UP_COUNTER_DIRECTION_CONTROL);
+        relayOpening(Constants.Y_PICK_UP_COUNTER);
+        return Result.success();
+    }
+
+    /**
+     * 关闭出餐口
+     * @return
+     */
+    public Result closePickUpCounter() {
+        relayClosing(Constants.Y_VIBRATION_SWITCH_DIRECTION_CONTROL);
+        openClose(Constants.Y_VIBRATION_SWITCH_CONTROL,30);
         return Result.success();
     }
 }

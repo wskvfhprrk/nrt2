@@ -11,7 +11,8 @@ public class ModbusCalibration {
      * @param weight 标定重量值（例如：500）
      * @return 生成的 Modbus 报文字符串
      */
-    public static String generateCalibrationMessage(int registerAddressIndex, int weight) {
+    public static String
+    generateCalibrationMessage(int registerAddressIndex, int weight) {
         // 设备地址（例如：02）
         byte deviceAddress = 0x02;
 

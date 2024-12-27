@@ -118,10 +118,15 @@ public class Constants {
     public static final int Y_TELESCOPIC_ROD_SWITCH_CONTROL = 2;
 
     /**
-     * 震动料开关
+     * 出餐口开关
      */
-    public static final int Y_VIBRATION_SWITCH_DIRECTION_CONTROL = 3;
-    public static final int Y_VIBRATION_SWITCH_CONTROL = 4;
+    public static final int Y_PICK_UP_COUNTER_DIRECTION_CONTROL = 3;
+    public static final int Y_PICK_UP_COUNTER = 4;
+    /**
+     * 震动出料器开关
+     */
+    public static final int Y_VIBRATION_SWITCH_DIRECTION_CONTROL = 5;
+    public static final int Y_VIBRATION_SWITCH_CONTROL = 6;
     /**
      * 仓门控制
      */
@@ -253,4 +258,9 @@ public class Constants {
      * 风扇继电器
      */
     public static final int REAR_BOX_FAN = 13;
+    /**
+     * 称重盒编号
+     */
+    public static final int WEIGH_BOX_NUMBER = 4;
+
 }

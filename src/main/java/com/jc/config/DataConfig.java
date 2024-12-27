@@ -80,4 +80,12 @@ public class DataConfig {
      * openFanTime(秒)
      */
     private int openFanTime;
+    /**
+     * 是否使用称重
+     */
+    private Boolean isUseWeighing;
+    /**
+     * 称重默认值
+     */
+    private int defaultWeighingValue;
 }

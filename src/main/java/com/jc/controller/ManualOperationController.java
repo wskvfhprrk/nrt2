@@ -36,6 +36,8 @@ public class ManualOperationController {
     private PubConfig pubConfig;
     @Autowired
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
+    @Autowired
+    private Relay2DeviceGatewayService relay2DeviceGatewayService;
 
     @GetMapping("/{id}")
     public Result handleButtonAction(@PathVariable int id, @RequestParam(required = false) Integer number) throws Exception {
@@ -61,11 +63,11 @@ public class ManualOperationController {
             case 6:  // 机器人出餐
                 result = robotService.robotDeliverMeal();
                 break;
-            case 7:  // 取餐口复位
-                result = relay1DeviceGatewayService.foodOutletReset();
+            case 7:  // 取餐口复位——闭合
+                result = relay1DeviceGatewayService.closePickUpCounter();
                 break;
             case 8:  // 取餐口出餐
-                result = relay1DeviceGatewayService.foodOutletDeliver();
+                result = relay1DeviceGatewayService.openPickUpCounter();
                 break;
 
             // buttonsGroup2
@@ -121,59 +123,58 @@ public class ManualOperationController {
             case 24:  // 后箱风扇关
                 result = relay1DeviceGatewayService.rearFanClose();
                 break;
-            case 25:  // 一号配菜（g）
-                result = relay1DeviceGatewayService.meatSlicingMachine(number == null ? 1 : number);
+            case 25:  // 配菜（g）
+                result = temperatureWeighingGatewayService.vegetable1Motor(number == null ? 0 : number);
                 break;
-            case 26:  // 二号配菜（g）
-                result = relay1DeviceGatewayService.vibrator1Test(number == null ? dataConfig.getVibratorTime() : number);
-                break;
-            case 27:  // 1称重清0
-                result = relay1DeviceGatewayService.vibrationSwitchOn();
+            case 27:  // 称重清0
+                result = temperatureWeighingGatewayService.clearAll();
                 break;
             case 28:  // 1标重500g
-                result = relay1DeviceGatewayService.vibrationSwitchOff();
+                result = temperatureWeighingGatewayService.calibrateWeight1();
                 break;
             case 29:  // 2称重清0
-                result = relay1DeviceGatewayService.vibrationSwitchControl(number == null ? 0 : number);
+//                result = relay1DeviceGatewayService.vibrationSwitchControl(number == null ? 0 : number);
                 break;
 
             // buttonsGroup5
             case 31:  // 切肉机切肉（份量）
                 result = relay1DeviceGatewayService.meatSlicingMachine(number != null ? number : 1);
                 break;
-            case 32:  // 震动器（秒）
-                result = relay1DeviceGatewayService.openVibrator();
+            case 32:  // 震动器打开
+                result = relay1DeviceGatewayService.vibrationSwitchOn();
+                break;
+            case 36:  // 震动器关闭
+                result = relay1DeviceGatewayService.vibrationSwitchOff();
                 break;
             case 33:  // 出料开关（秒）
                 result = temperatureWeighingGatewayService.clearAll();
                 break;
-            case 34:  // 震动料开关打开
-                result = temperatureWeighingGatewayService.calibrateWeight1();
+            case 37:  // 称重盒打开
+                result = relay2DeviceGatewayService.openWeighBox(Constants.WEIGH_BOX_NUMBER);
                 break;
-            case 35:  // 震动料开关关闭
-                result = temperatureWeighingGatewayService.calibrateWeight2();
+            case 38:  // 称重盒关闭
+                result = relay2DeviceGatewayService.closeWeighBox(Constants.WEIGH_BOX_NUMBER);
                 break;
 
             // buttonsGroup6
-            case 40:  // 左上打开
-                relay1DeviceGatewayService.relayOpening(Constants.Y_LEFT_DOOR);
+            case 40:  // 左右上打开
+                result = relay1DeviceGatewayService.openClose(Constants.Y_LEFT_DOOR, 1);
                 break;
-            case 42:  // 左下打开
-                relay1DeviceGatewayService.relayOpening(Constants.Y_OPEN_LOWER_LEFT_DOOR);
+            case 42:  // 左左上打开
+                result = relay1DeviceGatewayService.openClose(Constants.Y_OPEN_LOWER_LEFT_DOOR, 1);
                 break;
             case 44:  // 中间左上打开
-                relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_UPPER_DOOR);
+                result = relay1DeviceGatewayService.openClose(Constants.Y_MIDDLE_LEFT_UPPER_DOOR, 1);
                 break;
             case 46:  // 中间左下打开
-                relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_LOWER_DOOR);
+                result = relay1DeviceGatewayService.openClose(Constants.Y_MIDDLE_LEFT_LOWER_DOOR, 1);
                 break;
             case 48:  // 中间右上打开
-                relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_UPPER_DOOR);
+                result = relay1DeviceGatewayService.openClose(Constants.Y_MIDDLE_RIGHT_UPPER_DOOR, 1);
                 break;
             case 50:  // 中间右下打开
-                relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_LOWER_DOOR);
+                result = relay1DeviceGatewayService.openClose(Constants.Y_MIDDLE_RIGHT_LOWER_DOOR, 1);
                 break;
-
             default:
                 throw new IllegalArgumentException("Invalid button ID: " + id);
         }

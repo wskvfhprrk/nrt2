@@ -3,22 +3,24 @@ module.exports = {
     devServer: {
         proxy: {
             '/orders': {
-                target: `${baseUrl}/orders/`,
+                target: `${baseUrl}/`,
                 changeOrigin: true,
-                secure: false,
-            },
-            '/qrcode': {
-                target: `${baseUrl}/qrcode/`,
-                changeOrigin: true,
-                secure: false,
+                // 后面新增的配置
+                onProxyReq(proxyReq) {
+                    proxyReq.removeHeader('origin')
+                }
             },
             '/login': {
-                target: `${baseUrl}/login/`,
+                target: `${baseUrl}/`,
                 changeOrigin: true,
                 secure: false,
+                // 后面新增的配置
+                onProxyReq(proxyReq) {
+                    proxyReq.removeHeader('origin')
+                }
             },
             '/buttonAction': {
-                target: `${baseUrl}/buttonAction/`,
+                target: `${baseUrl}/`,
                 changeOrigin: true,
                 secure: false,
             }

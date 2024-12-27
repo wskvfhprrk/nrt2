@@ -111,3 +111,5 @@ data:
   ladleDishDumpingRotationValue: 1300 # 菜勺倒菜转动值（脉冲值）
   fanPushRodThrustDistanceValue: 1000 # 粉丝推杆推动距离值（脉冲值）
   openFanTime: 90 #openFanTime(秒)
+  isUseWeighing: false #是否使用称重
+  defaultWeighingValue: 10 #称重默认值(克)

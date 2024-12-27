@@ -42,13 +42,6 @@ public class Reset {
             return;
         }
         log.info("设备自检复位中……");
-        //锁门
-        relay1DeviceGatewayService.relayOpening(Constants.Y_LEFT_DOOR);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_OPEN_LOWER_LEFT_DOOR);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_UPPER_DOOR);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_LEFT_LOWER_DOOR);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_UPPER_DOOR);
-        relay1DeviceGatewayService.relayOpening(Constants.Y_MIDDLE_RIGHT_LOWER_DOOR);
         //粉丝仓复位
         log.info("粉丝仓复位");
         Result result = fansService.fanReset();
@@ -101,6 +94,9 @@ public class Reset {
         //机器人复位
         log.info("机器人复位");
         robotService.robotReset();
+        //关闭出餐口
+        log.info("关闭出餐口");
+        relay1DeviceGatewayService.closePickUpCounter();
 
         log.info("自检完成！");
         pubConfig.setDeviceSelfCheckComplete(true);
