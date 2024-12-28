@@ -57,7 +57,6 @@ public class Constants {
     public static final int X_STEAM_UPPER_LIMIT = 15;
     public static final int X_STEAM_ORIGIN = 16;
     public static final int X_STEAM_LOWER_LIMIT = 17;
-
     /**
      * 汤料传感器
      */
@@ -66,6 +65,10 @@ public class Constants {
      * 切肉机传感器
      */
     public static final int X_MEAT_SLICER_SENSOR = 20;
+    /**
+     * 水脉冲传感器
+     */
+    public static int X_FLOWMETER_PULSE_COUNT = 21;
     /**
      * 32位继电器
      */
@@ -149,19 +152,19 @@ public class Constants {
     /**
      * 中间左上门
      */
-    public static final int Y_MIDDLE_LEFT_UPPER_DOOR=31;
+    public static final int Y_MIDDLE_LEFT_UPPER_DOOR = 31;
     /**
      * 中间左下门
      */
-    public static final int Y_MIDDLE_LEFT_LOWER_DOOR=32;
+    public static final int Y_MIDDLE_LEFT_LOWER_DOOR = 32;
     /**
      * 中间右上门
      */
-    public static final int Y_MIDDLE_RIGHT_UPPER_DOOR=29;
+    public static final int Y_MIDDLE_RIGHT_UPPER_DOOR = 29;
     /**
      * 中间右下门
      */
-    public static final int Y_MIDDLE_RIGHT_LOWER_DOOR=30;
+    public static final int Y_MIDDLE_RIGHT_LOWER_DOOR = 30;
 
     /** 485设备指令 */
     /**
@@ -249,7 +252,6 @@ public class Constants {
     public static final String PAY_DATA = "payData";
     public static final String PAY_ORDER_ID = "payOrderId";
     public static final String ORDER_ID = "orderId";
-
     /**
      * 其他
      */

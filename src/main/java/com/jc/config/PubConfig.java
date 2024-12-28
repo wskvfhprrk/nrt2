@@ -200,4 +200,8 @@ public class PubConfig {
      * 出餐
      */
     private Boolean pickUpSoupBowl;
+    /*
+     * 流量计脉冲数量
+     */
+    private int flowmeterPulseCount;
 }

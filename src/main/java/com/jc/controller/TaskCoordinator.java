@@ -101,7 +101,6 @@ public class TaskCoordinator {
             log.info("开始切肉");
             //根据订单类型选择
             int selectedPrice = order.getSelectedPrice();
-//            log.info("selectedPrice==={}", selectedPrice);
             switch (selectedPrice) {
                 case 10:
                     relay1DeviceGatewayService.meatSlicingMachine(1);
@@ -118,7 +117,7 @@ public class TaskCoordinator {
             }
         });
         //如果称重模块使用
-        if(dataConfig.getIsUseWeighing()){
+        if (dataConfig.getIsUseWeighing()) {
             executorService.submit(() -> {
                 log.info("开始称重配菜");
                 temperatureWeightReadingService.vegetable1Motor(dataConfig.getDefaultWeighingValue());
@@ -189,7 +188,8 @@ public class TaskCoordinator {
         bowlService.turn90Degrees();
 
         log.info("开始加汤");
-        result = relay1DeviceGatewayService.soupAdd(dataConfig.getSoupExtractionTime());
+//        result = relay1DeviceGatewayService.soupAdd(dataConfig.getSoupExtractionTime());
+        result = relay1DeviceGatewayService.dispenseSoupByPulseCount(dataConfig.getDispenseSoupByPulseCount());
         if (result.getCode() != 200) {
             return result;
         }
@@ -206,7 +206,7 @@ public class TaskCoordinator {
         //出汤
         log.info("开始出汤");
         log.info("开始出餐口打开出餐");
-        executorService.submit(()->{
+        executorService.submit(() -> {
             relay1DeviceGatewayService.openPickUpCounter();
             try {
                 Thread.sleep(60000L);
@@ -307,7 +307,7 @@ public class TaskCoordinator {
     private void notifyServerAfterProcessingOrder(String orderJson) {
         Order order = JSON.parseObject(orderJson, Order.class);
         order.setStatus(OrderStatus.COMPLETED);
-        log.info("成功订单：{}",order);
+        log.info("成功订单：{}", order);
         //发送mqtt消息
         String topic = "message/order/" + machineCode;
         try {

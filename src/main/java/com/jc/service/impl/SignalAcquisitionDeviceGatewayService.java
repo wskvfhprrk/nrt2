@@ -173,6 +173,11 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             pubConfig.setMeatSlicingQuantity(pubConfig.getMeatSlicingQuantity() + 1);
             log.info("切肉数量：{}", pubConfig.getMeatSlicingQuantity());
         }
+        //水流脉冲计数
+        if (i == Constants.X_FLOWMETER_PULSE_COUNT && s.equals("0") && s1.equals("1")) {
+            pubConfig.setFlowmeterPulseCount(pubConfig.getFlowmeterPulseCount() + 1);
+            log.info("流量计脉冲数量：{}", pubConfig.getFlowmeterPulseCount());
+        }
     }
 
     /**

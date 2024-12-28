@@ -106,6 +106,9 @@ public class ManualOperationController {
             case 19:  // 加汤（秒）
                 result = relay1DeviceGatewayService.soupAdd(number != null ? number : dataConfig.getSoupExtractionTime());
                 break;
+            case 29:  // 加汤（脉冲）
+                result = relay1DeviceGatewayService.dispenseSoupByPulseCount(number != null ? number : dataConfig.getDispenseSoupByPulseCount());
+                break;
             case 20:  // 汤管排气（秒）
                 result = relay1DeviceGatewayService.soupPipeExhaust(number != null ? number : dataConfig.getSoupExhaustTime());
                 break;
@@ -131,9 +134,6 @@ public class ManualOperationController {
                 break;
             case 28:  // 1标重500g
                 result = temperatureWeighingGatewayService.calibrateWeight1();
-                break;
-            case 29:  // 2称重清0
-//                result = relay1DeviceGatewayService.vibrationSwitchControl(number == null ? 0 : number);
                 break;
 
             // buttonsGroup5

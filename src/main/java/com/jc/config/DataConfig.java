@@ -88,4 +88,8 @@ public class DataConfig {
      * 称重默认值
      */
     private int defaultWeighingValue;
+    /**
+     * 抽汤脉冲值
+     */
+    private int dispenseSoupByPulseCount = 10;
 }

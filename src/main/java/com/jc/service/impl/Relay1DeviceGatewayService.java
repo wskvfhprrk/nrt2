@@ -8,6 +8,7 @@ import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
 import com.jc.service.DeviceHandler;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -196,7 +197,53 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         return Result.success();
     }
-
+    /**
+     * 打开抽汤泵抽汤
+     *
+     */
+    public Result addSoup() {
+        //盖子下降——两次命令
+        Result result = this.soupSteamCoverDown();
+        if (result.getCode() != 200) {
+            log.error(result.getMessage());
+            return result;
+        }
+        //抽汤前先打开汤开关，防止水流
+        relayOpening(Constants.Y_BOWL_STEAM_SOLENOID_VALVE);
+        log.info("打开抽汤泵");
+        relayOpening(Constants.Y_SOUP_PUMP_SWITCH);
+        return Result.success();
+    }
+    /**
+     * 关闭抽汤泵抽汤
+     *
+     */
+    public Result closeSoup() {
+        //抽汤前先打开汤开关，防止水流
+        relayClosing(Constants.Y_BOWL_STEAM_SOLENOID_VALVE);
+        log.info("关闭抽汤泵");
+        relayClosing(Constants.Y_SOUP_PUMP_SWITCH);
+        //盖子上升
+        Result result = this.soupSteamCoverUp();
+        if (result.getCode() != 200) {
+            return result;
+        }
+        return Result.success();
+    }
+    /**
+     * 根据脉冲数量出汤
+     */
+    @SneakyThrows
+    public Result dispenseSoupByPulseCount(int num){
+        log.info("要出水脉冲值：{}",num);
+        pubConfig.setFlowmeterPulseCount(0);
+        addSoup();
+        while (pubConfig.getFlowmeterPulseCount()<num){
+            Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+        }
+        closeSoup();
+        return Result.success();
+    }
     /**
      * 蒸汽打开
      *
