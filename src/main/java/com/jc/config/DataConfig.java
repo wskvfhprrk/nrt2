@@ -33,10 +33,6 @@ public class DataConfig {
      */
     private int soupExtractionTime;
     /**
-     * 震动器时间
-     */
-    private int vibratorTime;
-    /**
      * 汤加热温度
      */
     private int soupHeatingTemperature;

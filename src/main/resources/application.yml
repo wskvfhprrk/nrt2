@@ -101,7 +101,6 @@ data:
   ingredient1Value: 10 # 配料1的值(g)
   ingredient2Value: 10 # 配料2的值(g)
   soupExtractionTime: 10 # 抽汤时间（秒）
-  vibratorTime: 5 # 振动器工作时间（秒）
   soupHeatingTemperature: 120 # 汤加热温度（℃）
   soupInsulationTemperature: 80 # 汤保温温度（℃）
   steamAdditionTimeSeconds: 15 # 加蒸汽时间（秒）
@@ -113,3 +112,4 @@ data:
   openFanTime: 90 #openFanTime(秒)
   isUseWeighing: false #是否使用称重
   defaultWeighingValue: 10 #称重默认值(克)
+  dispenseSoupByPulseCount: 10 #抽汤脉冲值
