@@ -551,6 +551,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      * @return
      */
     public Result openPickUpCounter() {
+        log.info("打开出餐口");
         relayOpening(Constants.Y_PICK_UP_COUNTER_DIRECTION_CONTROL);
         relayOpening(Constants.Y_PICK_UP_COUNTER);
         return Result.success();
@@ -561,8 +562,9 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
      * @return
      */
     public Result closePickUpCounter() {
+        log.info("关闭出餐口");
         relayClosing(Constants.Y_VIBRATION_SWITCH_DIRECTION_CONTROL);
-        openClose(Constants.Y_VIBRATION_SWITCH_CONTROL,30);
+        openClose(Constants.Y_PICK_UP_COUNTER,30);
         return Result.success();
     }
 }

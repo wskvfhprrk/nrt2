@@ -109,10 +109,6 @@ public class Constants {
      * 出砣电机开关
      */
     public static final int Y_CHU_WAN = 15;
-//    /**
-//     * 出料仓3
-//     */
-//    public static final int Y_DISCHARGE_BIN_3 = 16;
 
     /**
      * 蒸汽伸缩杆控制

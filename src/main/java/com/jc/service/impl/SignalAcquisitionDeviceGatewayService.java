@@ -9,7 +9,6 @@ import com.jc.service.DeviceHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -105,7 +104,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             for (int i = 0; i < currentLevelStr.length; i++) {
                 if (!previousLevelStr[i].equals(currentLevelStr[i])) {
                     log.info("第 X{} 位电平发生变化，从 {} 变为 {}", i + 1, previousLevelStr[i], currentLevelStr[i]);
-                    passdata(i + 1, previousLevelStr[i], currentLevelStr[i]);
+                    passaDta(i + 1, previousLevelStr[i], currentLevelStr[i]);
                 }
             }
         }
@@ -113,7 +112,7 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
         previousLevels = new StringBuffer(currentLevels);
     }
 
-    private void passdata(int i, String s, String s1) {
+    private void passaDta(int i, String s, String s1) {
         //有碗信号感应到时
         if (i == Constants.X_PLACE_BOWL_SIGNAL) {
             relay1DeviceGatewayService.chuWanStop();
