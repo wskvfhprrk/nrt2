@@ -61,6 +61,9 @@ REM 汤排气时间（秒）——0~100
 set "DATA_LADLE_WALKING_DISTANCE_VALUE=1900"
 REM 菜勺走动距离值（脉冲值）——不要随意改动，改了传感器位置一起动
 
+set "LADLE_DISH_DUMPING_DISTANCE_PULSE_VALUE=1300"
+REM 菜勺倒菜距离（脉冲值）
+
 set "DATA_LADLE_DUMPING_DISTANCE_PULSE=1300"
 REM 菜勺倒菜距离（脉冲值）——不要随意改动，改了传感器位置一起动
 
@@ -114,9 +117,10 @@ java ^
   --data.steamAdditionTimeSeconds=%DATA_STEAM_ADDITION_TIME_SECONDS% ^
   --data.soupExhaustTime=%DATA_SOUP_EXHAUST_TIME% ^
   --data.ladleWalkingDistanceValue=%DATA_LADLE_WALKING_DISTANCE_VALUE% ^
-  --data.ladleDishDumpingDistancePulseValue=%DATA_LADLE_DUMPING_DISTANCE_P% ^
+  --data.ladleDishDumpingDistancePulseValue=%LADLE_DISH_DUMPING_DISTANCE_PULSE_VALUE% ^
   --data.fanPushRodThrustDistanceValue=%FAN_PUSH_ROD_THRUST_DISTANCE_VALUE% ^
   --data.openFanTime=%OPEN_FAN_TIME% ^
   --data.isUseWeighing=%IS_USE_WEIGHING% ^
   --data.defaultWeighingValue=%DEFAULT_WEIGHING_VALUE% ^
   --data.dispenseSoupByPulseCount=%DISPENSE_SOUP_BY_PULSE_COUNT%
+
