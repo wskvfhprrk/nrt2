@@ -158,17 +158,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         return Result.success();
     }
 
-//    /**
-//     * 打开所有继电器
-//     */
-//    public Result openAll() {
-//        log.info("打开所有继电器");
-//        // 发送打开所有继电器的指令
-//        sendOrder("48 3A 01 57 55 55 55 55 55 55 55 55 82 45 44");
-//        return Result.success();
-//    }
-
-
     /**
      * 打开抽汤泵到液位后多少秒关闭——至少1秒
      *
@@ -334,16 +323,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         return Result.success();
     }
 
-    /**
-     * 出料仓3
-     *
-     * @param number
-     * @return
-     */
-    public Result DischargeBin3Test(Integer number) {
-        openClose(Constants.Y_DISCHARGE_BIN_3, number);
-        return Result.success();
-    }
 
     /**
      * 碗蒸汽加热（秒）
@@ -566,14 +545,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         return Result.success();
     }
 
-    public Result vibrationSwitchControl(int i) {
-        if (i == 0) {
-            relayOpening(Constants.Y_DISCHARGE_BIN_3);
-        } else {
-            openClose(Constants.Y_DISCHARGE_BIN_3, i);
-        }
-        return Result.success();
-    }
 
     /**
      * 打开出餐口
