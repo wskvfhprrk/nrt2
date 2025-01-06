@@ -12,14 +12,20 @@ export default {
 
 <style scoped>
 #app {
-  /*background-image: url('@/assets/img/background.jpg');*/
   background-size: cover;
   background-position: center;
   min-height: 100vh;
-  /*display: flex;*/
   justify-content: center;
   align-items: center;
   background-color: var(--beige);
+  overflow: auto; /* 确保内容可以滚动 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
+
+#app::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 </style>
 

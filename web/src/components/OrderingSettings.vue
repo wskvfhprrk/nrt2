@@ -2,7 +2,7 @@
   <div class="container">
     <el-form label-width="200px">
       <!-- Meat Category Selection -->
-      <el-form-item label="选择肉类" style="font-size: 15px;">
+      <el-form-item label="选择肉类" >
         <el-radio-group v-model="selectedCategory">
           <el-radio-button label="牛肉和牛杂">牛肉和牛杂</el-radio-button>
           <el-radio-button label="羊肉和羊杂">羊肉和羊杂</el-radio-button>
@@ -67,10 +67,15 @@ export default {
 <style scoped>
 .container {
   width: 600px;
-  margin: 100px 100px;
+  margin: 100px auto; /* 使整个容器居中 */
 }
 .el-form-item {
   margin-bottom: 20px;
+}
+.button-container {
+  display: flex;
+  justify-content: center; /* 使按钮水平居中 */
+  margin-top: 40px; /* 调整按钮上方的间距 */
 }
 ::v-deep .el-form-item__label {
   font-size: 30px;
