@@ -94,4 +94,8 @@ export default {
   margin-top: 100px;
   width: 350px;
 }
+
+ ::v-deep .el-form-item__label {
+   font-size: 30px;
+ }
 </style>

@@ -32,7 +32,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
     @Autowired
     private Relay1DeviceGatewayService relay1DeviceGatewayService;
     //发送中状态——true正在发送中——不允许再次发送指令，等待其返回值后才可发送，false已经有返回值
-    private Boolean sendHexStatus = false;
+//    private Boolean sendHexStatus = false;
 
     /**
      * 处理消息
@@ -64,7 +64,7 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
 //        sendHexStatus = true;
 //        log.info("温度称重发送HEX消息: {}", hexStr);
         try {
-            Thread.sleep(200L);
+            Thread.sleep(1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -258,10 +258,6 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
      * @return
      */
     private int[] calculateWeight(String message) {
-//        if (Constants.ZEROING_CALIBRATION.replaceAll(" ", "").equals(message.replaceAll(" ", ""))) {
-//            log.info("所有秤已置零！");
-//            return new int[4];
-//        }
         //判断如果不是稳重值就不管了
         message = message.replaceAll(" ", "");
         if (!message.substring(0, 4).equals("0203")) {
@@ -277,10 +273,6 @@ public class TemperatureWeighingGatewayService implements DeviceHandler {
             if (i == 0) {
                 log.info("称重传感器 {} 的值为：{} g", 1, number);
             }
-//            if (i == 2) {
-//                log.info("称重传感器 {} 的值为：{} g", 2, number);
-//            }
-//            log.info("称重传感器 {} 的值为：{} g", i, number);
         }
         pubConfig.setCalculateWeight(sensorValues);
         return sensorValues;

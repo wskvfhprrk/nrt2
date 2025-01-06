@@ -3,7 +3,7 @@
     <el-row gutter="10">
       <!-- Existing fields -->
       <el-col :span="24">
-        <el-form-item label="汤自动循环排空气" style="font-size: 15px;">
+        <el-form-item label="汤自动循环" >
           <el-input v-model="form.circulateAir" placeholder="Enter value">
             <template #append>分钟/次</template>
           </el-input>
@@ -70,5 +70,8 @@ export default {
 }
 .el-button {
   width: 100%;
+}
+::v-deep .el-form-item__label {
+  font-size: 30px;
 }
 </style>

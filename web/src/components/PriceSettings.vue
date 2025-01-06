@@ -68,4 +68,7 @@ export default {
 span {
   margin-left: 5px;
 }
+::v-deep .el-form-item__label {
+  font-size: 30px;
+}
 </style>

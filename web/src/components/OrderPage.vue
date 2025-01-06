@@ -50,18 +50,23 @@
           <el-form :model="form" label-width="220px">
             <el-form-item label="选择食谱">
               <el-radio-group v-model="form.selectedRecipe">
-                <el-radio-button :value="'牛肉汤'">牛肉汤</el-radio-button>
-                <el-radio-button :value="'牛杂汤'">牛杂汤</el-radio-button>
+                <el-radio-button v-for="method in recipes" :key="method.key" :label="method.key">
+                  {{ method.label }}
+                </el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="选择份量">
               <el-radio-group v-model="form.selectedPrice">
-                <el-radio-button v-for="price in prices" :key="price" :label="price">{{ price }}元</el-radio-button>
+                <el-radio-button v-for="method in prices" :key="method.key" :label="method.key">
+                  {{ method.label }}
+                </el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="选择口味">
               <el-radio-group v-model="form.selectedSpice">
-                <el-radio-button v-for="spice in spices" :key="spice" :label="spice">{{ spice }}</el-radio-button>
+                <el-radio-button v-for="method in spices" :key="method.key" :label="method.key">
+                  {{ method.label }}
+                </el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="添加香菜">
@@ -120,21 +125,34 @@ export default {
   data() {
     return {
       form: {
-        selectedRecipe: '牛肉汤',
-        selectedPrice: 20,
-        selectedSpice: '微辣',
+        selectedRecipe: 'beefSoup',
+        selectedPrice: 'large',
+        selectedSpice: 'notSpicy',
         addCilantro: true,
         addOnion: true,
         paymentMethod: 'wechat'   // 默认选择微信支付
       },
-      recipes: ['牛肉汤', '牛杂汤'],
-      prices: [10, 15, 20, 30],
-      spices: ['不辣', '微辣', '中辣', '辣'],
+      recipes: [
+        {key: 'beefSoup', label: '牛肉汤'},
+        {key: 'beefOffalSoup', label: '牛杂汤'}
+      ],
+      prices: [
+          {key: 'small', label: '小份'},
+        {key: 'mid', label: '中份'},
+        {key: 'large', label: '大份'},
+        {key: 'addMeat', label: '加肉'}
+      ],
+      spices: [
+        {key: 'notSpicy', label: '不辣'},
+        {key: 'mildlySpicy', label: '微辣'},
+        {key: 'mediumSpicy', label: '中辣'},
+        {key: 'spicy', label: '辣'}
+      ],
       orderSubmitted: false,
       isButtonEnabled: false,
       paymentMethods: [
-        {key: 'wechat', label: '微信支付', colorDark: "#000000", colorLight: "#07C160"},
-        {key: 'alipay', label: '支付宝支付（开发中）', colorDark: "#FFFFFF", colorLight: "#10AEFF"}
+        {key: 'wechat', label: '微信', colorDark: "#000000", colorLight: "#07C160"},
+        {key: 'alipay', label: '支付宝', colorDark: "#FFFFFF", colorLight: "#10AEFF"}
       ],
       serverStatus: {
         color: 'black',
@@ -292,7 +310,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .logo-container {
   display: flex;
   align-items: center;
@@ -301,15 +319,15 @@ export default {
 }
 
 .logo-image {
-  width: 60px; /* 控制logo尺寸 */
-  height: 60px;
+  width: 120px; /* 控制logo尺寸 */
+  height: 120px;
   border-radius: 50%; /* 将图片裁剪成圆形 */
   object-fit: cover; /* 保证图片适配并不会变形 */
   border: 2px solid #07C160; /* 给logo添加边框，可选 */
 }
 
 .logo-text {
-  font-size: 24px;
+  font-size: calc(10px + 1.5vh);
   font-weight: bold;
   color: #333;
   margin-left: 10px;
@@ -317,8 +335,9 @@ export default {
 
 
 html, body {
-  height: 100%;
-  margin: 0;
+  overflow-x: hidden; /* 隐藏水平滚动条 */
+  width: 100%;
+  max-width: 100%;
   background-color: var(--beige);
 }
 
@@ -331,10 +350,11 @@ html, body {
 }
 
 .container {
-  max-width: 600px;
+  max-width: 1400px;
   width: 100%;
   padding: 20px;
   font-family: 'Arial', sans-serif;
+
 }
 
 .button-container {
@@ -348,17 +368,29 @@ html, body {
   color: #fff;
 }
 
+.el-radio-button__inner {
+  font-size: calc(5px + 1.5vh);
+}
 .el-main {
   padding: 20px;
 }
-
+.el-form{
+  margin-left: 100px;
+}
 .el-form-item {
   margin-bottom: 40px;
 }
 
-.el-form-item label {
-  font-size: calc(8px + 1.5vh);
-  color: rgb(72, 8, 25);
+::v-deep .el-form-item__label {
+  font-size: 40px; /* 调整 label 字体大小 */
+  line-height: 60px; /* 根据 el-radio-button 的高度调整 */
+}
+
+::v-deep .el-radio-button__inner {
+  font-size: 40px; /* 调整 el-radio-button 字体大小 */
+  padding: 5px 20px; /* 调整内边距 */
+  height: 60px; /* 固定高度 */
+  line-height: 50px; /* 确保行高与 label 一致 */
 }
 
 .el-radio-group {
@@ -366,7 +398,7 @@ html, body {
 }
 
 .el-button {
-  height: 40px;
+  height: 60px;
   font-size: calc(12px + 1.5vh);
   margin-top: 50px;
 }
@@ -407,18 +439,20 @@ html, body {
   margin-left: 5px;
 }
 
+
+
 .order-list {
   display: grid;
   grid-template-columns: repeat(6, 1fr); /* 每行显不6个订单号 */
   gap: 5px;
   justify-content: center;
-  max-width: 1000px; /* Set a max width to control the layout */
+  max-width: 1200px; /* Set a max width to control the layout */
   margin: 0 auto;
 }
 
 .order-list .customer-name {
   text-align: center;
-  font-size: calc(12px + 1.5vh);
+  font-size: calc(12px + 1.5vh);  
 }
 
 .pending .customer-name {

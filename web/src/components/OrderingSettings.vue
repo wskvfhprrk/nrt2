@@ -72,4 +72,7 @@ export default {
 .el-form-item {
   margin-bottom: 20px;
 }
+::v-deep .el-form-item__label {
+  font-size: 30px;
+}
 </style>

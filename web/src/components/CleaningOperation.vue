@@ -44,4 +44,5 @@ export default {
   width: 180px;
   font-size: 15px;
 }
+
 </style>

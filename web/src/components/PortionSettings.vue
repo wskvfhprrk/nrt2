@@ -67,7 +67,10 @@ export default {
 
 <style scoped>
 .el-form {
-  width: 300px;
+  width: 350px;
   margin: auto;
+}
+::v-deep .el-form-item__label {
+  font-size: 30px;
 }
 </style>
