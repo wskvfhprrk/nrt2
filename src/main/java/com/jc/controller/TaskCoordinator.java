@@ -7,6 +7,7 @@ import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
+import com.jc.enums.PriceOption;
 import com.jc.mqtt.MqttProviderConfig;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
@@ -100,21 +101,9 @@ public class TaskCoordinator {
         executorService.submit(() -> {
             log.info("开始切肉");
             //根据订单类型选择
-            int selectedPrice = order.getSelectedPrice();
-            switch (selectedPrice) {
-                case 10:
-                    relay1DeviceGatewayService.meatSlicingMachine(1);
-                    break;
-                case 15:
-                    relay1DeviceGatewayService.meatSlicingMachine(2);
-                    break;
-                case 20:
-                    relay1DeviceGatewayService.meatSlicingMachine(3);
-                    break;
-                case 25:
-                    relay1DeviceGatewayService.meatSlicingMachine(4);
-                    break;
-            }
+            String selectedPrice = order.getSelectedPrice();
+            PriceOption priceOption = PriceOption.fromKey(selectedPrice);
+            relay1DeviceGatewayService.meatSlicingMachine(priceOption.getMachineParameter());
         });
         //如果称重模块使用
         if (dataConfig.getIsUseWeighing()) {

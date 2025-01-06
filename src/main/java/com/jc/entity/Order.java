@@ -26,7 +26,7 @@ public class Order  implements Serializable{
     /**
      * 选择的价格
      */
-    private int selectedPrice;
+    private String selectedPrice;
     /**
      * 选择的调料
      */
