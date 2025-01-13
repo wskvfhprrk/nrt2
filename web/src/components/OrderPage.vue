@@ -216,18 +216,6 @@ export default {
         this.$message.error('请完整选择所有选项');
       }
     },
-    async fetchServerStatus() {
-      try {
-        const response = await axios.get( 'orders/serverStatus');
-        this.serverStatus.color = response.data.color;
-        this.serverStatus.message = response.data.message;
-        // 更新按钮状态
-        this.isButtonEnabled = (this.serverStatus.color === 'green');
-      } catch (error) {
-        console.error('获取服务器状态时出错:', error);
-        this.isButtonEnabled = false; // 如果请求失败，也禁用按钮
-      }
-    },
     async fetchOrderData() {
       try {
         const response = await axios.get('orders/status');
@@ -267,7 +255,9 @@ export default {
     },
     //websocket连接
     connectWebSocket() {
-      this.ws = new WebSocket("ws://localhost:8080/ws");
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host;
+      this.ws = new WebSocket(`${protocol}//${host}/ws`);
       console.log("连接websocket……")
       this.ws.onmessage = (event) => {
         // console.log(event.data)
@@ -290,9 +280,14 @@ export default {
 
       this.ws.onopen = () => {
         console.log("WebSocket连接成功");
+        console.log("WebSocket readyState:", this.ws.readyState);
       };
       this.ws.onclose = () => {
         console.log("WebSocket连接关闭");
+        console.log("WebSocket readyState:", this.ws.readyState);
+      };
+      this.ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
       };
     }
   },
@@ -301,9 +296,7 @@ export default {
     this.connectWebSocket();
     /*清空登陆session*/
     this.cleanSession();
-    this.fetchServerStatus();
     this.fetchOrderData();
-    setInterval(this.fetchServerStatus, 1000);
     setInterval(this.fetchOrderData, 1000);
   }
 };

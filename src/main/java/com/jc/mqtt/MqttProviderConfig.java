@@ -72,26 +72,34 @@ public class MqttProviderConfig {
     }
 
     public void publish(int qos, boolean retained, String topic, String message) {
-        MqttMessage mqttMessage = new MqttMessage();
-        mqttMessage.setQos(qos);
-        mqttMessage.setRetained(retained);
-        mqttMessage.setPayload(message.getBytes());
-        //主题的目的地，用于发布/订阅信息
-        MqttTopic mqttTopic = client.getTopic(topic);
-        //提供一种机制来跟踪消息的传递进度
-        //用于在以非阻塞方式（在后台运行）执行发布是跟踪消息的传递进度
-        MqttDeliveryToken token;
+        if (client == null || !client.isConnected()) {
+            log.warn("MQTT client not connected, attempting to reconnect...");
+            connect();
+            if (client == null || !client.isConnected()) {
+                log.error("Failed to connect MQTT client");
+                return;
+            }
+        }
+
         try {
-            //将指定消息发布到主题，但不等待消息传递完成，返回的token可用于跟踪消息的传递状态
-            //一旦此方法干净地返回，消息就已被客户端接受发布，当连接可用，将在后台完成消息传递。
-            token = mqttTopic.publish(mqttMessage);
+            MqttMessage mqttMessage = new MqttMessage();
+            mqttMessage.setQos(qos);
+            mqttMessage.setRetained(retained);
+            mqttMessage.setPayload(message.getBytes());
+            
+            MqttTopic mqttTopic = client.getTopic(topic);
+            MqttDeliveryToken token = mqttTopic.publish(mqttMessage);
             token.waitForCompletion();
+            
+            log.info("Message published successfully to topic: {}", topic);
         } catch (MqttException e) {
             if (e.getReasonCode() == 32104) {
                 log.error("与服务器断开连接");
                 pubConfig.setMqttConnectStatus(false);
+                // Attempt to reconnect
+                connect();
             } else {
-                e.printStackTrace();
+                log.error("MQTT publish error: {}", e.getMessage(), e);
             }
         }
     }
