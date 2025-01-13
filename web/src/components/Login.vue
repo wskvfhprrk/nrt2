@@ -10,7 +10,10 @@
         <div class="form-group">
           <input type="password" v-model="password" placeholder="请输入密码" required/>
         </div>
-        <button type="submit" class="login-button">登录</button>
+        <div class="button-group">
+          <button type="submit" class="login-button">登录</button>
+          <button type="button" class="order-button" @click="returnToOrder">返回订单</button>
+        </div>
       </form>
       <el-alert
           v-if="showAlert"
@@ -38,6 +41,10 @@ export default {
     };
   },
   methods: {
+    returnToOrder() {
+      this.$router.push({name: 'OrderPage'});
+    },
+    
     async submitForm() {
       try {
         // 发送 POST 请求到后端 API
@@ -145,6 +152,26 @@ export default {
 
 .login-button:hover {
   background-color: #0056b3;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.order-button {
+  width: 80%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.order-button:hover {
+  background-color: #218838;
 }
 .el-alert.is-center {
   margin-top: 10px;
