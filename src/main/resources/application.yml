@@ -92,12 +92,9 @@ pub:
   checkBowl: false  #取碗
   putBowl: false  #放碗
   pickUpSoupBowl: false  #出餐
+
 # 数据配置
 data:
-  beef10: 4 # 牛肉 1片
-  beef15: 6 # 牛肉 2片
-  beef20: 8 # 牛肉 3片
-  extraBeef: 10 # 加量牛肉4片
   ingredient1Value: 10 # 配料1的值(g)
   ingredient2Value: 10 # 配料2的值(g)
   soupExtractionTime: 10 # 抽汤时间（秒）
@@ -113,3 +110,18 @@ data:
   isUseWeighing: false #是否使用称重
   defaultWeighingValue: 10 #称重默认值(克)
   dispenseSoupByPulseCount: 10 #抽汤脉冲值
+  
+  # 价格和份量配置
+  portionOptions:
+    small:
+      price: 10
+      quantity: 4
+    mid:
+      price: 15
+      quantity: 6
+    large:
+      price: 20
+      quantity: 8
+    addMeat:
+      price: 30
+      quantity: 10

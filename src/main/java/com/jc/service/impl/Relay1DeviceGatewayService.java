@@ -1,9 +1,6 @@
 package com.jc.service.impl;
 
-import com.jc.config.DataConfig;
-import com.jc.config.IpConfig;
-import com.jc.config.PubConfig;
-import com.jc.config.Result;
+import com.jc.config.*;
 import com.jc.constants.Constants;
 import com.jc.enums.SignalLevel;
 import com.jc.netty.server.NettyServerHandler;
@@ -32,6 +29,9 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
     //发送中状态——true正在发送中——不允许再次发送指令，等待其返回值后才可发送，false已经有返回值
     private Boolean sendHexStatus = false;
+
+    @Autowired
+    private PortionOptionsConfig portionOptionsConfig;
 
     /**
      * 处理消息
@@ -186,9 +186,9 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         return Result.success();
     }
+
     /**
      * 打开抽汤泵抽汤
-     *
      */
     public Result addSoup() {
         //盖子下降——两次命令
@@ -203,9 +203,9 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         relayOpening(Constants.Y_SOUP_PUMP_SWITCH);
         return Result.success();
     }
+
     /**
      * 关闭抽汤泵抽汤
-     *
      */
     public Result closeSoup() {
         //抽汤前先打开汤开关，防止水流
@@ -219,20 +219,22 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         }
         return Result.success();
     }
+
     /**
      * 根据脉冲数量出汤
      */
     @SneakyThrows
-    public Result dispenseSoupByPulseCount(int num){
-        log.info("要出水脉冲值：{}",num);
+    public Result dispenseSoupByPulseCount(int num) {
+        log.info("要出水脉冲值：{}", num);
         pubConfig.setFlowmeterPulseCount(0);
         addSoup();
-        while (pubConfig.getFlowmeterPulseCount()<num){
+        while (pubConfig.getFlowmeterPulseCount() < num) {
             Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
         }
         closeSoup();
         return Result.success();
     }
+
     /**
      * 蒸汽打开
      *
@@ -262,6 +264,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         relayOpening(Constants.Y_SHAKER_SWITCH_1);
         return Result.success();
     }
+
     /**
      * 关闭震动器
      */
@@ -388,8 +391,6 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     }
 
 
-
-
     /**
      * 加蒸汽盖下降
      *
@@ -484,31 +485,16 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     /**
      * 切肉机切肉（份量）
      *
-     * @param i 份量
+     * @param i 价格——10、15、20、30元
      * @return
      */
-    public Result meatSlicingMachine(int i) {
+    public Result meatSlicingMachine(int price) {
         pubConfig.setDishesAreReady(false);
         //设置切肉初始值为0
         pubConfig.setMeatSlicingQuantity(0);
         //打开切肉机
         relayOpening(Constants.Y_MEAT_SLICER_CONTROL);
-        int number = 0;
-        switch (i) {
-            case 1:
-                number = dataConfig.getBeef10();
-                break;
-            case 2:
-                number = dataConfig.getBeef15();
-                break;
-            case 3:
-                number = dataConfig.getBeef20();
-                break;
-            case 4:
-                number = dataConfig.getExtraBeef();
-                break;
-            default:
-        }
+        int number = portionOptionsConfig.getSmall().getQuantity();
         //切刀量大于等于数据时关闭切肉机
         while (pubConfig.getMeatSlicingQuantity() < number) {
             try {
@@ -548,23 +534,25 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
 
     /**
      * 打开出餐口
+     *
      * @return
      */
     public Result openPickUpCounter() {
         log.info("打开出餐口");
-        openClose(Constants.Y_PICK_UP_COUNTER_DIRECTION_CONTROL,30);
-        openClose(Constants.Y_PICK_UP_COUNTER,30);
+        openClose(Constants.Y_PICK_UP_COUNTER_DIRECTION_CONTROL, 30);
+        openClose(Constants.Y_PICK_UP_COUNTER, 30);
         return Result.success();
     }
 
     /**
      * 关闭出餐口
+     *
      * @return
      */
     public Result closePickUpCounter() {
         log.info("关闭出餐口");
         relayClosing(Constants.Y_VIBRATION_SWITCH_DIRECTION_CONTROL);
-        openClose(Constants.Y_PICK_UP_COUNTER,30);
+        openClose(Constants.Y_PICK_UP_COUNTER, 30);
         return Result.success();
     }
 }

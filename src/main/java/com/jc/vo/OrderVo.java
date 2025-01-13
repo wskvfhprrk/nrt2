@@ -37,4 +37,19 @@ public class OrderVo {
      * 支付方式
      */
     private String paymentMethod;
+    
+    /**
+     * 订单总价
+     */
+    private double price;
+    
+    /**
+     * 份量大小
+     */
+    private String portionSize;
+    
+    /**
+     * 是否加肉
+     */
+    private boolean addMeat;
 }

@@ -13,23 +13,11 @@ if %ERRORLEVEL% neq 0 (
 )
 
 echo 配置启动参数...
-set "JAR_FILE=junchuang-0.0.1-SNAPSHOT.jar"
+set "JAR_FILE=junchuang.jar"
 REM 指定要运行的 JAR 文件——根据启动的文件名可以修改
 
-set "MACHINE_CODE=A000002"
+set "MACHINE_CODE=A000001"
 REM 机器码——每台机器都是固定的，不可更改
-
-set "DATA_BEEF10=4"
-REM 小份分量——0~100
-
-set "DATA_BEEF15=6"
-REM 中份分量——0~100
-
-set "DATA_BEEF20=8"
-REM 大份分量——0~100
-
-set "DATA_EXTRA_BEEF=10"
-REM 加肉分量——0~100
 
 set "DATA_CILANTRO=5"
 REM 香菜默认值 (克)——0~100
@@ -43,19 +31,19 @@ REM 配料1的值 (克)——0~100
 set "DATA_INGREDIENT2_VALUE=10"
 REM 配料2的值 (克)——0~100
 
-set "DATA_SOUP_EXTRACTION_TIME=13"
+set "DATA_SOUP_EXTRACTION_TIME=10"
 REM 抽汤时间（秒）——0~100
 
-set "DATA_SOUP_HEATING_TEMPERATURE=140"
+set "DATA_SOUP_HEATING_TEMPERATURE=120"
 REM 汤加热温度（℃）——0~150
 
 set "DATA_SOUP_INSULATION_TEMPERATURE=80"
 REM 汤保温温度（℃）——0~100
 
-set "DATA_STEAM_ADDITION_TIME_SECONDS=25"
+set "DATA_STEAM_ADDITION_TIME_SECONDS=15"
 REM 加蒸汽时间（秒）——0~100
 
-set "DATA_SOUP_EXHAUST_TIME=5"
+set "DATA_SOUP_EXHAUST_TIME=10"
 REM 汤排气时间（秒）——0~100
 
 set "DATA_LADLE_WALKING_DISTANCE_VALUE=1900"
@@ -97,16 +85,37 @@ REM 称重默认值(克)——0~200
 set "DISPENSE_SOUP_BY_PULSE_COUNT=10"
 REM 抽汤脉冲值(每个脉中约50ml) —0~200
 
+REM 价格和份量配置
+set "PORTION_SMALL_PRICE=10"
+REM 小份价格
+
+set "PORTION_SMALL_QUANTITY=4"
+REM 小份分量
+
+set "PORTION_MID_PRICE=15"
+REM 中份价格
+
+set "PORTION_MID_QUANTITY=6"
+REM 中份分量
+
+set "PORTION_LARGE_PRICE=20"
+REM 大份价格
+
+set "PORTION_LARGE_QUANTITY=8"
+REM 大份分量
+
+set "PORTION_ADD_MEAT_PRICE=30"
+REM 加肉价格
+
+set "PORTION_ADD_MEAT_QUANTITY=10"
+REM 加肉分量
+
 
 echo 启动服务中...
 java ^
   -Dfile.encoding=UTF-8 ^
   -jar %JAR_FILE% ^
   --machineCode=%MACHINE_CODE% ^
-  --data.beef10=%DATA_BEEF10% ^
-  --data.beef15=%DATA_BEEF15% ^
-  --data.beef20=%DATA_BEEF20% ^
-  --data.extraBeef=%DATA_EXTRA_BEEF% ^
   --data.cilantro=%DATA_CILANTRO% ^
   --data.choppedGreenOnion=%DATA_CHOPPED_GREEN_ONION% ^
   --data.ingredient1Value=%DATA_INGREDIENT1_VALUE% ^
@@ -122,5 +131,12 @@ java ^
   --data.openFanTime=%OPEN_FAN_TIME% ^
   --data.isUseWeighing=%IS_USE_WEIGHING% ^
   --data.defaultWeighingValue=%DEFAULT_WEIGHING_VALUE% ^
-  --data.dispenseSoupByPulseCount=%DISPENSE_SOUP_BY_PULSE_COUNT%
-
+  --data.dispenseSoupByPulseCount=%DISPENSE_SOUP_BY_PULSE_COUNT% ^
+  --data.portionOptions.small.price=%PORTION_SMALL_PRICE% ^
+  --data.portionOptions.small.quantity=%PORTION_SMALL_QUANTITY% ^
+  --data.portionOptions.mid.price=%PORTION_MID_PRICE% ^
+  --data.portionOptions.mid.quantity=%PORTION_MID_QUANTITY% ^
+  --data.portionOptions.large.price=%PORTION_LARGE_PRICE% ^
+  --data.portionOptions.large.quantity=%PORTION_LARGE_QUANTITY% ^
+  --data.portionOptions.addMeat.price=%PORTION_ADD_MEAT_PRICE% ^
+  --data.portionOptions.addMeat.quantity=%PORTION_ADD_MEAT_QUANTITY%

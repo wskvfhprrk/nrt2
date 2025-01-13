@@ -2,12 +2,12 @@ package com.jc.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jc.config.DataConfig;
+import com.jc.config.PortionOptionsConfig;
 import com.jc.config.PubConfig;
 import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
-import com.jc.enums.PriceOption;
 import com.jc.mqtt.MqttProviderConfig;
 import com.jc.service.RobotService;
 import com.jc.service.impl.*;
@@ -47,6 +47,8 @@ public class TaskCoordinator {
     private TemperatureWeighingGatewayService temperatureWeightReadingService;
     @Autowired
     private SignalAcquisitionDeviceGatewayService signalAcquisitionDeviceGatewayService;
+    @Autowired
+    private PortionOptionsConfig portionOptionsConfig;
 
     // 创建一个固定大小的线程池，线程池大小为 2
     ExecutorService executorService = Executors.newFixedThreadPool(5);
@@ -100,10 +102,10 @@ public class TaskCoordinator {
         pubConfig.setDishesAreReady(false);
         executorService.submit(() -> {
             log.info("开始切肉");
-            //根据订单类型选择
-            String selectedPrice = order.getSelectedPrice();
-            PriceOption priceOption = PriceOption.fromKey(selectedPrice);
-            relay1DeviceGatewayService.meatSlicingMachine(priceOption.getMachineParameter());
+            //根据订单价格选择牛肉量
+            Integer selectedPrice = order.getSelectedPrice();
+
+            relay1DeviceGatewayService.meatSlicingMachine(portionOptionsConfig.findQuantityByPrice(selectedPrice));
         });
         //如果称重模块使用
         if (dataConfig.getIsUseWeighing()) {

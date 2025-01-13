@@ -24,9 +24,8 @@ public class Order  implements Serializable{
      */
     private String selectedRecipe;
     /**
-     * 选择的价格
      */
-    private String selectedPrice;
+    private Integer selectedPrice;
     /**
      * 选择的调料
      */
@@ -47,6 +46,6 @@ public class Order  implements Serializable{
      * 支付方式
      */
     private String paymentMethod;
+    
 
 }
-

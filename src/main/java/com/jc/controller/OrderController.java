@@ -7,7 +7,7 @@ import com.jc.config.Result;
 import com.jc.constants.Constants;
 import com.jc.entity.Order;
 import com.jc.enums.OrderStatus;
-import com.jc.mqtt.MqttConsumerCallBack;
+import com.jc.config.PortionOptionsConfig;
 import com.jc.mqtt.MqttConsumerConfig;
 import com.jc.mqtt.MqttProviderConfig;
 import com.jc.vo.OrderPayMessage;
@@ -45,6 +45,9 @@ public class OrderController {
     private MqttConsumerConfig mqttConsumerConfig;
     @Value("${machineCode}")
     private String machineCode;
+    
+    @Autowired
+    private PortionOptionsConfig portionOptionsConfig;
 
     /**
      * 提交订单
@@ -61,6 +64,9 @@ public class OrderController {
         }
         Order order=new Order();
         BeanUtils.copyProperties(orderVo,order);
+        
+        order.setSelectedPrice(portionOptionsConfig.findPriceByType(orderVo.getSelectedPrice()));
+        
         order.setStatus(OrderStatus.PENDING);
 //        log.info("获取订单二维码：{}",orderVo);
         //发送mqtt消息
@@ -69,61 +75,6 @@ public class OrderController {
         return new ResponseEntity<>("订单提交成功,请根据支付订单号取餐", HttpStatus.OK);
     }
 
-    @GetMapping("serverStatus")
-    public String serverStatus() {
-        Map<String, String> statusMap = checkDeviceStatus();
-
-        String jsonResponse;
-        jsonResponse = JSON.toJSONString(statusMap);
-        return jsonResponse;
-    }
-
-    private Map<String, String> checkDeviceStatus() {
-        Map<String, String> statusMap = new HashMap<>();
-
-        boolean allDevicesConnected = clientConfig.getSend485Order() && clientConfig.getDocuOnLine() &&
-                clientConfig.getIOdevice() && clientConfig.getReceive485Singal() &&
-                clientConfig.getRelay1Device();
-
-        if (false) {
-        } else if (allDevicesConnected && pubConfig.getAllDevicesConnectedStatus()) {
-            statusMap.put("color", "green");
-            statusMap.put("message", "请您点餐！");
-        } else if (allDevicesConnected) {
-            statusMap.put("color", "orange");
-            statusMap.put("message", "设备自检中，请稍后……");
-        } else {
-            statusMap.put("color", "green");
-//            statusMap.put("color", "red");
-            StringBuilder missingDevicesMessage = new StringBuilder();
-
-            if (!clientConfig.getIOdevice()) {
-                appendWithComma(missingDevicesMessage, "IO采集设备");
-            }
-            if (!clientConfig.getRelay1Device()) {
-                appendWithComma(missingDevicesMessage, "继电器设备");
-            }
-            if (!clientConfig.getSend485Order()) {
-                appendWithComma(missingDevicesMessage, "发送485指令设备");
-            }
-            if (!clientConfig.getReceive485Singal()) {
-                appendWithComma(missingDevicesMessage, "485监听数据设备");
-            }
-            if (!clientConfig.getDocuOnLine()) {
-                appendWithComma(missingDevicesMessage, "机器人");
-            }
-            statusMap.put("message", missingDevicesMessage.append("未连接").toString());
-        }
-
-        return statusMap;
-    }
-
-    private void appendWithComma(StringBuilder sb, String message) {
-        if (sb.length() > 0) {
-            sb.append("、");
-        }
-        sb.append(message);
-    }
 
     @GetMapping("/status")
     public Result<OrderStatusResponse> getOrderStatus() {
@@ -165,13 +116,6 @@ public class OrderController {
             this.completedOrders = completedOrders;
         }
 
-        public List<Order> getPendingOrders() {
-            return pendingOrders;
-        }
-
-        public void setPendingOrders(List<Order> pendingOrders) {
-            this.pendingOrders = pendingOrders;
-        }
 
         public List<Order> getInProgressOrders() {
             return inProgressOrders;

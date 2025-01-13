@@ -13,22 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class DataConfig {
     /**
-     * 10元牛肉
-     */
-    private int beef10;
-    /**
-     * 15元牛肉
-     */
-    private int beef15;
-    /**
-     * 20元牛肉
-     */
-    private int beef20;
-    /**
-     * 加量牛肉
-     */
-    private int extraBeef;
-    /**
      * 抽汤时间
      */
     private int soupExtractionTime;
