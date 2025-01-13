@@ -127,11 +127,11 @@ public class SignalAcquisitionDeviceGatewayService implements DeviceHandler {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽下限位停止
-        if (i == Constants.X_STEAM_LOWER_LIMIT && s.equals("0") && s1.equals("1")) {
+        if (i == Constants.X_STEAM_LOWER_LIMIT ) {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
         }
         //蒸汽限上位停止
-        if (i == Constants.X_STEAM_UPPER_LIMIT && s.equals("0") && s1.equals("1") && pubConfig.getAddSteam()) {
+        if (i == Constants.X_STEAM_UPPER_LIMIT && pubConfig.getAddSteam()) {
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_SWITCH_CONTROL);
             relay1DeviceGatewayService.relayClosing(Constants.Y_TELESCOPIC_ROD_DIRECTION_CONTROL);
         }
