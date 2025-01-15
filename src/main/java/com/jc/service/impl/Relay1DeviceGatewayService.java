@@ -494,7 +494,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         pubConfig.setMeatSlicingQuantity(0);
         //打开切肉机
         relayOpening(Constants.Y_MEAT_SLICER_CONTROL);
-        int number = portionOptionsConfig.getSmall().getQuantity();
+        int number = portionOptionsConfig.findQuantityByPrice(price);
         //切刀量大于等于数据时关闭切肉机
         while (pubConfig.getMeatSlicingQuantity() < number) {
             try {

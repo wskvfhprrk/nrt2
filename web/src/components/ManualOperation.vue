@@ -139,7 +139,7 @@ export default {
       ],
 
       buttonsGroup5: [
-        {id: 31, name: "切肉机切肉（份量）"},
+        {id: 31, name: "切肉机切肉（单价）"},
         {id: 32, name: "打开震动器料仓"},
         {id: 36, name: "关闭震动器料仓"},
         {id: 37, name: "打开称重盒"},
