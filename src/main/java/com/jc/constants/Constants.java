@@ -243,7 +243,7 @@ public class Constants {
      */
     public static final String ORDER_REDIS_PRIMARY_KEY_IN_PROGRESS = "orderRedisPrimaryKeyInProgress";
     public static final String COMPLETED_ORDER_REDIS_PRIMARY_KEY = "completedOrderRedisPrimaryKey";
-    public static final String PENDING_ORDER_REDIS_PRIMARY_KEY = "pendingOrderRedisPrimaryKey";
+    public static final String PENDING_ORDER_REDIS_PRIMARY_KEY = "pendingOrderRedisPrimaryKey"; //
     public static final String APP_SECRET_REDIS_KEY = "appSecret";
     public static final String PAY_DATA = "payData";
     public static final String PAY_ORDER_ID = "payOrderId";

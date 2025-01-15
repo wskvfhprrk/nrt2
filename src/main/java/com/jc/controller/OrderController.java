@@ -116,6 +116,13 @@ public class OrderController {
             this.completedOrders = completedOrders;
         }
 
+        public List<Order> getPendingOrders() {
+            return pendingOrders;
+        }
+
+        public void setPendingOrders(List<Order> pendingOrders) {
+            this.pendingOrders = pendingOrders;
+        }
 
         public List<Order> getInProgressOrders() {
             return inProgressOrders;
