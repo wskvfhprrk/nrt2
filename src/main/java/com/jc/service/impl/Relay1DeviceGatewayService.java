@@ -485,7 +485,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
     /**
      * 切肉机切肉（份量）
      *
-     * @param i 价格——10、15、20、30元
+     * @param price 价格——10、15、20、30元
      * @return
      */
     public Result meatSlicingMachine(int price) {
@@ -497,6 +497,7 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         int number = portionOptionsConfig.findQuantityByPrice(price);
         //切刀量大于等于数据时关闭切肉机
         while (pubConfig.getMeatSlicingQuantity() < number) {
+            log.info("切肉数量：{}", number);
             try {
                 Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {

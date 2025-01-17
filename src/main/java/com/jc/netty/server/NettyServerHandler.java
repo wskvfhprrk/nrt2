@@ -45,9 +45,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     private PubConfig pubConfig;
     @Autowired
     @Lazy
-    private Relay1DeviceGatewayService relay1DeviceGatewayService;
-    @Autowired
-    @Lazy
     private Reset reset;
 
     /**
