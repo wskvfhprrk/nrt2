@@ -84,12 +84,6 @@
             <artifactId>fastjson</artifactId>
             <version>2.0.53</version>
         </dependency>
-        <!--native支付依赖包-->
-        <dependency>
-            <groupId>com.hejz</groupId>
-            <artifactId>wx-pay-spring-boot-starter</artifactId>
-            <version>1.2</version>
-        </dependency>
         <!--sign加密包-->
         <dependency>
             <groupId>com.hejz.util</groupId>
