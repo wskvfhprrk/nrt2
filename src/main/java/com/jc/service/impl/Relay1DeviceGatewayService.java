@@ -493,11 +493,10 @@ public class Relay1DeviceGatewayService implements DeviceHandler {
         //设置切肉初始值为0
         pubConfig.setMeatSlicingQuantity(0);
         //打开切肉机
-        relayOpening(Constants.Y_MEAT_SLICER_CONTROL);
         int number = portionOptionsConfig.findQuantityByPrice(price);
+        relayOpening(Constants.Y_MEAT_SLICER_CONTROL);
         //切刀量大于等于数据时关闭切肉机
         while (pubConfig.getMeatSlicingQuantity() < number) {
-            log.info("切肉数量：{}", number);
             try {
                 Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
             } catch (InterruptedException e) {

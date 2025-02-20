@@ -100,13 +100,15 @@ public class TaskCoordinator {
         });
         //第一种配菜
         pubConfig.setDishesAreReady(false);
-        executorService.submit(() -> {
+        new Thread(()->{
             log.info("开始切肉");
             //根据订单价格选择牛肉量
             Integer selectedPrice = order.getSelectedPrice();
-
-            relay1DeviceGatewayService.meatSlicingMachine(portionOptionsConfig.findQuantityByPrice(selectedPrice));
-        });
+            Result result1 = relay1DeviceGatewayService.meatSlicingMachine(selectedPrice);
+            if(result1.getCode()!=200){
+                log.error("切肉有问题");
+            }
+        }).start();
         //如果称重模块使用
         if (dataConfig.getIsUseWeighing()) {
             executorService.submit(() -> {
