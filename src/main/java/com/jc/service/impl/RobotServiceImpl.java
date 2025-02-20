@@ -96,6 +96,7 @@ public class RobotServiceImpl implements RobotService {
             }
         }
         pubConfig.setIsRobotStatus(false);
+        //取碗后拿到进行检查
         nettyClientConfig.connectAndSendData("run(bowl/checkBowl.jspf)");
         while (!pubConfig.getIsRobotStatus()) {
             try {
@@ -104,11 +105,21 @@ public class RobotServiceImpl implements RobotService {
                 e.printStackTrace();
             }
         }
+        //直到机器人停止
+        while (!pubConfig.getIsRobotStatus()) {
+            try {
+                Thread.sleep(Constants.COMMAND_INTERVAL_POLLING_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //检查
         if (signalAcquisitionDeviceGatewayService.getStatus(Constants.X_FANS_WAREHOUSE_4) == SignalLevel.HIGH.ordinal()) {
             getBowlNumber = 0;
             return Result.success();
         }
         getBowlNumber += 1;
+        log.info("getBowlNumber==={}",getBowlNumber);
         if(getBowlNumber>=3){
             return Result.error("取碗失败！");
         }
